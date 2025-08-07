@@ -43,6 +43,7 @@
 						</li>
 						<li class="active"><a class="nav-link" href="shop.html">Shop</a></li>
 						<li><a class="nav-link" href="about.html">About us</a></li>
+						<li><a class="nav-link" href="services.html">Services</a></li>
 						<li><a class="nav-link" href="blog.html">Blog</a></li>
 						<li><a class="nav-link" href="contact.html">Contact us</a></li>
 					</ul>
@@ -56,94 +57,109 @@
 				
 		</nav>
 		<!-- End Header/Navigation -->
-<div class="bg-light py-2 border-bottom">
-  <div class="container d-flex justify-content-between">
-    <div>
-      <a href="#" class="mx-2 text-dark text-decoration-none">Living</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">Dining</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">Bedroom</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">Packages</a>
-    </div>
-    <div>
-      <a href="#" class="mx-2 text-dark text-decoration-none">1 Seater Sofa</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">2 Seater Sofa</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">3 Seater Sofa</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">Sofa Set</a>
+
+		<!-- Category Tabs -->
+
+
+ <div class="container py-5">
+    <div class="row">
+
+      <!-- Product Images -->
+      <div class="col-md-6">
+        <img id="mainImage" src="images/post-1.jpg" class="img-fluid mb-3" alt="Main Image">
+        <div class="d-flex">
+          <img src="images/post-2.jpg" class="thumbnail-img active" width="60" onclick="changeImage(this)">
+          <img src="images/post-3.jpg" class="thumbnail-img" width="60" onclick="changeImage(this)">
+          <img src="images/post-3.jpg" class="thumbnail-img" width="60" onclick="changeImage(this)">
+        </div>
+      </div>
+
+      <!-- Product Details -->
+      <div class="col-md-6">
+        <h4>Modizi 1-Seater Wooden Sofa</h4>
+        <p class="mb-1"><strong>₹19,200</strong> <span class="price-original">₹24,000</span> <small>(Including GST)</small></p>
+        <p class="text-success">You Save ₹4,800 (20% OFF)</p>
+        <p><strong>Modizi</strong> 10 Year Warranty</p>
+
+        <button class="btn btn-orange btn-sm mb-3">Click Here to Get Assistance from Hokybo Experts</button>
+
+        <table class="table table-sm">
+          <tbody>
+            <tr>
+              <td><strong>Total Savings</strong></td>
+              <td class="text-danger">₹4,800</td>
+            </tr>
+            <tr>
+              <td><strong>Assembly</strong></td>
+              <td>No Need</td>
+            </tr>
+            <tr>
+              <td><strong>Customization</strong></td>
+              <td>Not Available</td>
+            </tr>
+            <tr>
+              <td><strong>Tax</strong></td>
+              <td>18%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Quantity & Price -->
+        <div class="d-flex align-items-center mb-3">
+          <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(-1)">-</button>
+          <input id="qtyInput" type="text" value="1" class="form-control form-control-sm mx-2 text-center" style="width: 50px;">
+          <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(1)">+</button>
+          <strong class="ms-3">₹<span id="totalPrice">19200</span></strong>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex flex-column flex-sm-row gap-2">
+          <button class="btn btn-orange w-100">Buy Now</button>
+          <button class="btn btn-outline-secondary w-100">Add to Cart</button>
+          <button class="btn btn-outline-secondary w-100">Add to Wishlist</button>
+        </div>
+      </div>
+
     </div>
   </div>
-</div>
 
-		
+  <!-- JS -->
+  <script>
+    const mainImage = document.getElementById("mainImage");
+    const thumbnails = document.querySelectorAll(".thumbnail-img");
+    const qtyInput = document.getElementById("qtyInput");
+    const totalPriceEl = document.getElementById("totalPrice");
+    const pricePerUnit = 19200;
 
-		<div class="untree_co-section product-section before-footer-section">
-		    <div class="container">
-		      	<div class="row">
+    function changeImage(el) {
+      thumbnails.forEach(img => img.classList.remove("active"));
+      el.classList.add("active");
+      mainImage.src = el.src;
+    }
 
-		      		<!-- Start Column 1 -->
-					<div class="col-12 col-md-4 col-lg-3 mb-5">
-						<a class="product-item" href="#">
-							<img src="images/product-3.png" class="img-fluid product-thumbnail">
-							<h3 class="product-title">Sofa</h3>
+    function adjustQty(val) {
+      let qty = parseInt(qtyInput.value);
+      qty = isNaN(qty) ? 1 : qty;
+      qty = Math.max(1, qty + val);
+      qtyInput.value = qty;
+      totalPriceEl.textContent = qty * pricePerUnit;
+    }
 
-							<span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-						</a>
-					</div> 
-					<!-- End Column 1 -->
-						
-					<!-- Start Column 2 -->
-					<div class="col-12 col-md-4 col-lg-3 mb-5">
-						<a class="product-item" href="#">
-							<img src="images/product-1.png" class="img-fluid product-thumbnail">
-							<h3 class="product-title">Table</h3
+    qtyInput.addEventListener("input", () => {
+      let qty = parseInt(qtyInput.value);
+      qty = isNaN(qty) || qty < 1 ? 1 : qty;
+      qtyInput.value = qty;
+      totalPriceEl.textContent = qty * pricePerUnit;
+    });
+  </script>
 
-							<span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-						</a>
-					</div> 
-					<!-- End Column 2 -->
+	
 
-					<!-- Start Column 3 -->
-					<div class="col-12 col-md-4 col-lg-3 mb-5">
-						<a class="product-item" href="shop copy.html">
-							<img src="images/product-2.png" class="img-fluid product-thumbnail">
-							<h3 class="product-title">Chair</h3>
-
-							<span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-						</a>
-					</div>
-					<!-- End Column 3 -->
-
-					<!-- Start Column 4 -->
-					<div class="col-12 col-md-4 col-lg-3 mb-5">
-						<a class="product-item" href="#">
-							<img src="images/product-3.png" class="img-fluid product-thumbnail">
-							<h3 class="product-title">Cot</h3>
-
-							<span class="icon-cross">
-								<img src="images/cross.svg" class="img-fluid">
-							</span>
-						</a>
-					</div>
-					<!-- End Column 4 -->
-
-		      	</div>
-		    </div>
-		</div>
 
 
 		<!-- Start Footer Section -->
 		<footer class="footer-section">
 			<div class="container relative">
-
-				<div class="sofa-img">
-					<img src="images/sofa.png" alt="Image" class="img-fluid">
-				</div>
-
 				<div class="row">
 					<div class="col-lg-8">
 						<div class="subscription-form">
