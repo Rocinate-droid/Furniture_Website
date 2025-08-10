@@ -255,7 +255,6 @@ a {
       margin-bottom: -50px;
       padding-bottom: 190px;
       z-index: 2;
-      max-width: 650px;
       left: -20px; }
       @media (min-width: 768px) {
         .hero .hero-img-wrap img {
