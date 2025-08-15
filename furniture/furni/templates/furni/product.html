@@ -1,63 +1,91 @@
 {% extends 'main.html' %}
 {% block content %}
-<!-- Category Tabs -->
-<div class="bg-light py-2 border-bottom">
-  <div class="container d-flex justify-content-between">
-    <div>
-      <p>{{category.name}}</p>
-    </div>
-    <div>
-      <a href="#" class="mx-2 text-dark text-decoration-none">1 Seater Sofa</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">2 Seater Sofa</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">3 Seater Sofa</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">Sofa Set</a>
-    </div>
-  </div>
-</div>
+{% load static %}
+ <div class="container py-5">
+    <div class="row">
 
-<!-- Filters & Sort -->
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div class="d-flex flex-wrap gap-2">
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Price Range</option></select>
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Brand</option></select>
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Material</option></select>
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Upholstery</option></select>
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Design</option></select>
-    </div>
-    <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-grid-3x3-gap"></i></button>
-      <select class="form-select form-select-sm" style="width: 150px;">
-        <option>Recommended</option>
-        <option>Price: Low to High</option>
-        <option>Price: High to Low</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Product Grid -->
-  <div class="row g-4">
-    <!-- Product Card -->
-    <div class="col-md-4 col-lg-3">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="position-relative">
-          <a href="shop copy 2.html"><img src="images/post-1.jpg" class="card-img-top" alt="Product"></a>
-          
-        </div>
-        <div class="card-body">
-          <p class="text-muted small mb-1">SKU: 10MD082-S(HG)</p>
-          <h5 class="card-title fs-6">Wooden 1-Seater Sofa</h5>
-          <p class="mb-1">
-            <span class="fw-bold">₹19,200</span>
-            <del class="text-muted small">₹24,000</del>
-          </p>
-          <p class="text-success small mb-1">Save ₹4,800 (20% OFF)</p>
-          <p class="text-muted small">3+ color options</p>
+      <!-- Product Images -->
+      <div class="col-md-6">
+        <img id="mainImage" src="images/post-1.jpg" class="img-fluid mb-3" alt="Main Image">
+        <div class="d-flex">
+          <img src="images/post-2.jpg" class="thumbnail-img active" width="60" onclick="changeImage(this)">
+          <img src="images/post-3.jpg" class="thumbnail-img" width="60" onclick="changeImage(this)">
+          <img src="images/post-3.jpg" class="thumbnail-img" width="60" onclick="changeImage(this)">
         </div>
       </div>
-    </div>
-    <!-- Repeat for more products... -->
-  </div>
-</div>
-{% endblock content %}
 
+      <!-- Product Details -->
+      <div class="col-md-6">
+        <h4>Modizi 1-Seater Wooden Sofa</h4>
+        <p class="mb-1"><strong>₹19,200</strong> <span class="price-original">₹24,000</span> <small>(Including GST)</small></p>
+        <p class="text-success">You Save ₹4,800 (20% OFF)</p>
+        <p><strong>Modizi</strong> 10 Year Warranty</p>
+        <table class="table table-sm">
+          <tbody>
+            <tr>
+              <td><strong>Total Savings</strong></td>
+              <td class="text-danger">₹4,800</td>
+            </tr>
+            <tr>
+              <td><strong>Assembly</strong></td>
+              <td>No Need</td>
+            </tr>
+            <tr>
+              <td><strong>Customization</strong></td>
+              <td>Not Available</td>
+            </tr>
+            <tr>
+              <td><strong>Tax</strong></td>
+              <td>18%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Quantity & Price -->
+        <div class="d-flex align-items-center mb-3">
+          <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(-1)">-</button>
+          <input id="qtyInput" type="text" value="1" class="form-control form-control-sm mx-2 text-center" style="width: 50px;">
+          <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(1)">+</button>
+          <strong class="ms-3">₹<span id="totalPrice">19200</span></strong>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex flex-column flex-sm-row gap-2">
+          <button class="btn btn-orange w-100">Buy Now</button>
+          <button class="btn btn-outline-secondary w-100">Add to Cart</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    const mainImage = document.getElementById("mainImage");
+    const thumbnails = document.querySelectorAll(".thumbnail-img");
+    const qtyInput = document.getElementById("qtyInput");
+    const totalPriceEl = document.getElementById("totalPrice");
+    const pricePerUnit = 19200;
+
+    function changeImage(el) {
+      thumbnails.forEach(img => img.classList.remove("active"));
+      el.classList.add("active");
+      mainImage.src = el.src;
+    }
+
+    function adjustQty(val) {
+      let qty = parseInt(qtyInput.value);
+      qty = isNaN(qty) ? 1 : qty;
+      qty = Math.max(1, qty + val);
+      qtyInput.value = qty;
+      totalPriceEl.textContent = qty * pricePerUnit;
+    }
+
+    qtyInput.addEventListener("input", () => {
+      let qty = parseInt(qtyInput.value);
+      qty = isNaN(qty) || qty < 1 ? 1 : qty;
+      qtyInput.value = qty;
+      totalPriceEl.textContent = qty * pricePerUnit;
+    });
+  </script>
+{% endblock content %}
