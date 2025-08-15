@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+{% block content %}
+<div class="bg-light py-2 border-bottom">
+  <div class="container d-flex justify-content-between">
+    <div>
+      <a href="#" class="mx-2 text-dark text-decoration-none">Living</a>
+      <a href="#" class="mx-2 text-dark text-decoration-none">Dining</a>
+      <a href="#" class="mx-2 text-dark text-decoration-none">Bedroom</a>
+    </div>
+    <div>
+      <a href="#" class="mx-2 text-dark text-decoration-none">1 Seater Sofa</a>
+      <a href="#" class="mx-2 text-dark text-decoration-none">2 Seater Sofa</a>
+      <a href="#" class="mx-2 text-dark text-decoration-none">3 Seater Sofa</a>
+      <a href="#" class="mx-2 text-dark text-decoration-none">Sofa Set</a>
+    </div>
+  </div>
+</div>
+
+		
+
+		<div class="untree_co-section product-section before-footer-section">
+		    <div class="container">
+		      	<div class="row">
+
+					{% for category in categories %}
+		      		<!-- Start Column 1 -->
+					<div class="col-12 col-md-4 col-lg-3 mb-5">
+						<a class="product-item" href="{% url 'category' category.id %}">
+							<img src="{{category.img.url}}" class="img-fluid product-thumbnail">
+							<h3 class="product-title">{{category.name}}</h3>
+						</a>
+					</div> 
+					<!-- End Column 1 -->
+					 {% endfor %}
+		      	</div>
+		    </div>
+		</div>
+{% endblock content %}

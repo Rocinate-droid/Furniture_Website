@@ -1,0 +1,436 @@
+{% extends 'main.html' %} 
+{% block content %}
+{% load static %}
+<!-- Start Hero Section -->
+			<div class="hero">
+				<div class="container">
+					<div class="row justify-content-between">
+						<div class="col-lg-5">
+							<div class="intro-excerpt">
+								<h1>About <span clsas="d-block">Our Brand</span></h1>
+								<p class="mb-4">At MODULE, we believe furniture is more than form and function — it's a reflection of your lifestyle. Each piece we craft is made to turn everyday moments into lasting memories, blending comfort, design, and soul.</p>
+								<p><a href="shop" class="btn btn-secondary me-2">Shop Now</a><a href="shop" class="btn btn-white-outline">Explore</a></p>
+							</div>
+						</div>
+						<div class="col-lg-7">
+							<div class="hero-img-wrap">
+								<img src="{% static 'images\couch.png' %}" class="img-fluid">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+<!-- End Hero Section -->
+
+<section class="py-5 bg-light" style="margin-top: 150px">
+  <div class="container">
+    <h2 class="mb-4 text-primary fw-bold">
+      MODULE — A Modern Way to Shop Furniture That Feels Like Home
+    </h2>
+	<p class="mb-5 text-muted">
+		At Module Furniture, we blend tradition with innovation, offering a diverse range of high-quality furniture
+		solutions for every space. As a proud subsidiary of the well-established Thayyil Furniture, a name trusted by
+		households and businesses for decades, we bring a fresh, modern perspective to the industry. Our mission is to cater
+		to the evolving needs of our customers with versatile designs that enhance both comfort and functionality.
+		Whether you're looking to transform your living room, upgrade your dining area, furnish your office, or create a
+		stylish ambiance in hotels, Module Furniture has a wide selection to meet your requirements. Each piece is crafted
+		with the same dedication to quality and detail that has been a hallmark of Thayyil Furniture for years, now infused
+		with contemporary design elements that reflect today's trends.
+		With an emphasis on sustainability and customer satisfaction, we provide tailored solutions for every lifestyle.
+		From classic to modern designs, Module Furniture ensures that your spaces are as unique and dynamic as you are.
+		Welcome to the future of furniture, where tradition meets modernity.
+	</p>
+
+    <div class="mb-4">
+      <h5 class="text-secondary">🛋️ Living Room Furniture</h5>
+      <p>
+        Redesign your living space with our sofas, lounge chairs, coffee tables,
+        and TV units. Every piece is thoughtfully built to enhance comfort and
+        style, whether you're hosting guests or enjoying downtime.
+      </p>
+    </div>
+
+    <div class="mb-4">
+      <h5 class="text-secondary">🛏️ Bedroom Furniture</h5>
+      <p>
+        Experience restful nights with our premium beds, nightstands, dressers,
+        and wardrobes. Available in minimalist, modern, and classic styles to
+        suit every aesthetic.
+      </p>
+    </div>
+
+    <div class="mb-4">
+      <h5 class="text-secondary">🍽️ Dining Room Sets</h5>
+      <p>
+        Gather around in style with our dining tables, chairs, and benches. From
+        space-saving sets to large family tables, our range blends utility with
+        beauty.
+      </p>
+    </div>
+
+    <div class="mb-4">
+      <h5 class="text-secondary">💼 Office Furniture</h5>
+      <p>
+        Create a productive space with our ergonomic desks, chairs, and shelves.
+        Perfect for both home and commercial workspaces, our designs ensure
+        comfort and focus.
+      </p>
+    </div>
+
+    <hr class="my-5" />
+
+    <h4 class="fw-semibold text-dark">Why Choose MODULE?</h4>
+    <ul class="list-unstyled">
+      <li class="mb-2">
+        ✅ Handcrafted pieces made from durable, sustainable materials.
+      </li>
+      <li class="mb-2">
+        ✅ Thoughtful design focused on comfort and functionality.
+      </li>
+      <li class="mb-2">
+        ✅ Customization options to fit your personal style and space.
+      </li>
+      <li class="mb-2">
+        ✅ Easy nationwide delivery and reliable customer service.
+      </li>
+    </ul>
+
+    <div class="mt-5">
+      <h4 class="fw-semibold text-dark">Visit Our Store or Shop Online</h4>
+      <p>
+        Whether you love browsing online or prefer the in-store experience,
+        MODULE is here to help you find furniture you’ll love living with. Shop
+        with confidence knowing our team is here to guide you from inspiration
+        to installation.
+      </p>
+      <a href="shop" class="btn btn-primary mt-3">Browse All Furniture</a>
+    </div>
+  </div>
+</section>
+
+<section class="py-5" id="faqs">
+  <div class="container">
+    <h2 class="mb-4 text-center">Frequently Asked Questions</h2>
+    <div class="accordion" id="faqAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq1">
+          <button
+            class="accordion-button"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse1"
+          >
+            What materials do you use in your furniture?
+          </button>
+        </h2>
+        <div
+          id="collapse1"
+          class="accordion-collapse collapse show"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            We use high-quality, sustainably sourced wood, durable fabrics, and
+            premium finishes to ensure lasting comfort and style.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq2">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse2"
+          >
+            Can I customize a piece of furniture?
+          </button>
+        </h2>
+        <div
+          id="collapse2"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            Yes! We offer customization on select pieces, including fabric,
+            color, and finish options. Contact our team for more info.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq3">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse3"
+          >
+            Do you offer delivery and installation?
+          </button>
+        </h2>
+        <div
+          id="collapse3"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            Yes, we provide safe and timely delivery, and professional
+            installation is available for all major purchases.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq4">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse4"
+          >
+            What is your return policy?
+          </button>
+        </h2>
+        <div
+          id="collapse4"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            We accept returns within 7 days of delivery on unused, undamaged
+            items. Custom furniture is not returnable unless defective.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq5">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse5"
+          >
+            How long does delivery take?
+          </button>
+        </h2>
+        <div
+          id="collapse5"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            Delivery times vary based on location and product availability. On
+            average, 7–14 business days for in-stock items.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq6">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse6"
+          >
+            Do you offer warranties?
+          </button>
+        </h2>
+        <div
+          id="collapse6"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            Most of our furniture comes with a 1-year warranty covering
+            manufacturing defects. Extended warranty options are available.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq7">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse7"
+          >
+            Is financing available?
+          </button>
+        </h2>
+        <div
+          id="collapse7"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            Yes, we offer financing through our trusted partners. You can opt
+            for easy EMI plans at checkout.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq8">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse8"
+          >
+            How do I care for my furniture?
+          </button>
+        </h2>
+        <div
+          id="collapse8"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            Regular dusting, avoiding direct sunlight, and using coasters for
+            drinks will help preserve your furniture. Specific care tips are
+            included with each product.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq9">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse9"
+          >
+            Can I track my order?
+          </button>
+        </h2>
+        <div
+          id="collapse9"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            Yes! Once your order is shipped, you’ll receive a tracking link via
+            email or SMS.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq10">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse10"
+          >
+            Do you have a showroom I can visit?
+          </button>
+        </h2>
+        <div
+          id="collapse10"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            Yes! Visit our Experience Store to explore collections in person.
+            Check our Locations page for your nearest showroom.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Start Testimonial Slider -->
+		<div class="testimonial-section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-7 mx-auto text-center">
+						<h2 class="section-title">Testimonials</h2>
+					</div>
+				</div>
+
+				<div class="row justify-content-center">
+					<div class="col-lg-12">
+						<div class="testimonial-slider-wrap text-center">
+
+							<div id="testimonial-nav">
+								<span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
+								<span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
+							</div>
+
+							<div class="testimonial-slider">
+								
+								<div class="item">
+									<div class="row justify-content-center">
+										<div class="col-lg-8 mx-auto">
+
+											<div class="testimonial-block text-center">
+												<blockquote class="mb-5">
+													<p>&ldquo;Excellent Shop close on the way from infopark express way to Tripunithara...Mr Unni is an excellent person and understands customer demand...Bought kids study table and is of really good quality...The price is also reasonable with lot of varieties...&rdquo;</p>
+												</blockquote>
+
+												<div class="author-info">
+													<h3 class="font-weight-bold">CA Ajay Lunawat</h3>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div> 
+								<!-- END item -->
+
+								<div class="item">
+									<div class="row justify-content-center">
+										<div class="col-lg-8 mx-auto">
+
+											<div class="testimonial-block text-center">
+												<blockquote class="mb-5">
+													<p>&ldquo;I'm impressed with their products and services.I purchased few things for my home furnitures. They has done each and every procedure without any delay.&rdquo;</p>
+												</blockquote>
+
+												<div class="author-info">
+													<h3 class="font-weight-bold">Arun K S</h3>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div> 
+								<!-- END item -->
+
+								<div class="item">
+									<div class="row justify-content-center">
+										<div class="col-lg-8 mx-auto">
+
+											<div class="testimonial-block text-center">
+												<blockquote class="mb-5">
+													<p>&ldquo;Very happy with our purchase, sofas had a very good finish and was comfortable. Unichettan, our salesman was very kind in helping us.&rdquo;</p>
+												</blockquote>
+
+												<div class="author-info">
+													<h3 class="font-weight-bold">Surya P</h3>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div> 
+								<!-- END item -->
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Testimonial Slider -->
+
+
+{% endblock content %}

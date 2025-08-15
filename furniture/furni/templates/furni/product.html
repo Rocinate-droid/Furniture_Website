@@ -1,0 +1,63 @@
+{% extends 'main.html' %}
+{% block content %}
+<!-- Category Tabs -->
+<div class="bg-light py-2 border-bottom">
+  <div class="container d-flex justify-content-between">
+    <div>
+      <p>{{category.name}}</p>
+    </div>
+    <div>
+      <a href="#" class="mx-2 text-dark text-decoration-none">1 Seater Sofa</a>
+      <a href="#" class="mx-2 text-dark text-decoration-none">2 Seater Sofa</a>
+      <a href="#" class="mx-2 text-dark text-decoration-none">3 Seater Sofa</a>
+      <a href="#" class="mx-2 text-dark text-decoration-none">Sofa Set</a>
+    </div>
+  </div>
+</div>
+
+<!-- Filters & Sort -->
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap gap-2">
+      <select class="form-select form-select-sm" style="width: 150px;"><option>Price Range</option></select>
+      <select class="form-select form-select-sm" style="width: 150px;"><option>Brand</option></select>
+      <select class="form-select form-select-sm" style="width: 150px;"><option>Material</option></select>
+      <select class="form-select form-select-sm" style="width: 150px;"><option>Upholstery</option></select>
+      <select class="form-select form-select-sm" style="width: 150px;"><option>Design</option></select>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-grid-3x3-gap"></i></button>
+      <select class="form-select form-select-sm" style="width: 150px;">
+        <option>Recommended</option>
+        <option>Price: Low to High</option>
+        <option>Price: High to Low</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="row g-4">
+    <!-- Product Card -->
+    <div class="col-md-4 col-lg-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="position-relative">
+          <a href="shop copy 2.html"><img src="images/post-1.jpg" class="card-img-top" alt="Product"></a>
+          
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-1">SKU: 10MD082-S(HG)</p>
+          <h5 class="card-title fs-6">Wooden 1-Seater Sofa</h5>
+          <p class="mb-1">
+            <span class="fw-bold">₹19,200</span>
+            <del class="text-muted small">₹24,000</del>
+          </p>
+          <p class="text-success small mb-1">Save ₹4,800 (20% OFF)</p>
+          <p class="text-muted small">3+ color options</p>
+        </div>
+      </div>
+    </div>
+    <!-- Repeat for more products... -->
+  </div>
+</div>
+{% endblock content %}
+
