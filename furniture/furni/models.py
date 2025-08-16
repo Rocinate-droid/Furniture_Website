@@ -43,3 +43,13 @@ class Testimonial(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
+
+class Contact(models.Model):
+    firstname = models.CharField(max_length=50)
+    lastname = models.CharField(max_length=50)
+    phone = models.CharField(max_length=15)
+    email = models.CharField(max_length=50)
+    message = models.CharField(max_length=200)
+    created = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.firstname

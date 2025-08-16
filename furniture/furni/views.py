@@ -1,10 +1,11 @@
-import re
-
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Categorie
 from .models import Testimonial
 from .models import Product
+from .forms import contactForm
+from django.core.mail import send_mail
+
 
 
 # Create your views here.
@@ -35,7 +36,20 @@ def about(request):
     return render(request, "furni/about.html")
 
 def contact(request):
-    return render(request, "furni/contact.html")
+    form = contactForm(request.POST or None)
+    if form.is_valid():
+        contact = form.save()
+        send_mail(
+            'You were contacted by ' + contact.firstname + " " + contact.lastname,
+            'Their phone number is ' + contact.phone + " and email is " + contact.email + "and has left you a message " + contact.message,
+            'settings.EMAIL_HOST_USER',        # From
+            [''],        # To
+            fail_silently=False,
+)
+    else:
+        print(form.errors)
+    context = {'form': form }
+    return render(request, "furni/contact.html", context)
 
 def category(request,cat_id):
     category = Categorie.objects.get(id=cat_id)
