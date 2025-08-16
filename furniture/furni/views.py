@@ -1,7 +1,7 @@
 import re
 
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from .models import Categorie
 from .models import Testimonial
 from .models import Product
@@ -37,9 +37,9 @@ def about(request):
 def contact(request):
     return render(request, "furni/contact.html")
 
-def category(request,pk):
-    category = Categorie.objects.get(id=pk)
-    products = Product.objects.filter(id=pk)
+def category(request,cat_id):
+    category = Categorie.objects.get(id=cat_id)
+    products = Product.objects.filter(category_id=cat_id)
     for p in products:
         original_price = int(p.original_price.replace(",",""))
         discounted_price = int(p.discounted_price.replace(",",""))
@@ -48,12 +48,11 @@ def category(request,pk):
     context = {'category': category, 'products': products}
     return render(request, "furni/category.html", context)
 
-def product(request,pk):
-    product = Product.objects.get(id=pk)
-    for p in product:
-        original_price = int(p.original_price.replace(",",""))
-        discounted_price = int(p.discounted_price.replace(",",""))
-        p.savings = original_price - discounted_price
-        p.savings_percentage = int((p.savings / original_price ) * 100)
+def product(request,cat_id,prod_id):
+    product = get_object_or_404(Product,id = prod_id,category_id=cat_id)
+    original_price = int(product.original_price.replace(",",""))
+    discounted_price = int(product.discounted_price.replace(",",""))
+    product.savings = original_price - discounted_price
+    product.savings_percentage = int((product.savings / original_price ) * 100)
     context = {'product': product}
     return render(request, "furni/product.html", context)

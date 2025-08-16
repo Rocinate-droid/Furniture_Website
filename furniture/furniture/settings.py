@@ -129,5 +129,5 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MEDIA_URL = '/media/'  # URL path to access media files
-MEDIA_ROOT = BASE_DIR / 'media'  # Folder where uploaded files will be stored
+MEDIA_URL = '/media/' 
+MEDIA_ROOT = BASE_DIR / 'media'  

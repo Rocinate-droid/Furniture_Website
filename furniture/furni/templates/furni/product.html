@@ -3,36 +3,35 @@
 {% load static %}
  <div class="container py-5">
     <div class="row">
-
       <!-- Product Images -->
       <div class="col-md-6">
-        <img id="mainImage" src="images/post-1.jpg" class="img-fluid mb-3" alt="Main Image">
+        <img id="mainImage" src="{{product.img.url}}" class="img-fluid mb-3" alt="Main Image">
         <div class="d-flex">
-          <img src="images/post-2.jpg" class="thumbnail-img active" width="60" onclick="changeImage(this)">
-          <img src="images/post-3.jpg" class="thumbnail-img" width="60" onclick="changeImage(this)">
-          <img src="images/post-3.jpg" class="thumbnail-img" width="60" onclick="changeImage(this)">
+          <img src="{{product.img.url}}" class="thumbnail-img active" width="60" onclick="changeImage(this)">
+          <img src="{{product.img2.url}}" class="thumbnail-img" width="60" onclick="changeImage(this)">
+          <img src="{{product.img3.url}}" class="thumbnail-img" width="60" onclick="changeImage(this)">
+          <img src="{{product.img3.url}}" class="thumbnail-img" width="60" onclick="changeImage(this)">
         </div>
       </div>
-
       <!-- Product Details -->
       <div class="col-md-6">
-        <h4>Modizi 1-Seater Wooden Sofa</h4>
-        <p class="mb-1"><strong>₹19,200</strong> <span class="price-original">₹24,000</span> <small>(Including GST)</small></p>
-        <p class="text-success">You Save ₹4,800 (20% OFF)</p>
-        <p><strong>Modizi</strong> 10 Year Warranty</p>
+        <h4>{{product.name}}</h4>
+        <p class="mb-1"><strong>₹{{product.discounted_price}}</strong> <span class="price-original">₹{{product.original_price}}</span> <small>(Including GST)</small></p>
+        <p class="text-success">You Save ₹{{product.savings}} ({{product.savings_percentage}}% OFF)</p>
+        <p>{{product.warranty}} Year Warranty</p>
         <table class="table table-sm">
           <tbody>
             <tr>
               <td><strong>Total Savings</strong></td>
-              <td class="text-danger">₹4,800</td>
+              <td class="text-danger">₹{{product.savings}}</td>
             </tr>
             <tr>
               <td><strong>Assembly</strong></td>
-              <td>No Need</td>
+              <td>{{product.assembly}}</td>
             </tr>
             <tr>
               <td><strong>Customization</strong></td>
-              <td>Not Available</td>
+              <td>{{product.customization}}</td>
             </tr>
             <tr>
               <td><strong>Tax</strong></td>
@@ -46,7 +45,7 @@
           <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(-1)">-</button>
           <input id="qtyInput" type="text" value="1" class="form-control form-control-sm mx-2 text-center" style="width: 50px;">
           <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(1)">+</button>
-          <strong class="ms-3">₹<span id="totalPrice">19200</span></strong>
+          <strong class="ms-3">₹<span id="totalPrice">{{product.discounted_price}}</span></strong>
         </div>
 
         <!-- Actions -->
@@ -65,7 +64,7 @@
     const thumbnails = document.querySelectorAll(".thumbnail-img");
     const qtyInput = document.getElementById("qtyInput");
     const totalPriceEl = document.getElementById("totalPrice");
-    const pricePerUnit = 19200;
+    const pricePerUnit = parseInt(document.getElementById("totalPrice").textContent.replace(",", ""));
 
     function changeImage(el) {
       thumbnails.forEach(img => img.classList.remove("active"));

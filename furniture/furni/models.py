@@ -38,7 +38,7 @@ class Product(models.Model):
 
 class Testimonial(models.Model):
     name = models.CharField(max_length=200)
-    content = models.CharField(max_length=500)
+    content = models.TextField(max_length=500)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
