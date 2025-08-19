@@ -5,6 +5,8 @@ from .models import Testimonial
 from .models import Product
 from .forms import contactForm
 from django.core.mail import send_mail
+from django.db.models import Q
+from django.template.loader import render_to_string
 
 
 
@@ -43,30 +45,44 @@ def contact(request):
             'You were contacted by ' + contact.firstname + " " + contact.lastname,
             'Their phone number is ' + contact.phone + " and email is " + contact.email + "and has left you a message " + contact.message,
             'settings.EMAIL_HOST_USER',        # From
-            [''],        # To
+            ['sreejithcs895@gmail.com'],        # To
             fail_silently=False,
-)
-    else:
-        print(form.errors)
+            )
+        send_mail(
+            "Thank you for contacting module furnitures, we'll get back to you shortly",
+            'settings.EMAIL_HOST_USER',        # From
+            [contact.email],        # To
+            fail_silently=False,
+            )
+        return redirect('contactus')
     context = {'form': form }
     return render(request, "furni/contact.html", context)
 
-def category(request,cat_id):
+def category(request, cat_id):
     category = Categorie.objects.get(id=cat_id)
     products = Product.objects.filter(category_id=cat_id)
+    price = request.GET.get('price')
+    sort  = request.GET.get('sort')
+    if sort:
+        if sort == "low_to_high":
+            products = products.order_by('discounted_price')
+        elif sort == "high_to_low":
+            products = products.order_by('-discounted_price')
+    if price:
+            min_price, max_price = map(int, price.split("-"))
+            products = products.filter(Q(discounted_price__gte=min_price) & Q(discounted_price__lte=max_price))
     for p in products:
-        original_price = int(p.original_price.replace(",",""))
-        discounted_price = int(p.discounted_price.replace(",",""))
-        p.savings = original_price - discounted_price
-        p.savings_percentage = int((p.savings / original_price ) * 100)
+        p.savings = p.original_price - p.discounted_price
+        p.savings_percentage = int((p.savings / p.original_price) * 100)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string("furni/product_list.html", {'products': products})
+        return HttpResponse(html)
     context = {'category': category, 'products': products}
     return render(request, "furni/category.html", context)
 
 def product(request,cat_id,prod_id):
     product = get_object_or_404(Product,id = prod_id,category_id=cat_id)
-    original_price = int(product.original_price.replace(",",""))
-    discounted_price = int(product.discounted_price.replace(",",""))
-    product.savings = original_price - discounted_price
-    product.savings_percentage = int((product.savings / original_price ) * 100)
+    product.savings = product.original_price - product.discounted_price
+    product.savings_percentage = int((product.savings / product.original_price ) * 100)
     context = {'product': product}
     return render(request, "furni/product.html", context)

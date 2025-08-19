@@ -21,6 +21,11 @@ resource "aws_instance" "django-host" {
 
 }
 
+resource "aws_ec2_instance_state" "test" {
+  instance_id = aws_instance.django-host.id
+  state       = "running"
+}
+
 resource "aws_network_interface" "niw-master" {
   subnet_id       = var.subnet_id
   security_groups = [var.sg-id]

@@ -100,14 +100,14 @@
               <div class="col-6">
                 <div class="form-group">
                   <label class="text-black" for="firstname">First name</label>
-                  <input type="text" class="form-control" id="firstname" name="firstname"
+                  <input type="text" class="form-control" id="firstname" name="firstname" required
                     value="{{ form.firstname.value|default:'' }}">
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-group">
                   <label class="text-black" for="lastname">Last name</label>
-                  <input type="text" class="form-control" id="lastname" name="lastname"
+                  <input type="text" class="form-control" id="lastname" name="lastname" required
                     value="{{ form.lastname.value|default:'' }}">
                 </div>
               </div>
@@ -115,20 +115,18 @@
 
             <div class="form-group">
               <label class="text-black" for="phno">Phone Number</label>
-              <input type="tel" class="form-control" id="phno" name="phone" value="{{ form.phone.value|default:'' }}">
+              <input type="tel" class="form-control" id="phno" name="phone" required value="{{ form.phone.value|default:'' }}">
             </div>
 
             <div class="form-group">
               <label class="text-black" for="email">Email address</label>
-              <input type="email" class="form-control" id="email" name="email"
+              <input type="email" class="form-control" id="email" name="email" required
                 value="{{ form.email.value|default:'' }}">
             </div>
 
             <div class="form-group mb-5">
               <label class="text-black" for="message">Message</label>
-              <textarea class="form-control" id="message" cols="30" rows="5" name="message">
-            {{ form.message.value|default:'' }}
-        </textarea>
+              <textarea class="form-control" id="message" cols="30" rows="5" name="message" required>{{form.message.value|default:''}}</textarea>
             </div>
 
             <button type="submit" class="btn btn-primary-hover-outline">Send Message</button>

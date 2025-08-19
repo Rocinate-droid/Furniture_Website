@@ -1,0 +1,26 @@
+{% for product in products %}
+{% load humanize %}
+<div class="col-md-4 col-lg-3">
+  <div class="card border-0 shadow-sm h-100">
+    <div class="position-relative">
+      <a href="{% url 'product' cat_id=product.category.id prod_id=product.id %}">
+        <img src="{{product.img.url}}" class="card-img-top" alt="Product">
+      </a>
+    </div>
+    <div class="card-body">
+      <p class="text-muted small mb-1">{{product.serial_no}}</p>
+      <h5 class="card-title fs-6">{{product.name}}</h5>
+      <p class="mb-1">
+        <span class="fw-bold">₹{{product.discounted_price|intcomma}}</span>
+        <del class="text-muted small">₹{{product.original_price|intcomma}}</del>
+      </p>
+      <p class="text-success small mb-1">
+        Save ₹{{product.savings}} ({{product.savings_percentage}}% OFF)
+      </p>
+      <p class="text-muted small">{{product.color_options}}+ color options</p>
+    </div>
+  </div>
+</div>
+{% empty %}
+  <div class="col-12"><p>No products found in this price range.</p></div>
+{% endfor %}

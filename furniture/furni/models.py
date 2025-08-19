@@ -1,3 +1,4 @@
+import django_filters
 from django.db import models
 
 # Create your models here.
@@ -22,8 +23,8 @@ class Product(models.Model):
     category = models.ForeignKey(Categorie, on_delete=models.CASCADE)
     serial_no = models.CharField(max_length=100)
     name = models.CharField(max_length=200)
-    discounted_price = models.CharField(max_length=50)
-    original_price = models.CharField(max_length=50)
+    discounted_price = models.IntegerField()
+    original_price = models.IntegerField()
     color_options = models.CharField(max_length=10)
     img = models.ImageField(upload_to='products/')
     img2 = models.ImageField(upload_to='products/')
@@ -35,6 +36,17 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
+
+'''
+class ProductFilters(django_filters.FilterSet):
+    price = django_filters.NumberFilter()
+    price_gt = django_filters.NumberFilter(field_name='discounted_price', lookup_expr='gt')
+    price_lt = django_filters.NumberFilter(field_name='discounted_price', lookup_expr='lt')
+
+    class Meta:
+        model = Product
+        fields = ['discounted_price']
+'''
 
 class Testimonial(models.Model):
     name = models.CharField(max_length=200)
@@ -49,7 +61,7 @@ class Contact(models.Model):
     lastname = models.CharField(max_length=50)
     phone = models.CharField(max_length=15)
     email = models.CharField(max_length=50)
-    message = models.CharField(max_length=200)
+    message = models.TextField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.firstname

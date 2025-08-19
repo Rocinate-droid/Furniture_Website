@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% load humanize %}
 {% block content %}
 {% load static %}
  <div class="container py-5">
@@ -16,7 +17,7 @@
       <!-- Product Details -->
       <div class="col-md-6">
         <h4>{{product.name}}</h4>
-        <p class="mb-1"><strong>₹{{product.discounted_price}}</strong> <span class="price-original">₹{{product.original_price}}</span> <small>(Including GST)</small></p>
+        <p class="mb-1"><strong>₹{{product.discounted_price | intcomma}}</strong> <span class="price-original">₹{{product.original_price | intcomma}}</span> <small>(Including GST)</small></p>
         <p class="text-success">You Save ₹{{product.savings}} ({{product.savings_percentage}}% OFF)</p>
         <p>{{product.warranty}} Year Warranty</p>
         <table class="table table-sm">

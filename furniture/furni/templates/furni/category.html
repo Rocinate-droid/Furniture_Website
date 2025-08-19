@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% load humanize %}
 {% block content %}
 <!-- Category Tabs -->
 <div class="bg-light py-2 border-bottom">
@@ -19,46 +20,67 @@
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div class="d-flex flex-wrap gap-2">
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Price Range</option></select>
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Brand</option></select>
+      <select id="price_filter" class="form-select form-select-sm" style="width: 150px;">
+  <option hidden value="" disabled selected>Price Range</option>
+  <option value="">All Prices</option>
+  <option value="5000-19999">5000-19999</option>
+  <option value="20000-29999">20000-29999</option>
+  <option value="30000-39999">30000-39999</option>
+  <option value="40000-49999">40000-49999</option>
+  <option value="50000-59999">50000-59999</option>
+</select>
+
+      <!--<select class="form-select form-select-sm" style="width: 150px;"><option>Brand</option></select>
       <select class="form-select form-select-sm" style="width: 150px;"><option>Material</option></select>
       <select class="form-select form-select-sm" style="width: 150px;"><option>Upholstery</option></select>
       <select class="form-select form-select-sm" style="width: 150px;"><option>Design</option></select>
+    -->
     </div>
     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-grid-3x3-gap"></i></button>
-      <select class="form-select form-select-sm" style="width: 150px;">
-        <option>Recommended</option>
-        <option>Price: Low to High</option>
-        <option>Price: High to Low</option>
+      <select class="form-select form-select-sm" id="sort_order" style="width: 150px;">
+        <option value="">Recommended</option>
+        <option value="low_to_high">Price: Low to High</option>
+        <option value="high_to_low">Price: High to Low</option>
       </select>
     </div>
   </div>
 
   <!-- Product Grid -->
-  <div class="row g-4">
-    <!-- Product Card -->
-    {% for product in products %}
-    <div class="col-md-4 col-lg-3">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="position-relative">
-          <a href="{% url 'product' cat_id=product.category.id prod_id=product.id %}"><img src="{{product.img.url}}" class="card-img-top" alt="Product"></a>
-        </div>
-        <div class="card-body">
-          <p class="text-muted small mb-1">{{product.serial_no}}</p>
-          <h5 class="card-title fs-6">{{product.name}}</h5>
-          <p class="mb-1">
-            <span class="fw-bold">₹{{product.discounted_price}}</span>
-            <del class="text-muted small">₹{{product.original_price}}</del>
-          </p>
-          <p class="text-success small mb-1">Save ₹{{product.savings}} ({{product.savings_percentage}}% OFF)</p>
-          <p class="text-muted small">{{product.color_options}}+ color options</p>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-    <!-- Repeat for more products... -->
-  </div>
+  <div id="product-list" class="row g-4">
+  {% include "furni/product_list.html" with products=products %}
 </div>
-{% endblock content %}
+</div>
+<script>
 
+  function getFilterUrl() {
+    const base = window.location.pathname;
+    const price = document.getElementById("price_filter").value;
+    const sort = document.getElementById('sort_order').value;
+
+    const params = new URLSearchParams();
+    if(price) params.append("price", price);
+    if(sort) params.append("sort", sort);
+
+    return base + "?" + params.toString();
+  }
+
+  function getFilteredProducts(){
+    const url = getFilterUrl();
+    fetch(url, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      }
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("product-list").innerHTML = html;
+  })
+}
+
+document.getElementById("price_filter").addEventListener("change", getFilteredProducts)
+document.getElementById("sort_order").addEventListener("change", getFilteredProducts)
+
+
+</script>
+
+{% endblock content %}
