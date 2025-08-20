@@ -50,10 +50,12 @@
         </div>
 
         <!-- Actions -->
+         <form>
         <div class="d-flex flex-column flex-sm-row gap-2">
-          <button class="btn btn-orange w-100">Buy Now</button>
-          <button class="btn btn-outline-secondary w-100">Add to Cart</button>
+          <button class="btn btn-orange w-100" >Buy Now</button>
+          <button class="btn btn-outline-secondary w-100" id="addtocart" formaction="/add/{{ product.id }}/1/">Add to Cart</button>
         </div>
+        </form>
       </div>
 
     </div>
@@ -64,8 +66,11 @@
     const mainImage = document.getElementById("mainImage");
     const thumbnails = document.querySelectorAll(".thumbnail-img");
     const qtyInput = document.getElementById("qtyInput");
+    const url = document.getElementById("addtocart");
+    let qtyValue = qtyInput.value;
     const totalPriceEl = document.getElementById("totalPrice");
     const pricePerUnit = parseInt(document.getElementById("totalPrice").textContent.replace(",", ""));
+    const productId = "{{ product.id }}";
 
     function changeImage(el) {
       thumbnails.forEach(img => img.classList.remove("active"));
@@ -78,6 +83,8 @@
       qty = isNaN(qty) ? 1 : qty;
       qty = Math.max(1, qty + val);
       qtyInput.value = qty;
+      qtyValue = qty;
+      url.setAttribute("formaction", `/add/${productId}/${qtyValue}/`);
       totalPriceEl.textContent = qty * pricePerUnit;
     }
 
@@ -87,5 +94,7 @@
       qtyInput.value = qty;
       totalPriceEl.textContent = qty * pricePerUnit;
     });
+
+   
   </script>
 {% endblock content %}

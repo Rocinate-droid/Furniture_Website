@@ -21,14 +21,14 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div class="d-flex flex-wrap gap-2">
       <select id="price_filter" class="form-select form-select-sm" style="width: 150px;">
-  <option hidden value="" disabled selected>Price Range</option>
-  <option value="">All Prices</option>
-  <option value="5000-19999">5000-19999</option>
-  <option value="20000-29999">20000-29999</option>
-  <option value="30000-39999">30000-39999</option>
-  <option value="40000-49999">40000-49999</option>
-  <option value="50000-59999">50000-59999</option>
-</select>
+        <option hidden value="" disabled selected>Price Range</option>
+        <option value="">All Prices</option>
+        <option value="5000-19999">5000-19999</option>
+        <option value="20000-29999">20000-29999</option>
+        <option value="30000-39999">30000-39999</option>
+        <option value="40000-49999">40000-49999</option>
+        <option value="50000-59999">50000-59999</option>
+      </select>
 
       <!--<select class="form-select form-select-sm" style="width: 150px;"><option>Brand</option></select>
       <select class="form-select form-select-sm" style="width: 150px;"><option>Material</option></select>
@@ -47,8 +47,8 @@
 
   <!-- Product Grid -->
   <div id="product-list" class="row g-4">
-  {% include "furni/product_list.html" with products=products %}
-</div>
+    {% include "furni/product_list.html" with products=products %}
+  </div>
 </div>
 <script>
 
@@ -58,27 +58,27 @@
     const sort = document.getElementById('sort_order').value;
 
     const params = new URLSearchParams();
-    if(price) params.append("price", price);
-    if(sort) params.append("sort", sort);
+    if (price) params.append("price", price);
+    if (sort) params.append("sort", sort);
 
     return base + "?" + params.toString();
   }
 
-  function getFilteredProducts(){
+  function getFilteredProducts() {
     const url = getFilterUrl();
     fetch(url, {
       headers: {
         "X-Requested-With": "XMLHttpRequest"
       }
     })
-    .then(response => response.text())
-    .then(html => {
-      document.getElementById("product-list").innerHTML = html;
-  })
-}
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("product-list").innerHTML = html;
+      })
+  }
 
-document.getElementById("price_filter").addEventListener("change", getFilteredProducts)
-document.getElementById("sort_order").addEventListener("change", getFilteredProducts)
+  document.getElementById("price_filter").addEventListener("change", getFilteredProducts)
+  document.getElementById("sort_order").addEventListener("change", getFilteredProducts)
 
 
 </script>

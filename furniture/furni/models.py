@@ -1,5 +1,6 @@
 import django_filters
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -36,17 +37,14 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
+    
+class CartItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f'{self.quantity} * {self.product.name}' 
 
-'''
-class ProductFilters(django_filters.FilterSet):
-    price = django_filters.NumberFilter()
-    price_gt = django_filters.NumberFilter(field_name='discounted_price', lookup_expr='gt')
-    price_lt = django_filters.NumberFilter(field_name='discounted_price', lookup_expr='lt')
-
-    class Meta:
-        model = Product
-        fields = ['discounted_price']
-'''
 
 class Testimonial(models.Model):
     name = models.CharField(max_length=200)
