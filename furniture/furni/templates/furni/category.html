@@ -56,7 +56,6 @@
     const base = window.location.pathname;
     const price = document.getElementById("price_filter").value;
     const sort = document.getElementById('sort_order').value;
-
     const params = new URLSearchParams();
     if (price) params.append("price", price);
     if (sort) params.append("sort", sort);

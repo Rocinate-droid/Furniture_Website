@@ -18,32 +18,8 @@
                           <th class="product-remove">Remove</th>
                         </tr>
                       </thead>
-                      <tbody>
-						{% for item in cart_items %}
-                        <tr>
-                          <td class="product-thumbnail">
-                            <img src="{{item.product.img.url}}" alt="Image" class="img-fluid">
-                          </td>
-                          <td class="product-name">
-                            <h2 class="h5 text-black">{{item.product.name}}</h2>
-                          </td>
-                          <td>₹{{item.product.discounted_price | intcomma}}</td>
-                          <td>
-                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                              <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                              </div>
-                              <input type="text" class="form-control text-center quantity-amount" value="{{item.quantity}}" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                              </div>
-                            </div>
-        
-                          </td>
-                          <td>₹{{product_total_amount | intcomma}}</td>
-                          <td><a href="{% url 'delete_from_cart' cart_item_id=item.id  %}" class="btn btn-black btn-sm">X</a></td>
-                        </tr>
-						{% endfor %}
+                      <tbody id="cart_content">
+                          {% include "furni/cart_list.html" with cart_items=cart_items %}
                       </tbody>
                     </table>
 					
@@ -54,14 +30,11 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="row mb-5">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                      <button class="btn btn-black btn-sm btn-block">Update Cart</button>
-                    </div>
                     <div class="col-md-6">
-                      <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
+                      <a class="btn btn-outline-black btn-sm btn-block" href="{% url 'shop' %}">Continue Shopping</a>
                     </div>
                   </div>
-                  <div class="row">
+                  <!-- <div class="row">
                     <div class="col-md-12">
                       <label class="text-black h4" for="coupon">Coupon</label>
                       <p>Enter your coupon code if you have one.</p>
@@ -72,7 +45,7 @@
                     <div class="col-md-4">
                       <button class="btn btn-black">Apply Coupon</button>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="col-md-6 pl-5">
                   <div class="row justify-content-end">
@@ -81,13 +54,13 @@
                         <div class="col-md-12 text-right border-bottom mb-5">
                           <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
                         </div>
-					</div>
+                      </div>
                       <div class="row mb-5">
                         <div class="col-md-6">
                           <span class="text-black">Total</span>
                         </div>
-                        <div class="col-md-6 text-right">
-                          <strong class="text-black">₹{{total_amount | intcomma}}</strong>
+                        <div class="col-md-6 text-right" id="total_amount">
+                          {% include "furni/cart_total.html" with total_amount=total_amount %}
                         </div>
                       </div>
         
@@ -102,6 +75,37 @@
               </div>
             </div>
           </div>
+          
+
+          <script>
+
+            function changeQuantity(itemId, delta) {
+              const qtyInput = document.getElementById(`qty_prod_${itemId}`);
+              let currentQty = parseInt(qtyInput.value) || 1;
+              currentQty = Math.max(1, currentQty + delta);
+              qtyInput.value = currentQty;
+              update_Quantity(itemId);
+            }
+            function getUpdateUrl(item_id) {
+              const base = window.location.pathname
+              const quantityelement = document.getElementById(`qty_prod_${item_id}`).value;
+              return `/update/${item_id}/${quantityelement}/`;
+            }
+
+            function update_Quantity(id) {
+              const url = getUpdateUrl(id);
+              fetch(url, {
+                headers: {
+                  "X-Requested-With": "XMLHttpRequest"
+                }
+              })
+                .then(response => response.json())
+                .then(data => {
+                  document.getElementById("cart_content").innerHTML = data.cart_html;
+                  document.getElementById("total_amount").innerHTML = data.total_html;
+                })
+            }
+          </script>
 {% endblock content %}
 		
 

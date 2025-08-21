@@ -8,7 +8,7 @@ from .forms import contactForm
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.template.loader import render_to_string
-from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 
 
@@ -52,6 +52,7 @@ def contact(request):
             )
         send_mail(
             "Thank you for contacting module furnitures, we'll get back to you shortly",
+            "Thank you for contacting module furnitures, we'll get back to you shortly",
             'settings.EMAIL_HOST_USER',        # From
             [contact.email],        # To
             fail_silently=False,
@@ -93,22 +94,37 @@ def product(request,cat_id,prod_id):
 def view_cart(request):
     cart_items = CartItem.objects.all()
     total_amount = 0
-    product_total_amount = 0
     for item in cart_items:
-        product_total_amount = item.quantity * item.product.discounted_price
-        total_amount += (item.quantity * item.product.discounted_price)
-    context = {'cart_items' : cart_items, 'total_amount' : total_amount, 'product_total_amount' : product_total_amount}
+        total_amount += item.total_cost
+    context = {'cart_items' : cart_items, 'total_amount' : total_amount}
     return render(request, "furni/cart.html", context)
 
 def add_to_cart(request,product_id,qty):
     product = Product.objects.get(id=product_id)
     cart_item, created = CartItem.objects.get_or_create(product=product, defaults={'quantity':qty })
     if not created:
-        cart_item.quantity += 1
+        cart_item.quantity += qty
         cart_item.save()
     return redirect(view_cart)
 
 def delete_from_cart(request, cart_item_id):
     cartProduct = CartItem.objects.get(id=cart_item_id)
     cartProduct.delete()
+    return redirect(view_cart)
+
+def update_cart(request, cart_item_id, qty):
+    cartProduct = get_object_or_404(CartItem, id=cart_item_id)
+    cartProduct.quantity = qty
+    cartProduct.save()
+    cart_items = CartItem.objects.all()
+    total_amount = 0
+    for item in cart_items:
+        total_amount += item.total_cost
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        item_html = render_to_string("furni/cart_list.html", {'cart_items': cart_items}),
+        total_html = render_to_string("furni/cart_total.html", {'total_amount': total_amount})
+        return JsonResponse({
+            'cart_html' : item_html,
+            'total_html' : total_html
+        })
     return redirect(view_cart)

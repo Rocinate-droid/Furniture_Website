@@ -1,0 +1,33 @@
+{% for item in cart_items %}
+{% load humanize %}
+<tr>
+    <td class="product-thumbnail">
+        <img src="{{item.product.img.url}}" alt="Image" class="img-fluid" />
+    </td>
+    <td class="product-name">
+        <h2 class="h5 text-black">{{item.product.name}}</h2>
+    </td>
+    <td>₹{{item.product.discounted_price | intcomma}}</td>
+    <td>
+        <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px">
+            <div class="input-group-prepend">
+                <button class="btn btn-outline-black decrease" type="button" onclick="changeQuantity({{item.id}}, -1)">
+                    &minus;
+                </button>
+            </div>
+            <input type="text" id="qty_prod_{{item.id}}" class="form-control text-center quantity-amount"
+                value="{{item.quantity}}" placeholder="" aria-label="Example text with button addon"
+                aria-describedby="button-addon1" />
+            <div class="input-group-append">
+                <button class="btn btn-outline-black increase" type="button" onclick="changeQuantity({{item.id}}, 1)">
+                    &plus;
+                </button>
+            </div>
+        </div>
+    </td>
+    <td>₹{{item.total_cost | intcomma}}</td>
+    <td>
+        <a href="{% url 'delete_from_cart' cart_item_id=item.id  %}" class="btn btn-black btn-sm">X</a>
+    </td>
+</tr>
+{% endfor %}
