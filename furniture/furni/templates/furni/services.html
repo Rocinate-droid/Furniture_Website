@@ -1,0 +1,112 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<!-- Start Hero Section -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>About <span clsas="d-block">Our Brand</span></h1>
+          <p class="mb-4">At MODULE, we believe furniture is more than form and function — it's a reflection of your
+            lifestyle. Each piece we craft is made to turn everyday moments into lasting memories, blending comfort,
+            design, and soul.</p>
+          <p><a href="shop" class="btn btn-secondary me-2">Shop Now</a><a href="shop"
+              class="btn btn-white-outline">Explore</a></p>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="hero-img-wrap">
+          <img src="{% static 'images\couch.png' %}" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Hero Section -->
+
+{% load static %}
+
+<section class="services-section py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Our Services</h2>
+      <p class="text-muted">We bring convenience, flexibility, and affordability to your furniture experience.</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Free Delivery & Installation -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm service-card border-0">
+          <div class="card-body text-center">
+            <div class="icon mb-3">
+              <i class="bi bi-truck fs-1 text-warning"></i>
+            </div>
+            <h5 class="card-title fw-bold">Free Delivery & Installation</h5>
+            <p class="card-text text-muted">
+              Enjoy hassle-free delivery right to your doorstep within <b>2 days</b>.  
+              Our team covers major service areas and provides <b>free installation</b> with every order.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customization Services -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm service-card border-0">
+          <div class="card-body text-center">
+            <div class="icon mb-3">
+              <i class="bi bi-brush fs-1 text-warning"></i>
+            </div>
+            <h5 class="card-title fw-bold">Customization Services</h5>
+            <p class="card-text text-muted">
+              Choose from a wide range of <b>sizes, colors, materials,</b> and <b>finishes</b>.  
+              We also offer <b>Interior Design Consultations</b> tailored to your space and needs.
+            </p>
+            <a href="{% url 'contactus' %}" class="btn btn-outline-warning mt-3">Book Consultation</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMI & Financing Options -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm service-card border-0">
+          <div class="card-body text-center">
+            <div class="icon mb-3">
+              <i class="bi bi-credit-card-2-front fs-1 text-warning"></i>
+            </div>
+            <h5 class="card-title fw-bold">EMI & Financing Options</h5>
+            <p class="card-text text-muted">
+              Shop with ease using flexible EMI and financing plans.  
+              Available through <b>Bajaj Finance</b>, leading <b>Credit Cards</b>, and more trusted providers.
+            </p>
+            <div class="d-flex justify-content-center gap-3 mt-3">
+              <img src="{% static 'images/emi-bajaj.png' %}" alt="Bajaj Finance" height="30">
+              <img src="{% static 'images/emi-visa.png' %}" alt="Visa" height="30">
+              <img src="{% static 'images/emi-mastercard.png' %}" alt="Mastercard" height="30">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.service-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 12px;
+}
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.icon {
+  color: #f7a200;
+}
+</style>
+
+
+
+
+{% endblock content %}

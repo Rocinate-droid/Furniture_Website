@@ -1,0 +1,226 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<!-- Start Hero Section -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>Our<span class="d-block"> Founders</span></h1>
+          <p class="mb-4">Leadership is more than direction—it’s about inspiring people, fostering growth, and creating
+            opportunities for the future. Our leaders embody this spirit, guiding us with integrity and vision while ensuring
+            every step we take reflects our culture of trust, innovation, and resilience</p>
+          <p><a href="shop" class="btn btn-secondary me-2">Shop Now</a><a href="shop" class="btn btn-white-outline">Explore</a>
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="hero-img-wrap">
+          <img src="{% static 'images\couch.png' %}" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Hero Section -->
+<section class="py-5 bg-white" style="margin-top: 100px">
+  <div class="container">
+    <h2 class="mb-5 text-center fw-bold text-primary">Meet The Founders</h2>
+    <div class="row g-4 justify-content-center">
+
+      <!-- Leader 1 -->
+      <div class="col-md-4 col-sm-6">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            
+            <!-- Front -->
+            <div class="flip-card-front text-center">
+              <img src="{% static 'images\leader1.jpeg' %}" 
+                   class="img-fluid rounded-circle mb-3" 
+                   alt="Leader 1" width="200" height="200" style="object-fit: cover;">
+              <h5 class="fw-bold text-dark">Anand Anil</h5>
+            </div>
+            
+            <!-- Back -->
+            <div class="flip-card-back d-flex flex-column justify-content-center align-items-center text-center p-4">
+              <h5 class="fw-bold">Anand Anil</h5>
+              <p class="text-muted mb-1">Founder & CEO</p>
+              <p class="small">
+                With over 25 years in the furniture industry, John leads Module with a vision to blend tradition and innovation, bringing timeless designs to modern homes.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Leader 2 -->
+      <div class="col-md-4 col-sm-6">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front text-center">
+              <img src="{% static 'images/leader2.jpg' %}" 
+                   class="img-fluid rounded-circle mb-3" 
+                   alt="Leader 2" width="200" height="200" style="object-fit: cover;">
+              <h5 class="fw-bold text-dark">Priya Nair</h5>
+            </div>
+            <div class="flip-card-back d-flex flex-column justify-content-center align-items-center text-center p-4">
+              <h5 class="fw-bold">Priya Nair</h5>
+              <p class="text-muted mb-1">Creative Director</p>
+              <p class="small">
+                Priya drives the creative vision of Module Furniture, ensuring every piece balances comfort, style, and sustainability.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leader 3 -->
+      <div class="col-md-4 col-sm-6">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front text-center">
+              <img src="{% static 'images/leader3.jpg' %}" 
+                   class="img-fluid rounded-circle mb-3" 
+                   alt="Leader 3" width="200" height="200" style="object-fit: cover;">
+              <h5 class="fw-bold text-dark">Arun Kumar</h5>
+            </div>
+            <div class="flip-card-back d-flex flex-column justify-content-center align-items-center text-center p-4">
+              <h5 class="fw-bold">Arun Kumar</h5>
+              <p class="text-muted mb-1">Head of Operations</p>
+              <p class="small">
+                Arun ensures smooth nationwide operations, maintaining quality and customer satisfaction at every step.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section class="py-5 bg-light" style="margin-top: 80px">
+  <div class="container text-center">
+    <h2 class="fw-bold text-primary mb-4">Our Vision & Values</h2>
+    <p class="text-muted mb-5">
+      At Module Furniture, our vision is to create spaces that blend beauty, comfort, and functionality—turning houses into homes and workspaces into places of inspiration. Guided by our core values, we strive to set new benchmarks in design, quality, and customer experience.
+    </p>
+
+    <div class="row g-4">
+      <!-- Value 1 -->
+      <div class="col-md-3 col-sm-6">
+        <div class="value-card p-4 bg-white rounded shadow-sm h-100">
+          <div class="mb-3 fs-1 text-primary">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <h5 class="fw-bold text-dark">Integrity</h5>
+          <p class="small text-muted">
+            We act with honesty and fairness, ensuring trust in every relationship.
+          </p>
+        </div>
+      </div>
+
+      <!-- Value 2 -->
+      <div class="col-md-3 col-sm-6">
+        <div class="value-card p-4 bg-white rounded shadow-sm h-100">
+          <div class="mb-3 fs-1 text-primary">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h5 class="fw-bold text-dark">Innovation</h5>
+          <p class="small text-muted">
+            We embrace creativity to design modern, practical, and timeless furniture.
+          </p>
+        </div>
+      </div>
+
+      <!-- Value 3 -->
+      <div class="col-md-3 col-sm-6">
+        <div class="value-card p-4 bg-white rounded shadow-sm h-100">
+          <div class="mb-3 fs-1 text-primary">
+            <i class="fas fa-leaf"></i>
+          </div>
+          <h5 class="fw-bold text-dark">Sustainability</h5>
+          <p class="small text-muted">
+            We prioritize eco-friendly practices to create a positive impact for future generations.
+          </p>
+        </div>
+      </div>
+
+      <!-- Value 4 -->
+      <div class="col-md-3 col-sm-6">
+        <div class="value-card p-4 bg-white rounded shadow-sm h-100">
+          <div class="mb-3 fs-1 text-primary">
+            <i class="fas fa-users"></i>
+          </div>
+          <h5 class="fw-bold text-dark">Customer First</h5>
+          <p class="small text-muted">
+            Every decision we make revolves around enhancing our customers’ lives and experiences.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<style>
+  .value-card {
+    transition: all 0.3s ease-in-out;
+  }
+  .value-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+  .value-card i {
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+  .value-card:hover i {
+    transform: scale(1.2);
+    color: #0d6efd; /* Bootstrap primary */
+  }
+.flip-card {
+  background-color: transparent;
+  width: 100%;
+  height: 320px;
+  perspective: 1000px; /* gives 3D effect */
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.7s;
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  background: #fff;
+}
+
+.flip-card-front {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.flip-card-back {
+  background: rgba(255,255,255,0.95);
+  transform: rotateY(180deg);
+}
+</style>
+
+
+{% endblock content %}

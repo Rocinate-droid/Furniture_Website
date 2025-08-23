@@ -36,8 +36,14 @@ def shop(request):
     context = {'categories' : categories}
     return render(request, "furni/shop.html", context )
 
+def services(request):
+    return render(request, "furni/services.html")
+
 def about(request):
     return render(request, "furni/about.html")
+
+def leaders(request):
+    return render(request, "furni/leaders.html")
 
 def contact(request):
     form = contactForm(request.POST or None)
