@@ -68,7 +68,8 @@
         </div>
       </form>
 
-      <!-- ===== Offers Section ===== -->
+      <!-- ===== Offers Section ===== 
+
       <div class="mt-4">
         <h5>Save Extra with Below Offers</h5>
         <div class="d-flex flex-wrap gap-2">
@@ -86,7 +87,7 @@
           </div>
         </div>
       </div>
-
+    -->
       <!-- ===== Delivery Check ===== -->
       <div class="mt-4">
         <h5>Check Delivery Date</h5>
@@ -135,7 +136,7 @@
             for (let index = 0; index < location.length; index++) {
               if (locarray.includes(location[index].District)) {
                 result.innerText = `FREE delivery by ${days[today.getDay() + 2]}, ${istDate.getDate() + 2} ${months[today.getMonth()]} `;
-                result2.innerText = `Deliver to ${location[index].Block},${location[index].District} ${pincode} `;
+                result2.innerText = `Deliver to ${location[index].Division},${location[index].District} ${pincode} `;
                 break;
               } else {
                 result.innerText = `FREE delivery by ${days[today.getDay() + 7]}, ${today.getDay()} ${months[today.getMonth()]} `;

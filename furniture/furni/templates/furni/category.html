@@ -19,23 +19,14 @@
 <!-- Filters & Sort -->
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <div class="d-flex flex-wrap gap-2">
-      <select id="price_filter" class="form-select form-select-sm" style="width: 150px;">
-        <option hidden value="" disabled selected>Price Range</option>
-        <option value="">All Prices</option>
-        <option value="5000-19999">5000-19999</option>
-        <option value="20000-29999">20000-29999</option>
-        <option value="30000-39999">30000-39999</option>
-        <option value="40000-49999">40000-49999</option>
-        <option value="50000-59999">50000-59999</option>
-      </select>
+    
+    <!-- Filter Icon -->
+    <button class="btn btn-outline-dark btn-sm d-flex align-items-center" 
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+      <i class="bi bi-funnel me-1"></i> Filters
+    </button>
 
-      <!--<select class="form-select form-select-sm" style="width: 150px;"><option>Brand</option></select>
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Material</option></select>
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Upholstery</option></select>
-      <select class="form-select form-select-sm" style="width: 150px;"><option>Design</option></select>
-    -->
-    </div>
+    <!-- Sort Dropdown -->
     <div class="d-flex align-items-center gap-2">
       <select class="form-select form-select-sm" id="sort_order" style="width: 150px;">
         <option value="">Recommended</option>
@@ -44,10 +35,39 @@
       </select>
     </div>
   </div>
+  <div id="product-list" class="row g-4"> {% include "furni/product_list.html" with products=products %} </div>
+</div>
 
-  <!-- Product Grid -->
-  <div id="product-list" class="row g-4">
-    {% include "furni/product_list.html" with products=products %}
+<!-- Offcanvas Filter Sidebar -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="filterOffcanvas">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Filters</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- Price Filter -->
+    <label class="form-label fw-bold">Price Range</label>
+    <select id="price_filter" class="form-select form-select-sm mb-3">
+      <option hidden value="" disabled selected>Select Price</option>
+      <option value="">All Prices</option>
+      <option value="5000-19999">5000-19999</option>
+      <option value="20000-29999">20000-29999</option>
+      <option value="30000-39999">30000-39999</option>
+      <option value="40000-49999">40000-49999</option>
+      <option value="50000-59999">50000-59999</option>
+    </select>
+
+    <!-- Future filters -->
+    <!--
+    <label class="form-label fw-bold">Brand</label>
+    <select class="form-select form-select-sm mb-3"><option>All Brands</option></select>
+    
+    <label class="form-label fw-bold">Material</label>
+    <select class="form-select form-select-sm mb-3"><option>All Materials</option></select>
+    -->
+    
+    <!-- Apply button -->
+    <button class="btn btn-dark w-100 mt-3" onclick="getFilteredProducts()">Apply Filters</button>
   </div>
 </div>
 <script>
@@ -76,7 +96,7 @@
       })
   }
 
-  document.getElementById("price_filter").addEventListener("change", getFilteredProducts)
+  
   document.getElementById("sort_order").addEventListener("change", getFilteredProducts)
 
 

@@ -1,0 +1,139 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+/* Container */
+.login-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Left side - form */
+.login-form {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: #fff;
+
+    /* Fix overflow */
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+
+.login-box {
+    max-width: 400px;
+    width: 100%;
+    padding-bottom: 30px; /* some space at bottom */
+}
+
+
+.login-box h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #222;
+}
+
+/* Input fields */
+.login-box input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+    margin-bottom: 25px;
+    font-size: 15px;
+    outline: none;
+}
+
+/* Button */
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #ff5c5c;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #ff3b3b;
+}
+
+/* Signup / Login link */
+.signup-text {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+}
+
+.signup-text a {
+    color: #000;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+/* Right side - image */
+.login-image {
+    flex: 1;
+    background: url("{% static 'images/store-1.jpg' %}") no-repeat center center/cover;
+}
+</style>
+
+
+<div class="login-container">
+    <!-- Left side -->
+    <div class="login-form">
+        <div class="login-box">
+
+            {% if page == 'login' %}
+                <h2>Sign in</h2>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Mobile number or email address*" required />
+                    <input type="password" name="password" placeholder="Enter your password" required />
+                    <button type="submit" class="login-btn">Login →</button>
+
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </form>
+                <p class="signup-text">Don’t have an account? <a href="{% url 'registerpage' %}">Sign up</a></p>
+
+            {% else %}
+                <h2>Create your account</h2>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="login-btn">Register →</button>
+
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </form>
+                <p class="signup-text">Already a user? <a href="{% url 'loginpage' %}">Login</a></p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Right side image -->
+    <div class="login-image"></div>
+</div>
+
+{% endblock content %}

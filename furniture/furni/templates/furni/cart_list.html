@@ -2,10 +2,10 @@
 {% load humanize %}
 <tr>
     <td class="product-thumbnail">
-        <img src="{{item.product.img.url}}" alt="Image" class="img-fluid" />
+        <a href="{% url 'product' cat_id=item.product.category.id prod_id=item.product.id  %}"><img src="{{item.product.img.url}}" alt="Image" class="img-fluid" /></a>
     </td>
     <td class="product-name">
-        <h2 class="h5 text-black">{{item.product.name}}</h2>
+        <a href="{% url 'product' cat_id=item.product.category.id prod_id=item.product.id  %}" style="text-decoration: none;"><h2 class="h5 text-black">{{item.product.name}}</h2></a>
     </td>
     <td>₹{{item.product.discounted_price | intcomma}}</td>
     <td>
