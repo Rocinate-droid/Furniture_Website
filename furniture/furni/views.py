@@ -107,9 +107,13 @@ def product(request,cat_id,prod_id):
 def view_cart(request):
     cart_items = CartItem.objects.filter(customer=request.user)
     total_amount = 0
+    total_original = 0
+    discount = 0
     for item in cart_items:
+        total_original += item.product.original_price * item.quantity
         total_amount += item.total_cost
-    context = {'cart_items' : cart_items, 'total_amount' : total_amount}
+        discount += (item.product.original_price - item.product.discounted_price) * item.quantity
+    context = {'cart_items' : cart_items, 'total_amount' : total_amount, 'total_original' : total_original, 'discount' : discount}
     return render(request, "furni/cart.html", context)
 
 
@@ -137,11 +141,16 @@ def update_cart(request, cart_item_id, qty):
     cartProduct.save()
     cart_items = CartItem.objects.filter(customer=request.user)
     total_amount = 0
+    total_original = 0
+    discount = 0
     for item in cart_items:
+        total_original += item.product.original_price * item.quantity
         total_amount += item.total_cost
+        discount += (item.product.original_price - item.product.discounted_price) * item.quantity
+        context = {'total_amount': total_amount, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original}
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         item_html = render_to_string("furni/cart_list.html", {'cart_items': cart_items}),
-        total_html = render_to_string("furni/cart_total.html", {'total_amount': total_amount})
+        total_html = render_to_string("furni/cart_total.html", context )
         return JsonResponse({
             'cart_html' : item_html,
             'total_html' : total_html

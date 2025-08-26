@@ -8,16 +8,15 @@
     <div class="col-lg-8">
       <div class="card mb-3 p-3">
         <h4 class="mb-3">My Cart ({{ cart_items|length }})</h4>
-        <div id="cart_content">
+        <div class="d-flex border-bottom py-3" id="cart_content">
         {% include "furni/cart_list.html" with cart_items=cart_items %}
-        </div>
       </div>
       <a href="{% url 'shop' %}" class="btn btn-outline-dark">← Continue Shopping</a>
     </div>
 
     <!-- RIGHT: PRICE DETAILS -->
     <div class="col-lg-4" id="total_amount">
-        {% include "furni/cart_total.html" %}
+        {% include "furni/cart_total.html" with total_amount=total_amount %}
     </div>
   </div>
 </div>

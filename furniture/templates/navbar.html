@@ -49,13 +49,37 @@
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-						{% if user.is_authenticated %}
-						<li><a class="nav-link "href="{% url 'logoutpage' %}"><img src="{% static 'images/logout4.svg' %}"></a></li>
-						{% else %}
-						<li><a class="nav-link" href="{% url 'loginpage' %}"><img src="{% static 'images/user.svg' %}"></a></li>
-						{% endif %}
-						<li><a class="nav-link" href="{% url 'cart' %}"><img src="{% static 'images/cart.svg' %}"></a></li>
-					</ul>
+  <!-- Profile Dropdown -->
+   {% if user.is_authenticated %}
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <img src="{% static 'images/user.svg' %}" alt="Profile">
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+        <li><h6 class="dropdown-header">{{user.username}}</h6></li>
+        
+        <li><a class="dropdown-item" href="{% url 'logoutpage' %}">
+          <i class="fas fa-sign-out-alt me-2"></i> Log out
+        </a></li>
+        <!--<li><hr class="dropdown-divider"></li>-->
+    </ul>
+	{% else %}
+	<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+		<li>
+			<a class="nav-link" href="{% url 'loginpage' %}"><img src="{% static 'images/user.svg' %}"></a>
+		</li>
+	</ul>
+	{% endif %}
+  </li>
+
+  <!-- Cart Icon -->
+  <li>
+    <a class="nav-link" href="{% url 'cart' %}">
+      <img src="{% static 'images/cart.svg' %}" alt="Cart">
+    </a>
+  </li>
+</ul>
+
 				</div>
 			</div>
 				
