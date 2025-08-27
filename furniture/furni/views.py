@@ -14,18 +14,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from django.contrib.auth.forms import UserChangeForm
 
 
 # Create your views here.
 
-categories = [
-    {'id': 1, 'name': 'Sofas'},
-    {'id': 2, 'name': 'Tables'},
-    {'id': 3 , 'name': 'Chairs'},
-    {'id': 4, 'name': 'Cots'},
-    {'id': 5, 'name': 'Cupboards'},
-]
 
 def home(request):
     categories = Categorie.objects.all()
@@ -109,11 +103,19 @@ def view_cart(request):
     total_amount = 0
     total_original = 0
     discount = 0
+    delivery = None
+    grand_total = 0
     for item in cart_items:
         total_original += item.product.original_price * item.quantity
         total_amount += item.total_cost
+        grand_total += item.total_cost
         discount += (item.product.original_price - item.product.discounted_price) * item.quantity
-    context = {'cart_items' : cart_items, 'total_amount' : total_amount, 'total_original' : total_original, 'discount' : discount}
+    if grand_total >= 50000:
+        delivery = "Free Delivery"
+    else:
+        delivery = 999
+        grand_total += delivery
+    context = {'cart_items' : cart_items, 'total_amount' : total_amount, 'total_original' : total_original, 'discount' : discount, 'delivery': delivery, 'grand_total' : grand_total }
     return render(request, "furni/cart.html", context)
 
 
@@ -143,11 +145,19 @@ def update_cart(request, cart_item_id, qty):
     total_amount = 0
     total_original = 0
     discount = 0
+    delivery = None
+    grand_total = 0
     for item in cart_items:
         total_original += item.product.original_price * item.quantity
         total_amount += item.total_cost
+        grand_total += item.total_cost
         discount += (item.product.original_price - item.product.discounted_price) * item.quantity
-        context = {'total_amount': total_amount, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original}
+    if grand_total >= 50000:
+        delivery = "Free Delivery"
+    else:
+        delivery = 999
+        grand_total += delivery
+    context = {'grand_total': grand_total, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original, 'delivery':delivery, 'total_amount' :total_amount}
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         item_html = render_to_string("furni/cart_list.html", {'cart_items': cart_items}),
         total_html = render_to_string("furni/cart_total.html", context )
@@ -186,6 +196,38 @@ def registerpage(request):
             messages.error(request, "An error occured during registration")
     return render(request, 'furni/login.html', {'form':form})
 
+@login_required
 def logoutrequest(request):
     logout(request)
     return redirect(home)
+
+@login_required
+def checkout(request):
+    page = "cart_checkout"
+    cart_items = CartItem.objects.filter(customer=request.user)
+    total_cost = 0
+    grand_total = 0
+    for item in cart_items:
+        grand_total += item.total_cost
+        total_cost += item.total_cost
+    if grand_total >= 50000:
+            shipping_cost = "Free Shipping"
+    else:
+        shipping_cost = 999
+        grand_total += shipping_cost 
+    print(cart_items)
+    context = {'total_cost': total_cost, 'cart_items': cart_items, 'shipping_cost': shipping_cost, 'page' : page, 'grand_total': grand_total}
+    return render(request, 'furni/checkout.html', context)
+
+def buynow(request, product_id, qty):
+    product = Product.objects.get(id=product_id)
+    total_product_cost = product.discounted_price * qty
+    shipping_cost = None
+    total_cost = total_product_cost
+    if total_product_cost >= 50000:
+        shipping_cost = "Free Shipping"
+    else:
+        shipping_cost = 999
+        total_cost = total_product_cost + shipping_cost
+    context = {'product':product, 'total_cost': total_cost , 'quantity': qty, 'shipping_cost': shipping_cost, 'total_product_cost': total_product_cost}
+    return render(request, 'furni/checkout.html', context)

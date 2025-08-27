@@ -7,7 +7,12 @@
     <!-- LEFT: CART ITEMS -->
     <div class="col-lg-8">
       <div class="card mb-3 p-3">
+        {% if cart_items|length >= 1 %}
         <h4 class="mb-3">My Cart ({{ cart_items|length }})</h4>
+        {% else %}
+        <h4 class="mb-3">You have no items in your cart</h4>
+        {% endif %}
+
         <div id="cart_content">
         {% include "furni/cart_list.html" with cart_items=cart_items %}
         </div>
@@ -16,9 +21,11 @@
     </div>
 
     <!-- RIGHT: PRICE DETAILS -->
+     {% if cart_items|length >= 1 %}
     <div class="col-lg-4" id="total_amount">
         {% include "furni/cart_total.html" %}
     </div>
+    {% endif %}
   </div>
 </div>
 

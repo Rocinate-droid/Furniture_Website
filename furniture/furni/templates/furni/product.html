@@ -64,7 +64,7 @@
       <!-- Actions -->
       <form>
         <div class="d-flex flex-column flex-sm-row gap-2 mb-4">
-          <button class="btn btn-orange w-100">Buy Now</button>
+          <button class="btn btn-orange w-100" id="buynow" formaction="/buy/{{ product.id }}/1/">Buy Now</button>
           <button class="btn btn-outline-secondary w-100" id="addtocart" formaction="/add/{{ product.id }}/1/">Add to
             Cart</button>
         </div>
@@ -195,6 +195,7 @@
   const thumbnails = document.querySelectorAll(".thumbnail-img");
   const qtyInput = document.getElementById("qtyInput");
   const url = document.getElementById("addtocart");
+  const url2 = document.getElementById("buynow");
   let qtyValue = qtyInput.value;
   const totalPriceEl = document.getElementById("totalPrice");
   const pricePerUnit = parseInt(document.getElementById("totalPrice").textContent.replace(",", ""));
@@ -213,6 +214,7 @@
     qtyInput.value = qty;
     qtyValue = qty;
     url.setAttribute("formaction", `/add/${productId}/${qtyValue}/`);
+    url2.setAttribute("formaction", `/buy/${productId}/${qtyValue}/`)
     totalPriceEl.textContent = qty * pricePerUnit;
   }
 
