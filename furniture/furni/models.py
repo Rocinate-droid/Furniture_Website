@@ -98,3 +98,22 @@ class DeliveryAddress(models.Model):
     def __str__(self):
         return self.firstname
     
+class Orders(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    anonymous = models.CharField(max_length=40, null=True, blank=True)
+    products = models.ManyToManyField(Product, through='OrderItem')
+    address = models.ForeignKey(DeliveryAddress, on_delete=models.CASCADE)
+    @property
+    def total_order_value(self):
+        return sum(item.price for item in self.orderitem_set.all())
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"Order #{self.id}"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    price = models.IntegerField()
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"

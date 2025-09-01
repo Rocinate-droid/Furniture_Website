@@ -5,7 +5,9 @@ from .models import Testimonial
 from .models import Product
 from .models import Cart,CartItem
 from .forms import contactForm
-
+from .models import Orders
+from .models import OrderItem
+from .models import DeliveryAddress
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.template.loader import render_to_string
@@ -235,7 +237,6 @@ def logoutrequest(request):
 
 def checkout(request):
     page = "cart_checkout"
-    print("hello")
     form = addressForm(request.POST or None)
     if form.is_valid():
         address = form.save(commit=False)
@@ -244,6 +245,18 @@ def checkout(request):
         else:
             address.anonymous=request.session.get('user_id')
         address.save()
+        if request.user.is_authenticated:
+            cartcreated, created = Cart.objects.get_or_create(customer=request.user)
+            cart_items = CartItem.objects.filter(cart=cartcreated)
+            order = Orders.objects.create(customer=request.user, address=address)
+        else:
+            cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
+            cart_items = CartItem.objects.filter(cart=cartcreated)
+            order = Orders.objects.create(anonymous=request.session.get('user_id'), address=address)
+        for cart_item in cart_items:
+            OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity, price=cart_item.total_cost)
+        CartItem.objects.filter(cart=cartcreated).delete()
+        return render(request, 'furni/thankyou.html')
     if request.user.is_authenticated:
         cartcreated, created = Cart.objects.get_or_create(customer=request.user)
         cart_items = CartItem.objects.filter(cart=cartcreated)
