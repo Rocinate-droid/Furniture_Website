@@ -2,7 +2,7 @@ from django import forms
 from .models import Contact
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
-
+from .models import DeliveryAddress
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -24,3 +24,8 @@ class CustomUserChangeForm(UserChangeForm):
         model = User
         fields = ['username', 'email', 'first_name', 'last_name']
 
+class addressForm(forms.ModelForm):
+    class Meta:
+        model = DeliveryAddress
+        exclude = ['customer']
+        fields = '__all__'

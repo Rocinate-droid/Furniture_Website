@@ -3,8 +3,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .models import Categorie
 from .models import Testimonial
 from .models import Product
-from .models import CartItem
+from .models import Cart,CartItem
 from .forms import contactForm
+
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.template.loader import render_to_string
@@ -16,12 +17,17 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.forms import UserChangeForm
+from .forms import addressForm
+import uuid
 
 
 # Create your views here.
 
 
 def home(request):
+    if not request.user.is_authenticated:
+        if 'user_id' not in request.session:
+            request.session['user_id'] = int(uuid.uuid4())
     categories = Categorie.objects.all()
     testimonials = Testimonial.objects.all()
     context = {'categories' : categories[0:3], 'testimonials' : testimonials}
@@ -97,19 +103,30 @@ def product(request,cat_id,prod_id):
     return render(request, "furni/product.html", context)
 
 
-@login_required(login_url='loginpage')
 def view_cart(request):
-    cart_items = CartItem.objects.filter(customer=request.user)
+    user_id = request.session.get('user_id')
+    if request.user.is_authenticated:
+        cartcreated, created = Cart.objects.get_or_create(customer=request.user)
+        cart_items = CartItem.objects.filter(cart=cartcreated)
+    else:
+        if 'user_id' in request.session:
+            user_id = request.session.get('user_id')
+        else:
+            request.session['user_id'] = int(uuid.uuid4())
+            user_id = request.session.get('user_id')
+        cartcreated, created = Cart.objects.get_or_create(anonymous=user_id)
+        cart_items = CartItem.objects.filter(cart=cartcreated)
     total_amount = 0
     total_original = 0
     discount = 0
     delivery = None
     grand_total = 0
     for item in cart_items:
-        total_original += item.product.original_price * item.quantity
+        if item.product:
+            total_original += item.product.original_price * item.quantity
+            discount += (item.product.original_price - item.product.discounted_price) * item.quantity
         total_amount += item.total_cost
         grand_total += item.total_cost
-        discount += (item.product.original_price - item.product.discounted_price) * item.quantity
     if grand_total >= 50000:
         delivery = "Free Delivery"
     else:
@@ -118,30 +135,44 @@ def view_cart(request):
     context = {'cart_items' : cart_items, 'total_amount' : total_amount, 'total_original' : total_original, 'discount' : discount, 'delivery': delivery, 'grand_total' : grand_total }
     return render(request, "furni/cart.html", context)
 
-
-@login_required(login_url='loginpage')
 def add_to_cart(request,product_id,qty):
     product = Product.objects.get(id=product_id)
-    cart_item, created = CartItem.objects.get_or_create(product=product,customer=request.user,defaults={'quantity':qty})
-    if not created:
+    if request.user.is_authenticated:
+        cartcreated, created = Cart.objects.get_or_create(customer=request.user)
+        cart_item, created2 = CartItem.objects.get_or_create(product=product,cart=cartcreated,defaults={'quantity':qty})
+    else:
+        cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
+        cart_item, created2 = CartItem.objects.get_or_create(product=product,cart=cartcreated,defaults={'quantity':qty})
+    if not created2:
         cart_item.quantity += qty
         cart_item.save()
     return redirect(view_cart)
 
 
-@login_required(login_url='loginpage')
 def delete_from_cart(request, cart_item_id):
-    cartProduct = CartItem.objects.get(id=cart_item_id, customer=request.user)
+    if request.user.is_authenticated:
+        cartcreated, created = Cart.objects.get_or_create(customer=request.user)
+        cartProduct = CartItem.objects.get(id=cart_item_id,cart=cartcreated)
+    else:
+        cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
+        cartProduct = CartItem.objects.get(id=cart_item_id,cart=cartcreated)
     cartProduct.delete()
     return redirect(view_cart)
 
 
-@login_required(login_url='loginpage')
 def update_cart(request, cart_item_id, qty):
-    cartProduct = get_object_or_404(CartItem, id=cart_item_id, customer=request.user)
-    cartProduct.quantity = qty
-    cartProduct.save()
-    cart_items = CartItem.objects.filter(customer=request.user)
+    if request.user.is_authenticated:
+        cartcreated, created = Cart.objects.get_or_create(customer=request.user)
+        cartProduct = get_object_or_404(CartItem, id=cart_item_id)
+        cartProduct.quantity = qty
+        cartProduct.save()
+        cart_items = CartItem.objects.filter(cart=cartcreated)
+    else:
+        cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
+        cartProduct = get_object_or_404(CartItem, id=cart_item_id)
+        cartProduct.quantity = qty
+        cartProduct.save()
+        cart_items = CartItem.objects.filter(cart=cartcreated)
     total_amount = 0
     total_original = 0
     discount = 0
@@ -190,7 +221,8 @@ def registerpage(request):
             user = form.save(commit=False)
             user.username = user.username.lower()
             user.save()
-            login(request,user)
+            cart, created = Cart.objects.get_or_create(customer=user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('home')
         else:
             messages.error(request, "An error occured during registration")
@@ -201,10 +233,23 @@ def logoutrequest(request):
     logout(request)
     return redirect(home)
 
-@login_required
 def checkout(request):
     page = "cart_checkout"
-    cart_items = CartItem.objects.filter(customer=request.user)
+    print("hello")
+    form = addressForm(request.POST or None)
+    if form.is_valid():
+        address = form.save(commit=False)
+        if request.user.is_authenticated:
+            address.customer = request.user
+        else:
+            address.anonymous=request.session.get('user_id')
+        address.save()
+    if request.user.is_authenticated:
+        cartcreated, created = Cart.objects.get_or_create(customer=request.user)
+        cart_items = CartItem.objects.filter(cart=cartcreated)
+    else:
+        cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
+        cart_items = CartItem.objects.filter(cart=cartcreated)
     total_cost = 0
     grand_total = 0
     for item in cart_items:
@@ -215,13 +260,20 @@ def checkout(request):
     else:
         shipping_cost = 999
         grand_total += shipping_cost 
-    print(cart_items)
-    context = {'total_cost': total_cost, 'cart_items': cart_items, 'shipping_cost': shipping_cost, 'page' : page, 'grand_total': grand_total}
+    context = {'total_cost': total_cost, 'cart_items': cart_items, 'shipping_cost': shipping_cost, 'page' : page, 'grand_total': grand_total, 'form' : form}
     return render(request, 'furni/checkout.html', context)
 
 def buynow(request, product_id, qty):
     product = Product.objects.get(id=product_id)
     total_product_cost = product.discounted_price * qty
+    form = addressForm(request.POST or None)
+    if form.is_valid():
+        address = form.save(commit=False)
+        if request.user.is_authenticated:
+            address.customer = request.user
+        else:
+            address.anonymous=request.session.get('user_id')
+        address.save()
     shipping_cost = None
     total_cost = total_product_cost
     if total_product_cost >= 50000:
@@ -231,3 +283,4 @@ def buynow(request, product_id, qty):
         total_cost = total_product_cost + shipping_cost
     context = {'product':product, 'total_cost': total_cost , 'quantity': qty, 'shipping_cost': shipping_cost, 'total_product_cost': total_product_cost}
     return render(request, 'furni/checkout.html', context)
+
