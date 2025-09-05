@@ -21,4 +21,11 @@ urlpatterns = [
     path('remove/<int:cart_item_id>/', views.delete_from_cart, name = "delete_from_cart"),
     path('update/<int:cart_item_id>/<int:qty>/', views.update_cart, name = "update_cart"),
     path('checkout', views.checkout, name = 'checkout'),
+    path('profile', views.profile, name="profile"),
+    path('orders', views.orders, name="orders"),
+    path('view_order/<int:order_id>/', views.indiv_orders, name="view_order"),
+    path('address', views.address, name="address"),
+    path('delete_address/<int:address_id>/', views.delete_address, name="delete_address"),
+    path('add_address', views.add_address, name="add_address"),
+    path('edit_address/<int:address_id>/', views.edit_address, name="edit_address"),
 ]

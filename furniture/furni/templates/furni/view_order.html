@@ -1,0 +1,87 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load humanize %}
+<div class="container my-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Order Details</h3>
+    <div>
+      <a href="#" class="dropdown-toggle text-decoration-none" data-bs-toggle="dropdown">Invoice</a>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Download Invoice</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <p>
+    Order placed: {{ orders.created_at|date:"d F Y" }} | 
+    <strong>Order number:</strong> {{ orders.order_no }}
+  </p>
+
+  <!-- Shipping & Summary -->
+  <div class="card mb-3">
+    <div class="card-body row">
+      <div class="col-md-4">
+        <h6><strong>Ship to</strong></h6>
+        <p class="mb-0">{{ orders.address.firstname }} {{ orders.address.lastname }}</p>
+        <p class="mb-0">{{ orders.address.address }}</p>
+        <p class="mb-0">{{ orders.address.street }}, {{ orders.address.city }},{{ orders.address.state }} </p>
+        <p class="mb-0">{{ orders.address.pincode }}</p>
+      </div>
+      <div class="col-md-4">
+        <h6><strong>Payment Method</strong></h6>
+        <p></p>
+      </div>
+      <div class="col-md-4">
+        <h6><strong>Order Summary</strong></h6>
+        <div class="d-flex justify-content-between"><span>Item(s) Subtotal:</span> <span>₹{{subtotal}}</span></div>
+        <div class="d-flex justify-content-between"><span>Shipping:</span> <span>₹{{shipping}}</span></div>
+        <div class="d-flex justify-content-between"><span>Total:</span> <span>₹{{total}}</span></div>
+        <div class="d-flex justify-content-between"><span>Promotion Applied:</span> <span>-₹{{discount}}</span></div>
+        <div class="d-flex justify-content-between fw-bold"><span>Grand Total:</span> <span>₹{{ orders.total_order_value|intcomma }}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Items -->
+   {% if orders.delivered %}
+      <h6 class="text-success mb-3" >Delivered on {{orders.delivered|date:"F d, Y"}}</h6>
+      {% elif orders.shipped %} 
+      <h6 class="text-success mb-3">Shipped on {{orders.shipped|date:"F d, Y"}}</h6>
+      {% else %}
+      <h6 class="text-success mb-3">Order Placed</h6>
+      {% endif%}
+  {% for item in orders.products.all %}
+  <div class="card mb-3">
+    <div class="card-body row">
+        
+      <div class="col-md-2 text-center">
+        <a href="{% url 'product' cat_id=item.category.id prod_id=item.id  %}">
+        <img src="{{ item.img.url }}" class="img-fluid" alt="{{ item.product.name }}">
+        </a>
+      </div>
+      <div class="col-md-6">
+        <h6><a href="{% url 'product' cat_id=item.category.id prod_id=item.id  %}" style="text-decoration: none;">{{ item.name }}</a></h6>
+        {% for indiv_item in orders.orderitem_set.all %}
+          {% if item.id == indiv_item.product.id %}
+          <p>QTY: {{indiv_item.quantity}}</p>
+          {% endif %}
+          {% endfor %}
+        <p class="mb-0 text-muted">Sold by: Module</p>
+        {% if returndate %}
+        <p class="mb-0">Return/Replace eligible till {{ returndate|date:"d F Y" }}</p>
+        {% endif %}
+        <p class="fw-bold">₹{{ item.discounted_price }}</p>
+      </div>
+      <div class="col-md-4 d-flex flex-column justify-content-start">
+        <a href="#" class="btn btn-warning mb-2">Get product support</a>
+        <a href="#" class="btn btn-outline-secondary mb-2">Track package</a>
+        <a href="#" class="btn btn-outline-secondary mb-2">Replace item</a>
+        <a href="#" class="btn btn-outline-secondary">Write a product review</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

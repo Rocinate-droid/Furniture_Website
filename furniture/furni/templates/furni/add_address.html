@@ -1,0 +1,104 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<!-- Start Contact Form -->
+<div class="untree_co-section">
+    <div class="container">
+
+        <div class="block">
+            <div class="row justify-content-center">
+
+
+                <div class="col-md-8 col-lg-8 pb-4">
+
+                    <h2 style="margin-bottom: 15px; color: black;">Add a new address</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="text-black" for="firstname">First name</label>
+                                    <input type="text" class="form-control" id="firstname" name="firstname" required
+                                        value="{{ form.firstname.value|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="text-black" for="lastname">Last name</label>
+                                    <input type="text" class="form-control" id="lastname" name="lastname" required
+                                        value="{{ form.lastname.value|default:'' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-5">
+                            <label class="text-black" for="address">Address</label>
+                            <textarea class="form-control" id="address" cols="30" rows="5" name="address"
+                                required>{{form.address.value|default:''}}</textarea>
+                        </div>
+
+                        <div class="form-group mb-5">
+                            <label class="text-black" for="street">Street</label>
+                            <textarea class="form-control" id="street" cols="30" rows="5" name="street"
+                                required>{{form.street.value|default:''}}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-black" for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city" required
+                                value="{{ form.city.value|default:'' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-black" for="city">State</label>
+                            <input type="text" class="form-control" id="state" name="state" required
+                                value="{{ form.state.value|default:'' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-black" for="pincode">Pincode</label>
+                            <input type="number" class="form-control" id="pincode" name="pincode" required
+                                value="{{ form.pincode.value|default:'' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-black" for="phone">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required
+                                value="{{ form.phone.value|default:'' }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-black" for="email">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" required
+                                value="{{ form.email.value|default:'' }}">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-hover-outline" style="margin-top:15px">Add
+                            Address</button>
+                    </form>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+<style>
+    .untree_co-section {
+        padding: 3rem 0;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+{% endblock content %}

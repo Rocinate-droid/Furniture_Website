@@ -1,0 +1,99 @@
+
+
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+{% load dict_extras %}
+
+{% if orders %}
+<div class="container my-4">
+  <h3 class="mb-3">Your Orders</h3>
+  </div> 
+{% for order in orders %}
+<div class="container my-4">
+  <!-- Example Order Card -->
+   
+  <div class="card mb-4 shadow-sm">
+    <!-- Order Header -->
+    <div class="card-header bg-light d-flex flex-wrap justify-content-between align-items-center">
+  <div class="d-flex flex-wrap">
+    <div class="me-3"><strong>ORDER PLACED:</strong> {{ order.created_at|date:"F d, Y" }}</div>
+    <div class="me-3"><strong>TOTAL:</strong> ₹{{ order.total_order_value }}</div>
+    <div><strong>SHIP TO:</strong> {{ order.address.firstname }}</div>
+  </div>
+
+  <div class="text-end">
+    <div><strong>ORDER # {{ order.order_no }}</strong></div>
+    <a href="{% url 'view_order' order_id=order.id %}" class="me-2" style="text-decoration: none; color: blue;">View order details</a>
+    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" style="text-decoration: none; color: blue;">Invoice</a>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="#">Download Invoice</a></li>
+    </ul>
+  </div>
+</div>
+
+
+    <!-- Order Body -->
+    <div class="card-body">
+      {% if order.delivered %}
+      <h6 class="text-success mb-3" >Delivered on {{order.delivered|date:"F d, Y"}}</h6>
+      {% elif order.shipped %} 
+      <h6 class="text-success mb-3">Shipped on {{order.shipped|date:"F d, Y"}}</h6>
+      {% else %}
+      <h6 class="text-success mb-3">Order Placed</h6>
+      {% endif%}
+      <!-- Order Items -->
+       {% for indiv_order in order.products.all %}
+      <div class="row mb-3 align-items-center">
+        <div class="col-md-2 col-4">
+          <a href="{% url 'product' cat_id=indiv_order.category.id prod_id=indiv_order.id  %}" style="text-decoration: none;">
+          <img src="{{indiv_order.img.url}}" class="img-fluid border" alt="Product">
+          </a>
+        </div>
+        <div class="col-md-7 col-8">
+          <p class="mb-1">
+            <a href="{% url 'product' cat_id=indiv_order.category.id prod_id=indiv_order.id  %}" style="text-decoration: none;">
+            {{indiv_order.name}}
+            </a>
+            
+          
+         
+          </p>
+          {% for item in order.orderitem_set.all %}
+          {% if indiv_order.id == item.product.id %}
+          <p>QTY: {{item.quantity}}</p>
+          {% endif %}
+          {% endfor %}
+          {% if order.delivered %}
+        <small class="text-muted">
+            Return eligible till {{ returndatelist|dict_get:order.id }}
+        </small>
+    {% endif %}
+          
+        </div>
+        <div class="col-md-3 mt-2 mt-md-0 text-md-end">
+          <a class="btn btn-warning btn-sm mb-2" href="{% url 'buy_now' product_id=indiv_order.id qty=1  %}">Buy it again</a>
+          <!--<button class="btn btn-outline-dark btn-sm">View your item</button>-->
+        </div>
+      </div>
+      {% endfor %}
+
+      <!-- More items... -->
+    </div>
+
+    <!-- Right side buttons (desktop) -->
+
+
+  <!-- Repeat order blocks dynamically for each order -->
+
+</div>
+</div>
+
+{% endfor %}
+{% else %}
+<div class="container my-4">
+  <h3 class="mb-3">Nothing here yet—start shopping!</h3>
+  <a href="{% url 'shop' %}" class="btn btn-outline-dark btn-sm">Shop Now</a>
+  </div> 
+{% endif %}
+{% endblock content %}

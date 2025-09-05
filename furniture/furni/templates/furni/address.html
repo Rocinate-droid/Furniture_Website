@@ -1,0 +1,66 @@
+{% extends 'main.html' %}
+{% block content %}
+<div class="container my-4">
+
+  <h3 class="mb-3">Your Addresses</h3>
+
+
+  <div class="row">
+    <!-- Add Address Card -->
+    <div class="col-md-6 mb-3">
+      <a href="{% url 'add_address' %}" class="text-decoration-none">
+        <div class="card h-100 border-dashed d-flex align-items-center justify-content-center p-4"
+             style="min-height: 200px; cursor: pointer;">
+          <div class="text-center text-muted">
+            <div style="font-size: 2rem;">➕</div>
+            <h6 class="mt-2">Add Address</h6>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    
+    <!-- Existing Addresses -->
+    {% for address in addresses %}
+    <div class="col-md-6 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <!-- Address Info -->
+          <h6 class="fw-bold">{{ address.firstname }} {{ address.lastname }}</h6>
+          <p class="mb-1">{{ address.address }}</p>
+          <p class="mb-1">{{ address.street }}, {{ address.city }} - {{ address.pincode }}</p>
+          <p class="mb-1">{{ address.state }}</p>
+          <p class="mb-2"><strong>Phone:</strong> {{ address.phone }}</p>
+
+          <!-- Default Badge -->
+          {% if address.is_default %}
+          <span class="badge bg-success mb-2">Default Address</span>
+          {% endif %}
+
+          <!-- Action Buttons -->
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <a href="{% url "edit_address" address_id=address.id %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+            <a href="{% url "delete_address" address_id=address.id %}" class="btn btn-outline-danger btn-sm">Remove</a>
+            {% if not address.is_default %}
+            <a href="" class="btn btn-outline-primary btn-sm">Set as Default</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .border-dashed {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    transition: 0.3s;
+  }
+  .border-dashed:hover {
+    border-color: #f0ad4e; /* Amazon yellow highlight */
+    background-color: #fffbea;
+  }
+</style>
+{% endblock %}

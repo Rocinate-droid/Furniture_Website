@@ -1,3 +1,4 @@
+import uuid
 import django_filters
 from django.db import models
 from django.contrib.auth.models import User
@@ -86,6 +87,7 @@ class Contact(models.Model):
 class DeliveryAddress(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     anonymous = models.CharField(max_length=40, null=True, blank=True)
+    is_archived = models.BooleanField(default=False)
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
     address = models.CharField(max_length=300)
@@ -100,12 +102,18 @@ class DeliveryAddress(models.Model):
     
 class Orders(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    order_no = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     anonymous = models.CharField(max_length=40, null=True, blank=True)
     products = models.ManyToManyField(Product, through='OrderItem')
     address = models.ForeignKey(DeliveryAddress, on_delete=models.CASCADE)
+    shipped = models.DateField(null=True, blank=True)
+    delivered = models.DateField(null=True, blank=True)
     @property
     def total_order_value(self):
-        return sum(item.price for item in self.orderitem_set.all())
+        total = sum(item.price for item in self.orderitem_set.all())
+        if total <= 50000:
+            total += 999
+        return total
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"Order #{self.id}"

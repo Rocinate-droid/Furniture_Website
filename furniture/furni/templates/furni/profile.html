@@ -2,12 +2,86 @@
 {% block content %}
 {% load static %}
 
+<div class="container my-5">
+    <h3 class="mb-4">Hello {{user}}</h3>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update</button>
-</form>
+    <!-- Desktop Layout (cards in grid) -->
+    <div class="row g-4 d-none d-md-flex">
+        <!-- Orders -->
+        <div class="col-md-4">
+            <a href="{% url 'orders' %}" class="text-decoration-none text-dark">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Your Orders</h5>
+                        <p class="card-text small text-muted">Track, return, or buy things again</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- Add other cards here in the same way -->
+         <div class="col-md-4">
+            <a href="" class="text-decoration-none text-dark">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Login &amp; Security</h5>
+                        <p class="card-text small text-muted">Edit login, name, and mobile number</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'address' %}" class="text-decoration-none text-dark">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Your Addresses</h5>
+                        <p class="card-text small text-muted">Edit addresses for orders and gifts</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="" class="text-decoration-none text-dark">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">My Reviews and Ratings</h5>
+                        <p class="card-text small text-muted">Edit reviews and ratings</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'contactus' %}" class="text-decoration-none text-dark">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Contact Us</h5>
+                        <p class="card-text small text-muted">Get in touch with us</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    
 
+
+    <!-- Mobile Layout (list style like Amazon app) -->
+    <div class="list-group d-md-none">
+        <h5 class="mt-3">Orders</h5>
+        <a href="furni/orders.html" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            Your Orders <span>&gt;</span>
+        </a>
+        <a href="" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            Your Addresses <span>&gt;</span>
+        </a>
+
+        <h5 class="mt-4">Account Settings</h5>
+        <a href="" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            Login &amp; Security <span>&gt;</span>
+        </a>
+        <a href="" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+           My Reviews and Ratings <span>&gt;</span>
+        </a>
+        <!-- Add other links like Prime, Wallet, Contact Us here -->
+    </div>
+</div>
 
 {% endblock content %}

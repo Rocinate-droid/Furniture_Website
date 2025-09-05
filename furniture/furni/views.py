@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Categorie
@@ -249,14 +250,16 @@ def checkout(request):
             cartcreated, created = Cart.objects.get_or_create(customer=request.user)
             cart_items = CartItem.objects.filter(cart=cartcreated)
             order = Orders.objects.create(customer=request.user, address=address)
+            orderno = order.order_no
         else:
             cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
             cart_items = CartItem.objects.filter(cart=cartcreated)
             order = Orders.objects.create(anonymous=request.session.get('user_id'), address=address)
+            orderno = order.order_no
         for cart_item in cart_items:
             OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity, price=cart_item.total_cost)
         CartItem.objects.filter(cart=cartcreated).delete()
-        return render(request, 'furni/thankyou.html')
+        return render(request, 'furni/thankyou.html', {'orderno' : orderno})
     if request.user.is_authenticated:
         cartcreated, created = Cart.objects.get_or_create(customer=request.user)
         cart_items = CartItem.objects.filter(cart=cartcreated)
@@ -287,6 +290,29 @@ def buynow(request, product_id, qty):
         else:
             address.anonymous=request.session.get('user_id')
         address.save()
+        if request.user.is_authenticated:
+            order = Orders.objects.create(customer=request.user, address=address)
+            OrderItem.objects.create(order=order, product=product, quantity=qty, price=total_product_cost)
+            orderno = order.order_no
+        else:
+            order = Orders.objects.create(anonymous=request.session.get('user_id'), address=address)
+            OrderItem.objects.create(order=order, product=product, quantity=qty, price=total_product_cost)
+            orderno = order.order_no
+        send_mail(
+            'An order was placed by' + address.firstname + " " + address.lastname + ' and the order no is ' + str(orderno) ,
+            'Their phone number is ' + address.phone + " and email is " + address.email,
+            'settings.EMAIL_HOST_USER',        # From
+            ['sreejithcs895@gmail.com'],        # To
+            fail_silently=False,
+            )
+        send_mail(
+            "Thank you for placing an order at module furnitures, we'll get back to you shortly",
+            "Thank you for contacting module furnitures, we'll get back to you shortly",
+            'settings.EMAIL_HOST_USER',        # From
+            [address.email],        # To
+            fail_silently=False,
+            )
+        return render(request, 'furni/thankyou.html', {'orderno' : orderno})
     shipping_cost = None
     total_cost = total_product_cost
     if total_product_cost >= 50000:
@@ -296,4 +322,92 @@ def buynow(request, product_id, qty):
         total_cost = total_product_cost + shipping_cost
     context = {'product':product, 'total_cost': total_cost , 'quantity': qty, 'shipping_cost': shipping_cost, 'total_product_cost': total_product_cost}
     return render(request, 'furni/checkout.html', context)
+
+@login_required
+def profile(request):
+    context = {"user": request.user}
+    return render(request, 'furni/profile.html', context)
+
+
+@login_required
+def orders(request):
+    context = {}
+    returndatelist = {}
+    if request.user.is_authenticated:
+        orders = Orders.objects.filter(customer=request.user)
+        if orders.exists():
+            orders = orders.order_by("-created_at")
+            for order in orders:
+                if order.delivered:
+                    returndate = order.delivered
+                    key = order.id
+                    newdate = returndate + timedelta(days=5)
+                    returndatelist[key] = newdate
+                    print(returndatelist)
+            context = {"orders": orders, "returndatelist": returndatelist}
+        else:
+            orders = "No orders"
+    return render(request, "furni/orders.html", context)
+
+def indiv_orders(request, order_id):
+    context = {}
+    returndate = []
+    subtotal = 0
+    shipping = None
+    total = 0
+    discount = 0
+    actualtotal = 0
+    returndate = None
+    if request.user.is_authenticated:
+        orders = Orders.objects.get(customer=request.user, id=order_id)
+        for item in orders.products.all():
+            matching_item = orders.orderitem_set.get(product=item.id)
+            subtotal += item.original_price * matching_item.quantity
+            actualtotal += item.discounted_price
+            discount += (item.original_price - item.discounted_price) * matching_item.quantity
+        if actualtotal <= 50000:
+            shipping = 999
+        else:
+            shipping = 0
+        total = subtotal + shipping
+        if orders.delivered:
+            returndate = orders.delivered
+            returndate = returndate + timedelta(days=5)
+        context = {"orders": orders, "subtotal": subtotal, "shipping":shipping, "total":total, "discount": discount, "returndate": returndate,}
+    return render(request, "furni/view_order.html", context)
+
+@login_required(login_url="login")
+def address(request):
+    addresses = DeliveryAddress.objects.filter(customer=request.user, is_archived=False)
+    context = {'addresses': addresses}
+    return render(request, "furni/address.html", context)
+
+@login_required(login_url="login")
+def delete_address(request, address_id):
+    address = DeliveryAddress.objects.get(customer=request.user,id=address_id)
+    address.is_archived = True
+    address.save()
+    return redirect('address')
+
+@login_required(login_url="login")
+def add_address(request):
+    form = addressForm(request.POST or None)
+    if form.is_valid():
+        address = form.save(commit=False)
+        address.customer = request.user
+        form.save()
+        return redirect('address')
+    return render(request,'furni/add_address.html')
+
+@login_required(login_url="login")
+def edit_address(request, address_id):
+    editaddress = DeliveryAddress.objects.get(customer=request.user, id=address_id)
+    form = addressForm(instance=editaddress)
+    context = {"form": form}
+    if request.method == 'POST':
+        form = addressForm(request.POST,instance=editaddress)
+        if form.is_valid():
+            form.save()
+        return redirect('address')
+    return render(request,'furni/edit_address.html', context)
 

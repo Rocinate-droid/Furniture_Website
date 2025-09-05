@@ -27,5 +27,5 @@ class CustomUserChangeForm(UserChangeForm):
 class addressForm(forms.ModelForm):
     class Meta:
         model = DeliveryAddress
-        exclude = ['customer']
+        exclude = ['customer', 'anonymous', 'is_archived']
         fields = '__all__'
