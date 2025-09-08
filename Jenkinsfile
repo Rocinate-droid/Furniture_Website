@@ -9,6 +9,7 @@ pipeline{
                 cd /var/lib/jenkins/workspace/Django-Job/furniture
                 . myenv/bin/activate
                 python3 manage.py collectstatic --noinput
+                sudo systemctl restart myproject
                 '''
             }
         }
