@@ -12,6 +12,7 @@ pipeline{
                 sh'''
                 cd furniture
                 python3 -m venv myenv
+                pwd
                 source myenv/bin/activate
                 python3 -m manage.py runserver
                 '''
