@@ -1,1 +1,0 @@
-/var/lib/jenkins/workspace/Django-Job/furniture/static
