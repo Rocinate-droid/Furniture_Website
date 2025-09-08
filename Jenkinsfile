@@ -8,7 +8,7 @@ pipeline{
                 sh '''
                 cd /var/lib/jenkins/workspace/Django-Job/furniture
                 . myenv/bin/activate
-                python3 manage.py collectstatic -y
+                python3 manage.py collectstatic --noinput
                 '''
             }
         }
