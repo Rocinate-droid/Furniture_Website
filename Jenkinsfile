@@ -17,7 +17,7 @@ pipeline{
                 python3 -m pip install django
                 cd /var/lib/jenkins/workspace/Django-Job/furniture
                 python3 -m pip install django-jazzmin
-                python3 -m pip install django_filters
+                python3 -m pip install django_filter
                 python3 -m manage.py runserver
                 '''
             }
