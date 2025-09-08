@@ -109,8 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = [
    "django.contrib.auth.backends.ModelBackend",
-   # it should be the last entry to prevent unauthorized access
-   "guest_user.backends.GuestBackend",
 ]
 
 
