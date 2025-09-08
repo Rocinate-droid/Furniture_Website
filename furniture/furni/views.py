@@ -214,6 +214,7 @@ def loginpage(request):
             return redirect('home')
         else:
             messages.error(request, "Username or password is wrong")
+            return redirect('loginpage')
     return render(request, 'furni/login.html',context)
 
 def registerpage(request):
