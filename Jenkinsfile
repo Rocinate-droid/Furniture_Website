@@ -19,7 +19,7 @@ pipeline{
                 python3 -m pip install django-jazzmin
                 python3 -m pip install django_filter
                 python3 -m pip install pillow
-                python3 manage.py runserver
+                python3 manage.py runserver 0.0.0.0:8000
                 '''
             }
         }
