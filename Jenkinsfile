@@ -10,7 +10,7 @@ pipeline{
         stage ('Run Django') {
             steps {
                 sh'''
-                cd Furniture_Website
+                cd furniture
                 python3 -m venv myenv
                 source myvenv/bin/activate
                 python3 -m manage.py runserver
