@@ -14,6 +14,7 @@ pipeline{
                 python3 -m venv myenv
                 pwd
                 . myenv/bin/activate
+                python3 -m pip install django
                 cd /var/lib/jenkins/workspace/Django-Job/furniture
                 python3 -m manage.py runserver
                 '''
