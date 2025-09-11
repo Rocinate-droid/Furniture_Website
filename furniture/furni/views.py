@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from .models import Categorie
 from .models import Testimonial
 from .models import Product
@@ -402,11 +403,10 @@ def single_order(request, order_no, email_id):
     total = 0
     discount = 0
     actualtotal = 0
-    orders = Orders.objects.get(order_no=order_no)
+    orders = Orders.objects.get(billing_address__email=email_id, order_no=order_no)
     replacement = Replacement.objects.filter(order=orders)
     returndate = None
     currentdate = date.today()
-    orders = Orders.objects.get(billing_address__email=email_id, order_no=order_no)
     for item in orders.products.all():
         matching_item = orders.orderitem_set.get(product=item.id)
         subtotal += item.original_price * matching_item.quantity
@@ -425,6 +425,7 @@ def single_order(request, order_no, email_id):
 
 def returns(request, order_id, order_item_id):
     order = Orders.objects.get(id=order_id)
+    email = order.billing_address.email
     matching_item = order.orderitem_set.get(product=order_item_id)
     form = replacementForm(request.POST or None)
     if form.is_valid():
@@ -434,7 +435,7 @@ def returns(request, order_id, order_item_id):
         replacement.save()
         matching_item.replacement_ordered = True
         matching_item.save()
-        return redirect(orders)
+        return redirect('home')
     returndate = None
     currentdate = date.today()
     if order.delivered:
