@@ -433,7 +433,7 @@ def returns(request, order_id, order_item_id):
         replacement.save()
         matching_item.replacement_ordered = True
         matching_item.save()
-        return redirect(orders)
+        return redirect('home')
     returndate = None
     currentdate = date.today()
     if order.delivered:
