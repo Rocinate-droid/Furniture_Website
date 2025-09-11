@@ -8,6 +8,8 @@ pipeline{
                 sh '''
                 cd /var/lib/jenkins/workspace/Django-Job/furniture
                 . myenv/bin/activate
+                python3 manage.py makemigrations --noinput
+                python3 manage.py migrate --noinput
                 python3 manage.py collectstatic --noinput
                 sudo systemctl restart myproject
                 '''
