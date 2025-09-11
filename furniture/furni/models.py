@@ -2,8 +2,14 @@ import uuid
 import django_filters
 from django.db import models
 from django.contrib.auth.models import User
+import secrets
+import string
 
 # Create your models here.
+
+def generate_order_id(length=8, prefix="ORD"):
+    chars = string.ascii_uppercase + string.digits
+    return prefix + ''.join(secrets.choice(chars) for _ in range(length))
 
 class Categorie(models.Model):
     name = models.CharField(max_length=200)
@@ -84,7 +90,7 @@ class Contact(models.Model):
     def __str__(self):
         return self.firstname
 
-class DeliveryAddress(models.Model):
+class BillingAddress(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     anonymous = models.CharField(max_length=40, null=True, blank=True)
     is_archived = models.BooleanField(default=False)
@@ -100,12 +106,30 @@ class DeliveryAddress(models.Model):
     def __str__(self):
         return self.firstname
     
+class ShippingAddress(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    anonymous = models.CharField(max_length=40, null=True, blank=True)
+    billing = models.ForeignKey(BillingAddress, on_delete=models.CASCADE, null=True, blank=True)
+    is_archived = models.BooleanField(default=False, null=True, blank=True)
+    ship_firstname = models.CharField(max_length=50, null=True, blank=True)
+    ship_lastname = models.CharField(max_length=50, null=True, blank=True)
+    ship_address = models.CharField(max_length=300, null=True, blank=True)
+    ship_street = models.CharField(max_length=300, null=True, blank=True)
+    ship_city = models.CharField(max_length=50, null=True, blank=True)
+    ship_state = models.CharField(max_length=50, null=True, blank=True)
+    ship_pincode = models.CharField(max_length=6, null=True, blank=True)
+    ship_phone = models.CharField(max_length=15, null=True, blank=True)
+    ship_email = models.EmailField(null=True, blank=True);
+    def __str__(self):
+        return self.ship_firstname
+    
 class Orders(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    order_no = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    order_no = models.CharField(max_length=14, default=generate_order_id, unique=True, editable=False)
     anonymous = models.CharField(max_length=40, null=True, blank=True)
     products = models.ManyToManyField(Product, through='OrderItem')
-    address = models.ForeignKey(DeliveryAddress, on_delete=models.CASCADE)
+    billing_address = models.ForeignKey(BillingAddress, on_delete=models.CASCADE)
+    shipping_address = models.ForeignKey(ShippingAddress, on_delete=models.CASCADE, blank=True, null=True)
     shipped = models.DateField(null=True, blank=True)
     delivered = models.DateField(null=True, blank=True)
     @property
@@ -121,7 +145,32 @@ class Orders(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    replacement_ordered = models.BooleanField(default=False)
     quantity = models.IntegerField()
     price = models.IntegerField()
     def __str__(self):
         return f"{self.product.name} x {self.quantity}"
+    
+
+class Replacement(models.Model):
+    reasons = [
+        ("Bought by mistake", "Bought by mistake"),
+        ("Better Price available", "Better Price Available"),
+        ("Performance or Quality Issue", "Performance or Quality Issue"),
+        ("Item arrived too late", "Item arrived too late"),
+        ("Missing parts or accessories", "Missing parts or accessories"),
+        ("Wrong item was sent", "Wrong item was sent"),
+        ("No longer needed", "No longer needed"),
+        ("Inaccurate website description", "Inaccurate website description"),
+    ]
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    individual_order = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=40, choices=reasons)
+    comments = models.TextField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    picked_up = models.DateField(null=True, blank=True)
+    recieved = models.DateField(null=True, blank=True)
+    refund_initiated = models.DateField(null=True, blank=True)
+    refund_credited = models.DateField(null=True, blank=True)
+    def __str__(self):
+        return f"{self.individual_order.product.name} x {self.individual_order.quantity}"

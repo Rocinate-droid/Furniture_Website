@@ -19,7 +19,13 @@
   <div class="d-flex flex-wrap">
     <div class="me-3"><strong>ORDER PLACED:</strong> {{ order.created_at|date:"F d, Y" }}</div>
     <div class="me-3"><strong>TOTAL:</strong> ₹{{ order.total_order_value }}</div>
-    <div><strong>SHIP TO:</strong> {{ order.address.firstname }}</div>
+    <div><strong>SHIP TO:</strong>
+      {% if order.shipping_address %}
+      {{ order.shipping_address.ship_firstname }}
+      {% else %}
+      {{ order.billing_address.firstname}}
+      {% endif %}
+    </div>
   </div>
 
   <div class="text-end">
