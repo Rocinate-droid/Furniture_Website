@@ -402,11 +402,10 @@ def single_order(request, order_no, email_id):
     total = 0
     discount = 0
     actualtotal = 0
-    orders = Orders.objects.get(order_no=order_no)
+    orders = Orders.objects.get(billing_address__email=email_id, order_no=order_no)
     replacement = Replacement.objects.filter(order=orders)
     returndate = None
     currentdate = date.today()
-    orders = Orders.objects.get(billing_address__email=email_id, order_no=order_no)
     for item in orders.products.all():
         matching_item = orders.orderitem_set.get(product=item.id)
         subtotal += item.original_price * matching_item.quantity
