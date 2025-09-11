@@ -1,0 +1,86 @@
+  
+{% extends 'main.html' %}
+{% block content %}
+{% load humanize %}
+<div class="container my-4">
+    <h3>Items you are returning</h3>
+  <div class="card mb-3">
+    
+    <div class="card-body row">
+        
+      <div class="col-md-2 text-center">
+        <a href="">
+          <img src="{{ matching_item.product.img.url }}" class="img-fluid" alt="{{ matching_item.product.name }}">
+        </a>
+      </div>
+      <div class="col-md-6">
+        {{form.errors}}
+        <h6><a href="" style="text-decoration: none;">{{ matching_item.product.name }}</a></h6>
+            <p>QTY: {{ matching_item.quantity }}</p>
+        <p class="mb-0 text-muted">Sold by: Module</p>
+        {% if returndate %}
+          <p class="mb-0">Return/Replace eligible till <b>{{ returndate|date:"d F Y" }}</b></p>
+        {% endif %}
+        <p class="fw-bold">₹{{ matching_item.product.discounted_price }}</p>
+      </div>
+      {% if currentdate <= returndate %}
+      <div class="col-md-4 d-flex flex-column justify-content-start" style="align-self: anchor-center;">
+        <button type="button" class="btn btn-outline-secondary mb-2" data-bs-toggle="modal" data-bs-target="#trackModal{{ item.id }}">
+          Replace Item
+        </button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  </div>
+  <div class="modal fade" id="trackModal{{ item.id }}" tabindex="-1" aria-labelledby="trackModalLabel{{ item.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="trackModalLabel{{ item.id }}">Replacement Confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>We are sorry you have to return the item. Explore our product descriptions and customer reviews during your next purchase!</strong></p>
+          <form method="post">
+			{% csrf_token %}
+			<div class="row">
+				<div class="col-md-6 mb-5 mb-md-0" style="width: 100%;">
+					<div class="p-3 p-lg-5 border bg-white">
+						<div class="form-group">
+							<label for="reason" class="text-black">Reason for return<span class="text-danger">*</span></label>
+							<select class="form-control" name="reason" id="reason" required>
+								<option value="" hidden disabled selected>Select a reason</option>
+								
+						<option value="Bought by mistake" {% if form.reason.value == "Bought by mistake" %}selected{% endif %}>Bought by mistake</option>
+    <option value="Better Price Available" {% if form.reason.value == "Better Price Available" %}selected{% endif %}>Better Price Available</option>
+    <option value="Performance or quality issues" {% if form.reason.value == "Performance or quality issues" %}selected{% endif %}>Performance or quality issues</option>
+    <option value="Item arrived too late" {% if form.reason.value == "Item arrived too late" %}selected{% endif %}>Item arrived too late</option>
+    <option value="Missing parts or accessories" {% if form.reason.value == "Missing parts or accessories" %}selected{% endif %}>Missing parts or accessories</option>
+    <option value="Wrong item was sent" {% if form.reason.value == "Wrong item was sent" %}selected{% endif %}>Wrong item was sent</option>
+    <option value="No longer needed" {% if form.reason.value == "No longer needed" %}selected{% endif %}>No longer needed</option>
+    <option value="Inaccurate website description" {% if form.reason.value == "Inaccurate website description" %}selected{% endif %}>Inaccurate website description</option>
+						
+							</select>
+						</div>
+                        <div class="form-group row">
+							<div class="col-md-6">
+								<label for="comments" class="text-black">Comments<span
+										class="text-danger">*</span></label>
+                                        <textarea class="form-control" id="comments" name="comments" required rows="10" maxlength="200">{{ form.comments.value|default:'' }}</textarea>
+							</div>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                        <div class="form-group">
+									<button class="btn btn-black btn-lg py-3 btn-block" type="submit">Place
+										Return</button>
+
+								</div>
+                        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

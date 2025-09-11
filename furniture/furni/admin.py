@@ -7,10 +7,10 @@ from .models import Testimonial
 from .models import Product
 from .models import Contact
 from .models import CartItem
-from .models import DeliveryAddress
+from .models import BillingAddress, ShippingAddress
 from .models import Orders
 from .models import Cart
-from .models import OrderItem
+from .models import OrderItem, Replacement
 
 class orderProducts(admin.TabularInline):
     model = OrderItem
@@ -18,9 +18,13 @@ class orderProducts(admin.TabularInline):
 
 class orderAdmin(admin.ModelAdmin):
     inlines = [orderProducts]
-    list_display = ("__str__","created_at","total_order_value",)
+    list_display = ("__str__","created_at","total_order_value","order_no",)
+    readonly_fields = ['order_no', 'total_order_value', 'created_at']
 
-class DeliveryAddressAdmin(admin.ModelAdmin):
+class replacementAdmin(admin.ModelAdmin):
+    readonly_fields = ['created_at']
+
+class BillingAddressAdmin(admin.ModelAdmin):
     list_filter = ['is_archived']
 
     def get_queryset(self, request):
@@ -38,7 +42,9 @@ admin.site.register(Testimonial)
 admin.site.register(Product)
 admin.site.register(Contact)
 admin.site.register(CartItem)
-admin.site.register(DeliveryAddress, DeliveryAddressAdmin)
+admin.site.register(BillingAddress, BillingAddressAdmin)
+admin.site.register(ShippingAddress)
 admin.site.register(Cart)
 admin.site.register(Orders, orderAdmin)
 admin.site.register(OrderItem)
+admin.site.register(Replacement, replacementAdmin)

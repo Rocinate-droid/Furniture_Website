@@ -1,6 +1,8 @@
 {% extends 'main.html' %}
 {% block content %}
 {% load humanize %}
+
+
 <div class="container my-4">
 
   <!-- Header -->
@@ -14,74 +16,174 @@
     </div>
   </div>
 
-  <p>
-    Order placed: {{ orders.created_at|date:"d F Y" }} | 
-    <strong>Order number:</strong> {{ orders.order_no }}
-  </p>
+  <!-- Order Info -->
+  <p>Order placed: {{ orders.created_at|date:"d F Y" }} | <strong>Order number:</strong> {{ orders.order_no }}</p>
 
   <!-- Shipping & Summary -->
   <div class="card mb-3">
     <div class="card-body row">
+      <!-- Shipping Details -->
       <div class="col-md-4">
         <h6><strong>Ship to</strong></h6>
-        <p class="mb-0">{{ orders.address.firstname }} {{ orders.address.lastname }}</p>
-        <p class="mb-0">{{ orders.address.address }}</p>
-        <p class="mb-0">{{ orders.address.street }}, {{ orders.address.city }},{{ orders.address.state }} </p>
-        <p class="mb-0">{{ orders.address.pincode }}</p>
+        {% if orders.shipping_address %}
+      <p class="mb-0">{{ orders.shipping_address.ship_firstname }} {{ orders.shipping_address.ship_lastname }}</p>
+        <p class="mb-0">{{ orders.shipping_address.ship_address }}</p>
+        <p class="mb-0">{{ orders.shipping_address.ship_street }}, {{ orders.shipping_address.ship_city }},{{ orders.shipping_address.ship_state }} </p>
+        <p class="mb-0">{{ orders.shipping_address.ship_pincode }}</p><br>
+        <h6><strong>Bill to</strong></h6>
+          <p class="mb-0">{{ orders.billing_address.firstname }} {{ orders.billing_address.lastname }}</p>
+        <p class="mb-0">{{ orders.billing_address.address }}</p>
+        <p class="mb-0">{{ orders.billing_address.street }}, {{ orders.billing_address.city }},{{ orders.billing_address.state }} </p>
+        <p class="mb-0">{{ orders.billing_address.pincode }}</p>
+        
+      {% else %}
+      <p class="mb-0">{{ orders.billing_address.firstname }} {{ orders.billing_address.lastname }}</p>
+        <p class="mb-0">{{ orders.billing_address.address }}</p>
+        <p class="mb-0">{{ orders.billing_address.street }}, {{ orders.billing_address.city }},{{ orders.billing_address.state }} </p>
+        <p class="mb-0">{{ orders.billing_address.pincode }}</p>
+      {% endif %}
       </div>
+
+      <!-- Payment Details -->
       <div class="col-md-4">
         <h6><strong>Payment Method</strong></h6>
-        <p></p>
+        <p>Online Payment</p>
       </div>
+
+      <!-- Order Summary -->
       <div class="col-md-4">
         <h6><strong>Order Summary</strong></h6>
-        <div class="d-flex justify-content-between"><span>Item(s) Subtotal:</span> <span>₹{{subtotal}}</span></div>
-        <div class="d-flex justify-content-between"><span>Shipping:</span> <span>₹{{shipping}}</span></div>
-        <div class="d-flex justify-content-between"><span>Total:</span> <span>₹{{total}}</span></div>
-        <div class="d-flex justify-content-between"><span>Promotion Applied:</span> <span>-₹{{discount}}</span></div>
-        <div class="d-flex justify-content-between fw-bold"><span>Grand Total:</span> <span>₹{{ orders.total_order_value|intcomma }}</span></div>
+        <div class="d-flex justify-content-between"><span>Item(s) Subtotal:</span><span>₹{{subtotal}}</span></div>
+        <div class="d-flex justify-content-between"><span>Shipping:</span><span>₹{{shipping}}</span></div>
+        <div class="d-flex justify-content-between"><span>Total:</span><span>₹{{total}}</span></div>
+        <div class="d-flex justify-content-between"><span>Promotion Applied:</span><span>-₹{{discount}}</span></div>
+        <div class="d-flex justify-content-between fw-bold"><span>Grand Total:</span><span>₹{{ orders.total_order_value|intcomma }}</span></div>
       </div>
     </div>
   </div>
 
   <!-- Items -->
-   {% if orders.delivered %}
-      <h6 class="text-success mb-3" >Delivered on {{orders.delivered|date:"F d, Y"}}</h6>
-      {% elif orders.shipped %} 
-      <h6 class="text-success mb-3">Shipped on {{orders.shipped|date:"F d, Y"}}</h6>
-      {% else %}
-      <h6 class="text-success mb-3">Order Placed</h6>
-      {% endif%}
+  {% if orders.delivered %}
+    <h6 class="text-success mb-3">Delivered on {{ orders.delivered|date:"F d, Y" }}</h6>
+  {% elif orders.shipped %}
+    <h6 class="text-success mb-3">Shipped on {{ orders.shipped|date:"F d, Y" }}</h6>
+  {% else %}
+    <h6 class="text-success mb-3">Order Placed</h6>
+  {% endif %}
+
   {% for item in orders.products.all %}
   <div class="card mb-3">
     <div class="card-body row">
-        
       <div class="col-md-2 text-center">
         <a href="{% url 'product' cat_id=item.category.id prod_id=item.id  %}">
-        <img src="{{ item.img.url }}" class="img-fluid" alt="{{ item.product.name }}">
+          <img src="{{ item.img.url }}" class="img-fluid" alt="{{ item.name }}">
         </a>
       </div>
       <div class="col-md-6">
         <h6><a href="{% url 'product' cat_id=item.category.id prod_id=item.id  %}" style="text-decoration: none;">{{ item.name }}</a></h6>
         {% for indiv_item in orders.orderitem_set.all %}
           {% if item.id == indiv_item.product.id %}
-          <p>QTY: {{indiv_item.quantity}}</p>
+            <p>QTY: {{ indiv_item.quantity }}</p>
           {% endif %}
-          {% endfor %}
+        {% endfor %}
         <p class="mb-0 text-muted">Sold by: Module</p>
         {% if returndate %}
-        <p class="mb-0">Return/Replace eligible till {{ returndate|date:"d F Y" }}</p>
+          <p class="mb-0">Return/Replace eligible till <strong>{{ returndate|date:"d F Y" }}</strong></p>
         {% endif %}
         <p class="fw-bold">₹{{ item.discounted_price }}</p>
       </div>
       <div class="col-md-4 d-flex flex-column justify-content-start">
         <a href="#" class="btn btn-warning mb-2">Get product support</a>
-        <a href="#" class="btn btn-outline-secondary mb-2">Track package</a>
-        <a href="#" class="btn btn-outline-secondary mb-2">Replace item</a>
+        <!-- Track Package Button -->
+        <button type="button" class="btn btn-outline-secondary mb-2" data-bs-toggle="modal" data-bs-target="#trackModal{{ item.id }}">
+          Track package
+        </button>
+        {% if currentdate <= returndate %}
+        {% for indiv_item in orders.orderitem_set.all %}
+        {% if item.id == indiv_item.product.id %}
+        {% if not indiv_item.replacement_ordered %}
+        <a href="{% url 'return' order_id=orders.id order_item_id=item.id %}" class="btn btn-outline-secondary mb-2">Replace item</a>
+        {% else %}
+        <button type="button" class="btn btn-outline-secondary mb-2" data-bs-toggle="modal" data-bs-target="#refundModal{{ item.id }}">
+          Refund/Replacement Status
+        </button>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
         <a href="#" class="btn btn-outline-secondary">Write a product review</a>
       </div>
     </div>
   </div>
+
+  <!-- Track Package Modal -->
+  <div class="modal fade" id="trackModal{{ item.id }}" tabindex="-1" aria-labelledby="trackModalLabel{{ item.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="trackModalLabel{{ item.id }}">Delivery by Module</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Tracking ID:</strong> {{orders.order_no}}</p>
+          <ul>
+            {% if orders.delivered %}
+            <li>Order delivered on <strong>{{orders.delivered}} at 
+              {% if orders.shipping_address %}
+              {{orders.shipping_address.ship_city}}</strong></li>
+              {% else %}
+              {{orders.billing_address.city}}</strong></li>
+            {% endif %}
+            {% endif %}
+
+            {% if orders.shipped %}
+            <li>Order shipped on <strong>{{orders.shipped}}</strong></li>
+            {% endif %}
+            <li>Order placed on <strong>{{orders.created_at}}</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Refund Package Modal -->
+  <div class="modal fade" id="refundModal{{ item.id }}" tabindex="-1" aria-labelledby="trackModalLabel{{ item.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="refundModalLabel{{ item.id }}">Refund Status</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Tracking ID:</strong> {{orders.order_no}}</p>
+          <ul>
+            {% for indiv_item in orders.orderitem_set.all %}
+            {% if item.id == indiv_item.product.id %}
+            {% for return_item in replacement %}
+            {% if return_item.individual_order == indiv_item %}
+            {% if return_item.refund_credited %}
+            <li>Refund credited on <strong>{{return_item.refund_credited}}</strong></li>
+            {% endif %}
+            {% if return_item.refund_initiated %}
+            <li>Refund initiated on <strong>{{return_item.refund_initiated}}</strong></li>
+            {% endif %}
+            {% if return_item.recieved %}
+            <li>Order recieved on <strong>{{return_item.recieved}}</strong></li>
+            {% endif %}
+             {% if return_item.picked_up %}
+            <li>Order picked up on <strong>{{return_item.picked_up}}</strong></li>
+            {% endif %}
+            <li>Replacement initiated on <strong>{{return_item.created_at}}</strong></li>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {% endfor %}
 </div>
 {% endblock %}

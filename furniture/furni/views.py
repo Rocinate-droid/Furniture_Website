@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Categorie
@@ -8,7 +8,8 @@ from .models import Cart,CartItem
 from .forms import contactForm
 from .models import Orders
 from .models import OrderItem
-from .models import DeliveryAddress
+from .models import BillingAddress
+from .models import Replacement
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.template.loader import render_to_string
@@ -20,8 +21,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.forms import UserChangeForm
-from .forms import addressForm
+from .forms import addressForm, shippingAddressForm, replacementForm
 import uuid
+from django.contrib.auth.signals import user_logged_in
+from django.dispatch import receiver
 
 
 # Create your views here.
@@ -31,6 +34,7 @@ def home(request):
     if not request.user.is_authenticated:
         if 'user_id' not in request.session:
             request.session['user_id'] = int(uuid.uuid4())
+    
     categories = Categorie.objects.all()
     testimonials = Testimonial.objects.all()
     context = {'categories' : categories[0:3], 'testimonials' : testimonials}
@@ -205,7 +209,6 @@ def loginpage(request):
     page = "login"
     context = {'page':page}
     if request.POST:
-        context = {}
         username = request.POST.get("username").lower()
         password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
@@ -240,6 +243,8 @@ def logoutrequest(request):
 def checkout(request):
     page = "cart_checkout"
     form = addressForm(request.POST or None)
+    shipping = shippingAddressForm(request.POST or None)
+    ship = None
     if form.is_valid():
         address = form.save(commit=False)
         if request.user.is_authenticated:
@@ -247,15 +252,25 @@ def checkout(request):
         else:
             address.anonymous=request.session.get('user_id')
         address.save()
+        if shipping.has_changed():
+            if shipping.is_valid():
+                shippingAddress = shipping.save(commit=False)
+                if request.user.is_authenticated:
+                    shippingAddress.customer = request.user
+                else:
+                    shippingAddress.anonymous = request.session.get('user_id')
+                shippingAddress.billing = address
+                shippingAddress.save()
+                ship = shippingAddress 
         if request.user.is_authenticated:
             cartcreated, created = Cart.objects.get_or_create(customer=request.user)
             cart_items = CartItem.objects.filter(cart=cartcreated)
-            order = Orders.objects.create(customer=request.user, address=address)
+            order = Orders.objects.create(customer=request.user, billing_address=address, shipping_address=ship)
             orderno = order.order_no
         else:
             cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
             cart_items = CartItem.objects.filter(cart=cartcreated)
-            order = Orders.objects.create(anonymous=request.session.get('user_id'), address=address)
+            order = Orders.objects.create(anonymous=request.session.get('user_id'), billing_address=address, shipping_address=ship)
             orderno = order.order_no
         for cart_item in cart_items:
             OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity, price=cart_item.total_cost)
@@ -284,6 +299,8 @@ def buynow(request, product_id, qty):
     product = Product.objects.get(id=product_id)
     total_product_cost = product.discounted_price * qty
     form = addressForm(request.POST or None)
+    shipping = shippingAddressForm(request.POST or None)
+    ship = None
     if form.is_valid():
         address = form.save(commit=False)
         if request.user.is_authenticated:
@@ -291,28 +308,25 @@ def buynow(request, product_id, qty):
         else:
             address.anonymous=request.session.get('user_id')
         address.save()
+        if shipping.has_changed():
+            if shipping.is_valid():
+                shippingAddress = shipping.save(commit=False)
+                if request.user.is_authenticated:
+                    shippingAddress.customer = request.user
+                else:
+                    shippingAddress.anonymous = request.session.get('user_id')
+                shippingAddress.billing = address
+                shippingAddress.save()
+                ship = shippingAddress  
         if request.user.is_authenticated:
-            order = Orders.objects.create(customer=request.user, address=address)
+            order = Orders.objects.create(customer=request.user, billing_address=address , shipping_address=ship)
             OrderItem.objects.create(order=order, product=product, quantity=qty, price=total_product_cost)
             orderno = order.order_no
         else:
-            order = Orders.objects.create(anonymous=request.session.get('user_id'), address=address)
+            order = Orders.objects.create(anonymous=request.session.get('user_id'), billing_address=address , shipping_address=ship)
             OrderItem.objects.create(order=order, product=product, quantity=qty, price=total_product_cost)
             orderno = order.order_no
-        send_mail(
-            'An order was placed by' + address.firstname + " " + address.lastname + ' and the order no is ' + str(orderno) ,
-            'Their phone number is ' + address.phone + " and email is " + address.email,
-            'settings.EMAIL_HOST_USER',        # From
-            ['sreejithcs895@gmail.com'],        # To
-            fail_silently=False,
-            )
-        send_mail(
-            "Thank you for placing an order at module furnitures, we'll get back to you shortly",
-            "Thank you for contacting module furnitures, we'll get back to you shortly",
-            'settings.EMAIL_HOST_USER',        # From
-            [address.email],        # To
-            fail_silently=False,
-            )
+        
         return render(request, 'furni/thankyou.html', {'orderno' : orderno})
     shipping_cost = None
     total_cost = total_product_cost
@@ -321,7 +335,8 @@ def buynow(request, product_id, qty):
     else:
         shipping_cost = 999
         total_cost = total_product_cost + shipping_cost
-    context = {'product':product, 'total_cost': total_cost , 'quantity': qty, 'shipping_cost': shipping_cost, 'total_product_cost': total_product_cost}
+    context = {'product':product, 'total_cost': total_cost , 'quantity': qty, 'shipping_cost': shipping_cost, 'total_product_cost': total_product_cost,'form': form,
+        'shipping': shipping,}
     return render(request, 'furni/checkout.html', context)
 
 @login_required
@@ -344,12 +359,12 @@ def orders(request):
                     key = order.id
                     newdate = returndate + timedelta(days=5)
                     returndatelist[key] = newdate
-                    print(returndatelist)
             context = {"orders": orders, "returndatelist": returndatelist}
         else:
             orders = "No orders"
     return render(request, "furni/orders.html", context)
 
+@login_required
 def indiv_orders(request, order_id):
     context = {}
     returndate = []
@@ -359,8 +374,10 @@ def indiv_orders(request, order_id):
     discount = 0
     actualtotal = 0
     returndate = None
+    currentdate = date.today()
     if request.user.is_authenticated:
         orders = Orders.objects.get(customer=request.user, id=order_id)
+        replacement = Replacement.objects.filter(order=orders)
         for item in orders.products.all():
             matching_item = orders.orderitem_set.get(product=item.id)
             subtotal += item.original_price * matching_item.quantity
@@ -374,18 +391,65 @@ def indiv_orders(request, order_id):
         if orders.delivered:
             returndate = orders.delivered
             returndate = returndate + timedelta(days=5)
-        context = {"orders": orders, "subtotal": subtotal, "shipping":shipping, "total":total, "discount": discount, "returndate": returndate,}
+        context = {"orders": orders, "subtotal": subtotal, "shipping":shipping, "total":total, "discount": discount, "returndate": returndate, "currentdate":currentdate, "replacement":replacement}
     return render(request, "furni/view_order.html", context)
+
+def single_order(request, order_no, email_id):
+    context = {}
+    returndate = []
+    subtotal = 0
+    shipping = None
+    total = 0
+    discount = 0
+    actualtotal = 0
+    returndate = None
+    currentdate = date.today()
+    orders = Orders.objects.get(billing_address__email=email_id, order_no=order_no)
+    for item in orders.products.all():
+        matching_item = orders.orderitem_set.get(product=item.id)
+        subtotal += item.original_price * matching_item.quantity
+        actualtotal += item.discounted_price
+        discount += (item.original_price - item.discounted_price) * matching_item.quantity
+    if actualtotal <= 50000:
+        shipping = 999
+    else:
+        shipping = 0
+    total = subtotal + shipping
+    if orders.delivered:
+        returndate = orders.delivered
+        returndate = returndate + timedelta(days=5)
+    context = {"orders": orders, "subtotal": subtotal, "shipping":shipping, "total":total, "discount": discount, "returndate": returndate, "currentdate":currentdate}
+    return render(request, "furni/view_order.html", context)
+
+def returns(request, order_id, order_item_id):
+    order = Orders.objects.get(id=order_id)
+    matching_item = order.orderitem_set.get(product=order_item_id)
+    form = replacementForm(request.POST or None)
+    if form.is_valid():
+        replacement = form.save(commit=False)
+        replacement.order = order
+        replacement.individual_order = matching_item
+        replacement.save()
+        matching_item.replacement_ordered = True
+        matching_item.save()
+        return redirect(orders)
+    returndate = None
+    currentdate = date.today()
+    if order.delivered:
+        returndate = order.delivered
+        returndate = returndate + timedelta(days=5)
+    context = {"matching_item":matching_item, "returndate":returndate, "currentdate":currentdate}
+    return render(request, "furni/return.html", context)
 
 @login_required(login_url="login")
 def address(request):
-    addresses = DeliveryAddress.objects.filter(customer=request.user, is_archived=False)
+    addresses = BillingAddress.objects.filter(customer=request.user, is_archived=False)
     context = {'addresses': addresses}
     return render(request, "furni/address.html", context)
 
 @login_required(login_url="login")
 def delete_address(request, address_id):
-    address = DeliveryAddress.objects.get(customer=request.user,id=address_id)
+    address = BillingAddress.objects.get(customer=request.user,id=address_id)
     address.is_archived = True
     address.save()
     return redirect('address')
@@ -402,7 +466,7 @@ def add_address(request):
 
 @login_required(login_url="login")
 def edit_address(request, address_id):
-    editaddress = DeliveryAddress.objects.get(customer=request.user, id=address_id)
+    editaddress = BillingAddress.objects.get(customer=request.user, id=address_id)
     form = addressForm(instance=editaddress)
     context = {"form": form}
     if request.method == 'POST':
@@ -411,4 +475,22 @@ def edit_address(request, address_id):
             form.save()
         return redirect('address')
     return render(request,'furni/edit_address.html', context)
+
+@receiver(user_logged_in)
+def transfer_cart_to_user(request, user, **kwargs):
+    if request.user.is_authenticated:
+        return redirect('home')
+    user_id = request.session.get('user_id')
+    temp_cart = get_object_or_404(Cart,anonymous=user_id)
+    if temp_cart:
+        custCart, created = Cart.objects.get_or_create(customer=user)
+        old_cart_items = CartItem.objects.filter(cart=temp_cart)
+        for item in old_cart_items:
+            new_cart_items, created2 = CartItem.objects.get_or_create(cart=custCart, product=item.product,defaults={'quantity':item.quantity} )
+            if not created2:
+                new_cart_items.quantity += item.quantity
+                new_cart_items.save()
+        custCart.save()
+        temp_cart.delete()
+        del user_id
 

@@ -17,6 +17,8 @@
        style="background: rgba(0,0,0,0.45); z-index:1;">
   </div>
 
+  
+  
   <!-- Content -->
   <div class="container position-relative text-white" style="z-index:2;">
       <div class="row justify-content-between">
@@ -38,6 +40,7 @@
 
  
 
+
 		<!-- Start Why Choose Us Section -->
 		<div class="why-choose-section">
 			<div class="container">
@@ -53,6 +56,7 @@
 							
 						</div>
 					</div>
+					
 
 					<div class="col-6 col-md-6 col-lg-3 mb-4">
 						<div class="feature">
@@ -87,7 +91,7 @@
 			</div>
 		</div>
 		<!-- End Why Choose Us Section -->
-
+		 
 		
 		<!-- Start We Help Section -->
 		<div class="we-help-section">
@@ -290,5 +294,45 @@
 				</div>
 			</div>
 		</div>
-		End Blog Section -->	
+		End Blog Section -->
+		<script>
+  // Get modal and buttons
+  const modal = document.getElementById("orderModal");
+  const openBtn = document.getElementById("openModalBtn");
+  const closeBtn = document.getElementById("closeModalBtn");
+
+  // Open modal
+  openBtn.onclick = () => {
+    modal.style.display = "block";
+  };
+
+  // Close modal
+  closeBtn.onclick = () => {
+    modal.style.display = "none";
+  };
+
+  // Close if clicked outside
+  window.onclick = (event) => {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  // Submit function
+  function submitOrder() {
+    const orderNo = document.getElementById("orderNumber").value;
+    const email = document.getElementById("userEmail").value;
+
+    if (!orderNo || !email) {
+      alert("Please enter both Order Number and Email.");
+      return;
+    }
+
+    console.log("Order Number:", orderNo);
+    console.log("User Email:", email);
+    alert(`Order Submitted!\nOrder No: ${orderNo}\nEmail: ${email}`);
+
+    modal.style.display = "none";
+  }
+</script>
 {% endblock content %}
