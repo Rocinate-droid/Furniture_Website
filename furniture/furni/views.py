@@ -402,6 +402,7 @@ def single_order(request, order_no, email_id):
     total = 0
     discount = 0
     actualtotal = 0
+    orders = Orders.objects.get(order_no=order_no)
     replacement = Replacement.objects.filter(order=orders)
     returndate = None
     currentdate = date.today()
