@@ -402,6 +402,7 @@ def single_order(request, order_no, email_id):
     total = 0
     discount = 0
     actualtotal = 0
+    replacement = Replacement.objects.filter(order=orders)
     returndate = None
     currentdate = date.today()
     orders = Orders.objects.get(billing_address__email=email_id, order_no=order_no)
@@ -418,7 +419,7 @@ def single_order(request, order_no, email_id):
     if orders.delivered:
         returndate = orders.delivered
         returndate = returndate + timedelta(days=5)
-    context = {"orders": orders, "subtotal": subtotal, "shipping":shipping, "total":total, "discount": discount, "returndate": returndate, "currentdate":currentdate}
+    context = {"orders": orders, "subtotal": subtotal, "shipping":shipping, "total":total, "discount": discount, "returndate": returndate, "currentdate":currentdate,  "replacement":replacement}
     return render(request, "furni/view_order.html", context)
 
 def returns(request, order_id, order_item_id):
