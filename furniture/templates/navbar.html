@@ -56,7 +56,7 @@
       <img src="{% static 'images/user.svg' %}" alt="Profile">
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-        <li><h6 class="dropdown-header">{{user.username}}</h6></li>
+        <li><h6 class="dropdown-header">{{user.first_name}}</h6></li>
         
         <li><a class="dropdown-item" href="{% url 'logoutpage' %}">
           <i class="fas fa-sign-out-alt me-2"></i> Log out

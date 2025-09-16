@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 
 from .models import Categorie
-from .models import Testimonial
+from .models import Testimonial, Review
 from .models import Product
 from .models import Contact
 from .models import CartItem
@@ -47,4 +47,5 @@ admin.site.register(ShippingAddress)
 admin.site.register(Cart)
 admin.site.register(Orders, orderAdmin)
 admin.site.register(OrderItem)
+admin.site.register(Review)
 admin.site.register(Replacement, replacementAdmin)

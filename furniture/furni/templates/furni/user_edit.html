@@ -1,0 +1,82 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container my-5" style="max-width: 600px;">
+    <h2 style="margin-bottom: 20px; color: black;">Login and Security</h2>
+    <div class="card p-4 shadow-sm">
+
+        <!-- Name -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Name</strong>
+                <a href="{% url 'edit_name' %}" class="btn btn-outline-primary btn-sm">Edit</a>
+            </div>
+            <div>{{ user.get_full_name }}</div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Email</strong>
+                <a href="{% url 'edit_email' %}" class="btn btn-outline-primary btn-sm">Edit</a>
+            </div>
+            <div>{{ user.email }}</div>
+        </div>
+
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Password</strong>
+                <a href="{% url 'edit_password' %}" class="btn btn-outline-primary btn-sm">Edit</a>
+            </div>
+            <div>********</div>
+        </div>
+
+        <!--
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Primary mobile number</strong>
+                <a href="" class="btn btn-outline-primary btn-sm">Edit</a>
+            </div>
+            <div>{{ user.profile.phone_number }}</div>
+            <small class="text-muted">Quickly sign in, easily recover passwords and receive security notifications with this mobile number.</small>
+        </div>
+
+    
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Passkey</strong>
+                <a href="" class="btn btn-outline-primary btn-sm">Set up</a>
+            </div>
+            <div class="text-warning">
+                ⚠ Sign in the same way you unlock your device by using your face, fingerprint, or PIN.
+            </div>
+        </div>
+
+        
+        
+
+        
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>2-step verification</strong>
+                <a href="" class="btn btn-outline-primary btn-sm">Manage</a>
+            </div>
+            <div>{{ user.profile.phone_number }}</div>
+            <small class="text-muted">Enter a code sent to your verification method, in addition to your password, to sign in securely.</small>
+        </div>
+
+        
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>Compromised account?</strong>
+                <a href="" class="btn btn-outline-primary btn-sm">Start</a>
+            </div>
+            <small class="text-muted">Take steps like changing your password and signing out everywhere.</small>
+        </div>
+    -->
+
+    </div>
+</div>
+
+{% endblock content %}

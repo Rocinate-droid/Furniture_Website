@@ -16,13 +16,13 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import UserChangeForm
-from .forms import addressForm, shippingAddressForm, replacementForm
+from .forms import addressForm, shippingAddressForm, replacementForm, CustomEmailChangeForm, CustomNameChangeForm
 import uuid
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
@@ -217,7 +217,7 @@ def loginpage(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, "Username or password is wrong")
+            messages.error(request, "Password is Wrong")
             return redirect('loginpage')
     return render(request, 'furni/login.html',context)
 
@@ -228,6 +228,7 @@ def registerpage(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
+            user.email = user.username
             user.save()
             cart, created = Cart.objects.get_or_create(customer=user)
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
@@ -345,6 +346,65 @@ def profile(request):
     context = {"user": request.user}
     return render(request, 'furni/profile.html', context)
 
+@login_required
+def edit_account(request):
+    context = {"user": request.user}
+    return render(request, 'furni/user_edit.html', context)
+
+@login_required
+def edit_password(request):
+    context = {"page": "edit_password"}
+    if request.method == "POST":
+        form = PasswordChangeForm(user = request.user, data = request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect("passwordsuccesspage")
+        else:
+            return render(request, "furni/edit_cred.html", {"form":form, "page": "edit_password"})
+    return render(request, "furni/edit_cred.html", context)
+
+@login_required
+def edit_email(request):
+    form = CustomEmailChangeForm(instance=request.user)
+    if request.method == "POST":
+        form = CustomEmailChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.email
+            user.save()
+            return redirect("emailsuccesspage")   
+        else:
+            return render(request, "furni/edit_cred.html", {"form":form, "page": "edit_email"})
+             
+    context = {"page": "edit_email", "form":form}   
+    return render(request, "furni/edit_cred.html", context)
+
+
+@login_required
+def edit_name(request):
+    form = CustomNameChangeForm(instance=request.user)
+    if request.method == "POST":
+        form = CustomNameChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("namesuccesspage")
+        else:
+            return render(request, "furni/edit_cred.html", {"form":form, "page": "edit_name"}) 
+    context = {"page": "edit_name", "form":form}   
+    return render(request, "furni/edit_cred.html", context)
+
+@login_required
+def passwordsuccesspage(request):
+    return render(request, "furni/success.html", {"page":"password_success"})
+
+@login_required
+def emailsuccesspage(request):
+    return render(request, "furni/success.html", {"page":"email_success"})
+
+@login_required
+def namesuccesspage(request):
+    return render(request, "furni/success.html", {"page":"name_success"})
 
 @login_required
 def orders(request):

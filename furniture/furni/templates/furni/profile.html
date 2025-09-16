@@ -3,7 +3,7 @@
 {% load static %}
 
 <div class="container my-5">
-    <h3 class="mb-4">Hello {{user}}</h3>
+    <h3 class="mb-4">Hello {{user.first_name}}</h3>
 
     <!-- Desktop Layout (cards in grid) -->
     <div class="row g-4 d-none d-md-flex">
@@ -20,7 +20,7 @@
         </div>
         <!-- Add other cards here in the same way -->
          <div class="col-md-4">
-            <a href="" class="text-decoration-none text-dark">
+            <a href="{% url 'edit_account' %}" class="text-decoration-none text-dark">
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <h5 class="card-title">Login &amp; Security</h5>

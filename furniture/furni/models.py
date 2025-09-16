@@ -45,6 +45,10 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+class Review(models.Model):
+    customer = models.ForeignKey(User,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    review = models.TextField(max_length=500)
 
 class Cart(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
