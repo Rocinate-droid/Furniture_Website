@@ -116,7 +116,8 @@ def product(request,cat_id,prod_id):
                 form = reviewForm(request.POST, request.FILES, instance=old_review)
             except Review.DoesNotExist:
                 form = reviewForm(request.POST, request.FILES)
-        form = reviewForm(request.POST, request.FILES)
+        else:
+            form = reviewForm(request.POST, request.FILES)
         if form.is_valid():
             review = form.save(commit=False)
             if request.user.is_authenticated:

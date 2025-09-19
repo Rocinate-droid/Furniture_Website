@@ -202,7 +202,7 @@
           <div class="d-flex align-items-center mb-1">
             <div class="rounded-circle bg-dark d-flex justify-content-center align-items-center me-2"
               style="width:40px;height:40px;font-weight:bold;">
-              {{ review.name|first|upper }}
+              
             </div>
             <div>
               <div>
@@ -217,15 +217,28 @@
                 <small class="text-muted">{{ review.created_at|timesince }} ago</small>
               </div>
               <div>
-                {% if user.is_authenticated %}
+                {% if review.customer.first_name %}
                 <span class="badge bg-dark">Verified</span>
+                <strong>{{ review.customer.first_name | capfirst }}</strong>
+                {% else %}
+                <strong>{{ review.name | capfirst }}</strong>
                 {% endif %}
-                <strong>{{ review.name }}</strong>
               </div>
             </div>
           </div>
           <div class="fw-bold">{{ review.title }}</div>
+          
           <p class="mb-0">{{ review.review }}</p>
+          <div class="jdgm-rev__pics">
+            <a class="jdgm-rev__pic-link" target="_blank" rel="nofollow"
+              href="{{review.img.url}}"
+              data-mfp-src="{{review.img.url}}"
+              aria-label="Link to user picture 1">
+              <img class="jdgm-rev__pic-img" alt="User picture"
+                data-src="{{review.img.url}}"
+                src="{{review.img.url}}">
+            </a>
+          </div>
         </div>
         {% endfor %}
       </div>
@@ -409,7 +422,34 @@
     min-width: auto;
   }
 }
-
+.jdgm-rev__pic-link {
+    margin: 8px 5px 3px 0;
+    padding: 0;
+    display: inline-block;
+    height: 120px;
+    width: auto;
+    cursor: pointer;
+    overflow: hidden;
+}
+.jdgm-rev__pics {
+    font-size: 0;
+    white-space: nowrap;
+    height: auto;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.jdgm-rev__pic-img {
+    display: block;
+    width: auto;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    border-radius: 4px;
+}
 </style>
 
 {% endblock content %}
