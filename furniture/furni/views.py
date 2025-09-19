@@ -107,6 +107,7 @@ def product(request,cat_id,prod_id):
     product.savings = product.original_price - product.discounted_price
     product.savings_percentage = int((product.savings / product.original_price ) * 100)
     reviews = Review.objects.filter(product=product)
+    
     review_dict = {"five_star":0,"four_star":0,"three_star":0,"two_star":0,"one_star":0}
     overall_rating = 0.0
     if request.method == "POST":

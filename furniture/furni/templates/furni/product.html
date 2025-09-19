@@ -188,10 +188,10 @@
 
         <!-- Sort Dropdown -->
         <div class="mb-3">
-          <select class="form-select form-select-sm" style="max-width:200px;">
-            <option selected>Most Recent</option>
-            <option>Highest Rating</option>
-            <option>Lowest Rating</option>
+          <select class="form-select form-select-sm" id="sort_order" style="max-width:200px;" onchange="">
+            <option selected value="most_recent">Most Recent</option>
+            <option value="highest_rating">Highest Rating</option>
+            <option value="lowest-rating">Lowest Rating</option>
           </select>
         </div>
         {% endif %}
@@ -202,7 +202,11 @@
           <div class="d-flex align-items-center mb-1">
             <div class="rounded-circle bg-dark d-flex justify-content-center align-items-center me-2"
               style="width:40px;height:40px;font-weight:bold;">
-              
+              {% if review.customer %}
+              {{ review.customer.first_name|first|upper }}
+              {% else %}
+              {{ review.name|first|upper }}
+              {% endif %}
             </div>
             <div>
               <div>
@@ -229,6 +233,7 @@
           <div class="fw-bold">{{ review.title }}</div>
           
           <p class="mb-0">{{ review.review }}</p>
+          {% if review.img %}
           <div class="jdgm-rev__pics">
             <a class="jdgm-rev__pic-link" target="_blank" rel="nofollow"
               href="{{review.img.url}}"
@@ -239,6 +244,7 @@
                 src="{{review.img.url}}">
             </a>
           </div>
+          {% endif %}
         </div>
         {% endfor %}
       </div>
