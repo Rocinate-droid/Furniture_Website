@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from .models import BillingAddress
 from .models import ShippingAddress
 from .models import Replacement
+from .models import Review
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -43,4 +44,8 @@ class replacementForm(forms.ModelForm):
     class Meta:
         model = Replacement
         fields = ['reason', 'comments']
-       
+
+class reviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['review','rating','title','img','name']

@@ -2,6 +2,7 @@
 {% load humanize %}
 {% block content %}
 {% load static %}
+{% load dict_extras %}
 <div class="container py-5">
   <div class="row">
     <!-- Product Images (Sticky Left) -->
@@ -67,6 +68,7 @@
           <button class="btn btn-orange w-100" id="buynow" formaction="/buy/{{ product.id }}/1/">Buy Now</button>
           <button class="btn btn-outline-secondary w-100" id="addtocart" formaction="/add/{{ product.id }}/1/">Add to
             Cart</button>
+
         </div>
       </form>
 
@@ -101,6 +103,226 @@
           details</small><br>
         <small class="text-muted" id="text-para2"></small>
       </div>
+
+      <!-- ===== Customer Reviews Section ===== -->
+      <div class="mt-5">
+        <h4>Customer Reviews</h4>
+        <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
+  <!-- Review text -->
+  <div>
+    {% if reviews.count == 0 %}
+      <span>No reviews yet. Be the first to review!</span>
+    {% else %}
+    {% if overall_rating == 5 %}<span class="text-warning fs-4">
+            ★★★★★
+            {% elif overall_rating == 4 %}
+            ★★★★
+            {% elif overall_rating == 3 %}
+            ★★★
+            {% elif overall_rating == 2 %}
+            ★★
+            {% elif overall_rating == 1 %}
+            ★
+            {% endif %}
+          </span>
+      <span>Based on {{ reviews.count }} review{{ reviews.count|pluralize }}</span>
+    {% endif %}
+  </div>
+
+  <!-- Review button -->
+  <div class="mt-2 mt-sm-0">
+    <button class="btn btn-outline-dark btn-sm review-btn"
+            data-bs-toggle="modal" data-bs-target="#reviewModal">
+      Write a review
+    </button>
+  </div>
+</div>
+
+
+
+        
+        {% if reviews.count != 0 %}
+        <!-- Ratings Breakdown -->
+        <div>
+          <div class="d-flex align-items-center mb-1">
+            <span class="text-warning">★★★★★</span>
+            <div class="progress mx-2 flex-grow-1" style="height:10px;">
+              <div class="progress-bar bg-warning" style="width: {{ review_dict.five_star|percentage:reviews.count }}%">
+              </div>
+            </div>
+            <small>{{ review_dict.five_star|percentage:reviews.count }}% ({{ review_dict.five_star }})</small>
+          </div>
+          <div class="d-flex align-items-center mb-1">
+            <span class="text-warning">★★★★☆</span>
+            <div class="progress mx-2 flex-grow-1" style="height:10px;">
+              <div class="progress-bar bg-warning" style="width: {{ review_dict.four_star|percentage:reviews.count }}%">
+              </div>
+            </div>
+            <small>{{ review_dict.four_star|percentage:reviews.count }}% ({{ review_dict.four_star }})</small>
+          </div>
+          <div class="d-flex align-items-center mb-1">
+            <span class="text-warning">★★★☆☆</span>
+            <div class="progress mx-2 flex-grow-1" style="height:10px;">
+              <div class="progress-bar bg-warning" style="width: {{review_dict.three_star|percentage:reviews.count}}%">
+              </div>
+            </div>
+            <small>{{ review_dict.three_star|percentage:reviews.count }}% ({{review_dict.three_star}})</small>
+          </div>
+          <div class="d-flex align-items-center mb-1">
+            <span class="text-warning">★★☆☆☆</span>
+            <div class="progress mx-2 flex-grow-1" style="height:10px;">
+              <div class="progress-bar bg-warning" style="width: {{review_dict.two_star|percentage:reviews.count}}%">
+              </div>
+            </div>
+            <small>{{review_dict.two_star|percentage:reviews.count}}% ({{review_dict.two_star }})</small>
+          </div>
+          <div class="d-flex align-items-center mb-3">
+            <span class="text-warning">★☆☆☆☆</span>
+            <div class="progress mx-2 flex-grow-1" style="height:10px;">
+              <div class="progress-bar bg-warning" style="width: {{ review_dict.one_star|percentage:reviews.count }}%">
+              </div>
+            </div>
+            <small>{{ review_dict.one_star|percentage:reviews.count }}% ({{review_dict.one_star}})</small>
+          </div>
+        </div>
+
+        <!-- Sort Dropdown -->
+        <div class="mb-3">
+          <select class="form-select form-select-sm" style="max-width:200px;">
+            <option selected>Most Recent</option>
+            <option>Highest Rating</option>
+            <option>Lowest Rating</option>
+          </select>
+        </div>
+        {% endif %}
+
+        <!-- Reviews Loop -->
+        {% for review in reviews %}
+        <div class="border-top pt-3 pb-3">
+          <div class="d-flex align-items-center mb-1">
+            <div class="rounded-circle bg-dark d-flex justify-content-center align-items-center me-2"
+              style="width:40px;height:40px;font-weight:bold;">
+              {{ review.name|first|upper }}
+            </div>
+            <div>
+              <div>
+                <span class="text-warning">
+                  {% if review.rating == 5 %}★★★★★
+                  {% elif review.rating == 4 %}★★★★
+                  {% elif review.rating == 3 %}★★★
+                  {% elif review.rating == 2 %}★★
+                  {% elif review.rating == 1 %}★
+                  {% endif %}
+                </span>
+                <small class="text-muted">{{ review.created_at|timesince }} ago</small>
+              </div>
+              <div>
+                {% if user.is_authenticated %}
+                <span class="badge bg-dark">Verified</span>
+                {% endif %}
+                <strong>{{ review.name }}</strong>
+              </div>
+            </div>
+          </div>
+          <div class="fw-bold">{{ review.title }}</div>
+          <p class="mb-0">{{ review.review }}</p>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Track Order Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reviewModal">Drop a review</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="review-container">
+          <form method="POST" enctype="multipart/form-data" id="review-form">
+            {% csrf_token %}
+            {% if not user.is_authenticated %}
+            <label>Name</label>
+            <input type="text" class="reviewmodalpop" name="name" id="name" value="{{ form.name.value|default:'' }}">
+            {% endif %}
+            <div class="product-info">
+              <img src="{{product.img.url}}" alt="Product Image" style="width: 80px; height: 80px;">
+              <strong>How was the item?</strong>
+            </div>
+
+            <div class="stars">
+              {% if form.instance.rating == 5 %}
+              <span class="star selected" data-value="1">&#9733;</span>
+              <span class="star selected" data-value="2">&#9733;</span>
+              <span class="star selected" data-value="3">&#9733;</span>
+              <span class="star selected" data-value="4">&#9733;</span>
+              <span class="star selected" data-value="5">&#9733;</span>
+              {% elif form.instance.rating == 4 %}
+              <span class="star selected" data-value="1">&#9733;</span>
+              <span class="star selected" data-value="2">&#9733;</span>
+              <span class="star selected" data-value="3">&#9733;</span>
+              <span class="star selected" data-value="4">&#9733;</span>
+              <span class="star " data-value="5">&#9733;</span>
+              {% elif form.instance.rating == 3 %}
+              <span class="star selected" data-value="1">&#9733;</span>
+              <span class="star selected" data-value="2">&#9733;</span>
+              <span class="star selected" data-value="3">&#9733;</span>
+              <span class="star " data-value="4">&#9733;</span>
+              <span class="star " data-value="5">&#9733;</span>
+              {% elif form.instance.rating == 2 %}
+              <span class="star selected" data-value="1">&#9733;</span>
+              <span class="star selected" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star " data-value="4">&#9733;</span>
+              <span class="star " data-value="5">&#9733;</span>
+              {% elif form.instance.rating == 1 %}
+              <span class="star selected" data-value="1">&#9733;</span>
+              <span class="star" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star " data-value="4">&#9733;</span>
+              <span class="star " data-value="5">&#9733;</span>
+              {% elif form.instance.rating == 0 %}
+              <span class="star selected" data-value="1">&#9733;</span>
+              <span class="star" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star " data-value="4">&#9733;</span>
+              <span class="star " data-value="5">&#9733;</span>
+              {% else %}
+              <span class="star" data-value="1">&#9733;</span>
+              <span class="star" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star " data-value="4">&#9733;</span>
+              <span class="star " data-value="5">&#9733;</span>
+              {% endif %}
+            </div>
+
+            <!-- Hidden input to store the rating -->
+            <input type="hidden" name="rating" id="rating" value="{{ form.rating.value|default:'' }}" required>
+
+            <textarea class="reviewmodalpop" name="review" rows="4"
+              placeholder="What should other customers know?">{{form.review.value|default:''}}</textarea>
+
+            <label class="upload-area">
+              <input type="file" name="img" id="img" accept="image/png, image/jpeg">
+              <div>Share a photo</div>
+            </label>
+            <img id="preview" src="{% if form.instance.img %}{{ form.instance.img.url }}{% else %}#{% endif %}"
+              alt="Image Preview"
+              style="width: 80px; height: 80px; {% if not form.instance.img %}display: none;{% endif %}"><br>
+
+            <input type="text" class="reviewmodalpop" name="title" placeholder="Review Title" required
+              value="{{ form.title.value|default:'' }}">
+
+            <button type="submit" class="submit-btn btn btn-outline-secondary w-100">Submit</button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -110,123 +332,84 @@
     border: 1px solid #ff6600;
     border-radius: 6px;
   }
+
+
+  .review-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .product-info img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+
+  .stars {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    justify-content: center;
+  }
+
+  .star {
+    color: lightgray;
+    transition: color 0.2s;
+  }
+
+  .star.hover,
+  .star.selected {
+    color: gold;
+  }
+
+  .reviewmodalpop {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+  }
+
+  .upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    margin-bottom: 15px;
+    cursor: pointer;
+  }
+
+  .upload-area input {
+    display: none;
+  }
+
+  .review-btn {
+  min-width: 150px; /* keeps good size on large screens */
+}
+
+@media (max-width: 576px) {
+  .review-btn {
+    width: 100%;  /* full width under text on small screens */
+    min-width: auto;
+  }
+}
+
 </style>
 
-<!-- JS -->
-<script>
-
-  var input = document.getElementById("pincodeInput");
-  // Execute a function when the user presses a key on the keyboard
-  input.addEventListener("keypress", function (event) {
-    // If the user presses the "Enter" key on the keyboard
-    if (event.key === "Enter") {
-      // Cancel the default action, if needed
-      event.preventDefault();
-      // Trigger the button element with a click
-      document.getElementById("pincodeClick").click();
-    }
-  });
-  function checkDelivery() {
-    const pincode = document.getElementById("pincodeInput").value;
-    const result = document.getElementById("text-para");
-    const result2 = document.getElementById("text-para2");
-    const now = new Date();
-    const istDate = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    let today = new Date();
-    fetch(`https://api.postalpincode.in/pincode/${pincode}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-
-      .then(data => {
-        if (data[0].Status == "Success") {
-          const locarray = ["Thrissur", "Alappuzha", "Ernakulam"]
-          const location = data[0]["PostOffice"];
-          result.setAttribute('style', 'font-weight:bold')
-          for (let index = 0; index < location.length; index++) {
-            if (locarray.includes(location[index].District)) {
-              if ((today.getDate() + 2) > (getDaysInMonth(today.getFullYear(), today.getMonth()))) {
-                let month = today.getMonth();
-                const newDate = (today.getDate() + 2) - (getDaysInMonth(today.getFullYear(), today.getMonth() + 1));
-                today.setDate(newDate);
-                today.setMonth(month + 1);
-                result.innerText = `FREE delivery by ${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} `;
-                result2.innerText = `Deliver to ${location[index].Division},${location[index].District} ${pincode} `;
-              } else {
-                result.innerText = `FREE delivery by ${days[today.getDay() + 2]}, ${today.getDate() + 2} ${months[today.getMonth()]} `;
-                result2.innerText = `Deliver to ${location[index].Block},${location[index].District} ${pincode} `;
-              }
-              break;
-            } else {
-              if ((today.getDate() + 7) > (getDaysInMonth(today.getFullYear(), today.getMonth()))) {
-                let month = today.getMonth();
-                const newDate = (today.getDate() + 7) - (getDaysInMonth(today.getFullYear(), today.getMonth() + 1));
-                today.setDate(newDate);
-                today.setMonth(month + 1);
-                result.innerText = `FREE delivery by ${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} `;
-                result2.innerText = `Deliver to ${location[index].Block},${location[index].District} ${pincode} `;
-              } else {
-                result.innerText = `FREE delivery by ${days[today.getDay() + 7]}, ${istDate.getDate() + 7} ${months[today.getMonth()]} `;
-                result2.innerText = `Deliver to ${location[index].Block},${location[index].District} ${pincode} `;
-              }
-              break;
-            }
-          }
-        } else {
-          result.setAttribute('style', 'font-weight:bold');
-          result.innerText = "Please enter a valid pincode";
-          result2.innerText = "";
-        }
-
-      })
-      .catch(error => console.error('There was a problem with the fetch operation:', error));
-
-  }
-
-  function getDaysInMonth(year, month) {
-    return new Date(year, month, 0).getDate();
-  }
-  const mainImage = document.getElementById("mainImage");
-  const thumbnails = document.querySelectorAll(".thumbnail-img");
-  const qtyInput = document.getElementById("qtyInput");
-  const url = document.getElementById("addtocart");
-  const url2 = document.getElementById("buynow");
-  let qtyValue = qtyInput.value;
-  const totalPriceEl = document.getElementById("totalPrice");
-  const pricePerUnit = parseInt(document.getElementById("totalPrice").textContent.replace(",", ""));
-  const productId = "{{ product.id }}";
-
-  function changeImage(el) {
-    thumbnails.forEach(img => img.classList.remove("active"));
-    el.classList.add("active");
-    mainImage.src = el.src;
-  }
-
-  function adjustQty(val) {
-    let qty = parseInt(qtyInput.value);
-    qty = isNaN(qty) ? 1 : qty;
-    qty = Math.max(1, qty + val);
-    qtyInput.value = qty;
-    qtyValue = qty;
-    url.setAttribute("formaction", `/add/${productId}/${qtyValue}/`);
-    url2.setAttribute("formaction", `/buy/${productId}/${qtyValue}/`)
-    totalPriceEl.textContent = qty * pricePerUnit;
-  }
-
-  qtyInput.addEventListener("input", () => {
-    let qty = parseInt(qtyInput.value);
-    qty = isNaN(qty) || qty < 1 ? 1 : qty;
-    qtyInput.value = qty;
-    totalPriceEl.textContent = qty * pricePerUnit;
-  });
-
-
-
-
-</script>
 {% endblock content %}

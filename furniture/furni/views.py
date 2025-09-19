@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from .models import Categorie
-from .models import Testimonial
+from .models import Testimonial, Review
 from .models import Product
 from .models import Cart,CartItem
 from .forms import contactForm
@@ -22,7 +22,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import UserChangeForm
-from .forms import addressForm, shippingAddressForm, replacementForm, CustomEmailChangeForm, CustomNameChangeForm
+from .forms import addressForm, shippingAddressForm, replacementForm, CustomEmailChangeForm, CustomNameChangeForm, reviewForm
 import uuid
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
@@ -106,8 +106,49 @@ def product(request,cat_id,prod_id):
     product = get_object_or_404(Product,id = prod_id,category_id=cat_id)
     product.savings = product.original_price - product.discounted_price
     product.savings_percentage = int((product.savings / product.original_price ) * 100)
-    
-    context = {'product': product}
+    reviews = Review.objects.filter(product=product)
+    review_dict = {"five_star":0,"four_star":0,"three_star":0,"two_star":0,"one_star":0}
+    overall_rating = 0.0
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            try:
+                old_review = Review.objects.get(customer=request.user, product=prod_id)
+                form = reviewForm(request.POST, request.FILES, instance=old_review)
+            except Review.DoesNotExist:
+                form = reviewForm(request.POST, request.FILES)
+        form = reviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            review = form.save(commit=False)
+            if request.user.is_authenticated:
+                review.customer = request.user
+            else:
+                review.name = request.POST.get("name")
+        review.product = product
+        review.save()
+    else:
+        if request.user.is_authenticated:
+            try:
+                old_review = Review.objects.get(customer=request.user, product=prod_id)
+                form = reviewForm(instance=old_review)
+            except Review.DoesNotExist:
+                form = reviewForm()
+        else:
+            form = reviewForm()
+    for review in reviews:
+        if review.rating == 5:
+            review_dict["five_star"] = review_dict["five_star"] + 1
+        elif review.rating == 4:
+            review_dict["four_star"] = review_dict["four_star"] + 1
+        elif review.rating == 3:
+            review_dict["three_star"] = review_dict["three_star"] + 1
+        elif review.rating == 2:
+            review_dict["two_star"] = review_dict["two_star"] + 1
+        elif review.rating == 1:
+            review_dict["one_star"] = review_dict["one_star"] + 1
+    if Review.objects.count() != 0:
+        overall_rating = ((5 * review_dict["five_star"]) + (4 * review_dict["four_star"]) + (3 * review_dict["three_star"]) + (2 * review_dict["two_star"]) + (1 * review_dict["one_star"]))/Review.objects.count()
+    print(overall_rating)
+    context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict}
     return render(request, "furni/product.html", context)
 
 
