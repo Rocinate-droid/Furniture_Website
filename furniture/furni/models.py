@@ -45,6 +45,20 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+class Review(models.Model):
+    customer = models.ForeignKey(User,on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=15, null=True, blank=True)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    review = models.TextField(max_length=500, null=True, blank=True)
+    rating = models.IntegerField()
+    img = models.ImageField(upload_to='reviews/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        if self.customer:
+            return f"{self.customer.first_name} : {self.product.name} : {self.rating}⭐"
+        return f"{self.name} : {self.product.name} : {self.rating}⭐"
+
 
 class Cart(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

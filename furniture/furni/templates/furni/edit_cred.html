@@ -1,0 +1,193 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<!-- Start Contact Form -->
+<div class="untree_co-section">
+    <div class="container">
+
+        <div class="block">
+            <div class="row justify-content-center">
+
+
+                <div class="col-md-8 col-lg-8 pb-4">
+
+                    <h2 style="margin-bottom: 15px; color: black;">
+                        {% if page == "edit_password" %}
+                        Edit Password
+                    </h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="text-black" for="old_password">Enter existing password</label>
+                                    <input type="password" class="form-control" id="old_password" name="old_password"
+                                        required value="{{ form.old_password.value|default:'' }}">
+                                    {% if form.old_password.errors %}
+                                    <div class="text-danger">{{ form.old_password.errors.0 }}</div>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="text-black" for="password">Enter new password</label>
+                                    <input type="password" class="form-control" id="new_password1" name="new_password1"
+                                        required value="{{ form.new_password1.value|default:'' }}">
+                                    {% if form.new_password1.errors %}
+                                    <div class="text-danger">{{ form.new_password1.errors.0 }}</div>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-black" for="confirmpassword">Confirm new password</label>
+                                <input type="password" class="form-control" id="new_password2" name="new_password2"
+                                    required value="{{ form.new_password2.value|default:'' }}">
+                                {% if form.new_password2.errors %}
+                                <div class="text-danger">{{ form.new_password2.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-hover-outline" style="margin-top:15px">Change
+                            Password</button>
+                    </form>
+                    {% elif page == "edit_email" %}
+                    Change email
+                    </h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="text-black" for="email">Enter new email</label>
+                                    <input type="email" class="form-control" id="email" name="email" required
+                                        oninput="checkEmail()" value="{{ form.email.value|default:'' }}">
+                                </div>
+                            </div>
+                            {% if form.email.errors %}
+                            <div class="text-danger">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                            <div id="emailCheck"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-hover-outline" id="submitbutton"
+                            style="margin-top:15px" disabled>Change
+                            Email</button>
+                    </form>
+                    <script>
+                        const element = document.getElementById("emailCheck");
+                        let old_email = "";
+                        const button = document.getElementById("submitbutton")
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const email_field = document.getElementById("email");
+                            old_email = email_field.value;
+                        });
+                        function checkEmail() {
+                            const new_email = document.getElementById("email").value
+                            if (old_email == new_email) {
+                                button.disabled = true;
+                                element.innerHTML = "";
+                                const innerelement = document.createElement("p");
+                                innerelement.textContent = "There is no change in the email id";
+                                innerelement.style.fontSize = "smaller";
+                                innerelement.style.color = "red";
+                                element.appendChild(innerelement);
+                            } else {
+                                element.innerHTML = "";
+                                button.disabled = false;
+                            }
+                        }
+
+                    </script>
+                    {% elif page == "edit_name" %}
+                    Edit name
+                    </h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="text-black" for="first_name">First Name</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" required
+                                        oninput="checkName()" value="{{ form.first_name.value|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="text-black" for="last_name">Last Name</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" required
+                                        oninput="checkName()" value="{{ form.last_name.value|default:'' }}">
+                                </div>
+                            </div>
+                            <div id="nameCheck"></div>
+                            {% if form.first_name.errors or form.last_name.errors %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                                    {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-hover-outline" style="margin-top:15px"
+                            id="submitbutton" disabled>Change
+                            Name</button>
+                    </form>
+                    <script>
+                        const name_element = document.getElementById("nameCheck");
+                        let old_fname = "";
+                        let old_lname = "";
+                        const name_button = document.getElementById("submitbutton")
+                        document.addEventListener("DOMContentLoaded", function () {
+                            old_fname = document.getElementById("first_name");
+                            old_lname = document.getElementById("last_name");
+                            
+                        });
+                        function checkName() {
+                            const new_fname = document.getElementById("first_name").value
+                            const new_lname = document.getElementById("last_name").value
+                            if (old_fname == new_fname && old_lname == new_lname) {
+                                name_button.disabled = true;
+                                name_element.innerHTML = "";
+                                const innerelement = document.createElement("p");
+                                innerelement.textContent = "There is no change in the name";
+                                innerelement.style.fontSize = "smaller";
+                                innerelement.style.color = "red";
+                                element.appendChild(innerelement);
+                            } else {
+                                name_element.innerHTML = "";
+                                name_button.disabled = false;
+                            }
+                        }
+
+                    </script>
+                    {% endif %}
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+<style>
+    .untree_co-section {
+        padding: 3rem 0;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+{% endblock content %}

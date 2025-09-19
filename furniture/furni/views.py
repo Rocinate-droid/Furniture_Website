@@ -1,8 +1,9 @@
 from datetime import date, timedelta
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from .models import Categorie
-from .models import Testimonial
+from .models import Testimonial, Review
 from .models import Product
 from .models import Cart,CartItem
 from .forms import contactForm
@@ -15,13 +16,13 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import UserChangeForm
-from .forms import addressForm, shippingAddressForm, replacementForm
+from .forms import addressForm, shippingAddressForm, replacementForm, CustomEmailChangeForm, CustomNameChangeForm, reviewForm
 import uuid
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
@@ -105,8 +106,51 @@ def product(request,cat_id,prod_id):
     product = get_object_or_404(Product,id = prod_id,category_id=cat_id)
     product.savings = product.original_price - product.discounted_price
     product.savings_percentage = int((product.savings / product.original_price ) * 100)
+    reviews = Review.objects.filter(product=product)
     
-    context = {'product': product}
+    review_dict = {"five_star":0,"four_star":0,"three_star":0,"two_star":0,"one_star":0}
+    overall_rating = 0.0
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            try:
+                old_review = Review.objects.get(customer=request.user, product=prod_id)
+                form = reviewForm(request.POST, request.FILES, instance=old_review)
+            except Review.DoesNotExist:
+                form = reviewForm(request.POST, request.FILES)
+        else:
+            form = reviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            review = form.save(commit=False)
+            if request.user.is_authenticated:
+                review.customer = request.user
+            else:
+                review.name = request.POST.get("name")
+        review.product = product
+        review.save()
+    else:
+        if request.user.is_authenticated:
+            try:
+                old_review = Review.objects.get(customer=request.user, product=prod_id)
+                form = reviewForm(instance=old_review)
+            except Review.DoesNotExist:
+                form = reviewForm()
+        else:
+            form = reviewForm()
+    for review in reviews:
+        if review.rating == 5:
+            review_dict["five_star"] = review_dict["five_star"] + 1
+        elif review.rating == 4:
+            review_dict["four_star"] = review_dict["four_star"] + 1
+        elif review.rating == 3:
+            review_dict["three_star"] = review_dict["three_star"] + 1
+        elif review.rating == 2:
+            review_dict["two_star"] = review_dict["two_star"] + 1
+        elif review.rating == 1:
+            review_dict["one_star"] = review_dict["one_star"] + 1
+    if Review.objects.count() != 0:
+        overall_rating = ((5 * review_dict["five_star"]) + (4 * review_dict["four_star"]) + (3 * review_dict["three_star"]) + (2 * review_dict["two_star"]) + (1 * review_dict["one_star"]))/Review.objects.count()
+    print(overall_rating)
+    context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict}
     return render(request, "furni/product.html", context)
 
 
@@ -216,7 +260,7 @@ def loginpage(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, "Username or password is wrong")
+            messages.error(request, "Password is Wrong")
             return redirect('loginpage')
     return render(request, 'furni/login.html',context)
 
@@ -227,6 +271,7 @@ def registerpage(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
+            user.email = user.username
             user.save()
             cart, created = Cart.objects.get_or_create(customer=user)
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
@@ -344,6 +389,65 @@ def profile(request):
     context = {"user": request.user}
     return render(request, 'furni/profile.html', context)
 
+@login_required
+def edit_account(request):
+    context = {"user": request.user}
+    return render(request, 'furni/user_edit.html', context)
+
+@login_required
+def edit_password(request):
+    context = {"page": "edit_password"}
+    if request.method == "POST":
+        form = PasswordChangeForm(user = request.user, data = request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect("passwordsuccesspage")
+        else:
+            return render(request, "furni/edit_cred.html", {"form":form, "page": "edit_password"})
+    return render(request, "furni/edit_cred.html", context)
+
+@login_required
+def edit_email(request):
+    form = CustomEmailChangeForm(instance=request.user)
+    if request.method == "POST":
+        form = CustomEmailChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.email
+            user.save()
+            return redirect("emailsuccesspage")   
+        else:
+            return render(request, "furni/edit_cred.html", {"form":form, "page": "edit_email"})
+             
+    context = {"page": "edit_email", "form":form}   
+    return render(request, "furni/edit_cred.html", context)
+
+
+@login_required
+def edit_name(request):
+    form = CustomNameChangeForm(instance=request.user)
+    if request.method == "POST":
+        form = CustomNameChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("namesuccesspage")
+        else:
+            return render(request, "furni/edit_cred.html", {"form":form, "page": "edit_name"}) 
+    context = {"page": "edit_name", "form":form}   
+    return render(request, "furni/edit_cred.html", context)
+
+@login_required
+def passwordsuccesspage(request):
+    return render(request, "furni/success.html", {"page":"password_success"})
+
+@login_required
+def emailsuccesspage(request):
+    return render(request, "furni/success.html", {"page":"email_success"})
+
+@login_required
+def namesuccesspage(request):
+    return render(request, "furni/success.html", {"page":"name_success"})
 
 @login_required
 def orders(request):
@@ -424,6 +528,7 @@ def single_order(request, order_no, email_id):
 
 def returns(request, order_id, order_item_id):
     order = Orders.objects.get(id=order_id)
+    email = order.billing_address.email
     matching_item = order.orderitem_set.get(product=order_item_id)
     form = replacementForm(request.POST or None)
     if form.is_valid():
