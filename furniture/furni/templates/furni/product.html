@@ -68,7 +68,13 @@
           <button class="btn btn-orange w-100" id="buynow" formaction="/buy/{{ product.id }}/1/">Buy Now</button>
           <button class="btn btn-outline-secondary w-100" id="addtocart" formaction="/add/{{ product.id }}/1/">Add to
             Cart</button>
-
+            {% if user.is_authenticated %}
+             <button class="btn btn-outline-secondary w-100" id="addtowishlist" formaction="/add/wishlist/{{ product.id }}/1/">Add to
+            Wishlist</button>
+            {% else %}
+            <button class="btn btn-outline-secondary w-100" id="addtowishlist" formaction="{% url 'loginpage' %}">Add to
+            Wishlist</button>
+            {% endif %}
         </div>
       </form>
 

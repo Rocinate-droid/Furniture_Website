@@ -80,6 +80,7 @@
   const qtyInput = document.getElementById("qtyInput");
   const url = document.getElementById("addtocart");
   const url2 = document.getElementById("buynow");
+  const url3 = document.getElementById("addtowishlist");
   let qtyValue = qtyInput.value;
   const totalPriceEl = document.getElementById("totalPrice");
   const pricePerUnit = parseInt(document.getElementById("totalPrice").textContent.replace(",", ""));
@@ -98,7 +99,8 @@
     qtyInput.value = qty;
     qtyValue = qty;
     url.setAttribute("formaction", `/add/${productId}/${qtyValue}/`);
-    url2.setAttribute("formaction", `/buy/${productId}/${qtyValue}/`)
+    url2.setAttribute("formaction", `/buy/${productId}/${qtyValue}/`);
+    url3.setAttribute("formaction", `/add/wishlist/${productId}/${qtyValue}/`);
     totalPriceEl.textContent = qty * pricePerUnit;
   }
 
