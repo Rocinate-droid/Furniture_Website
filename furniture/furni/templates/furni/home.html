@@ -41,7 +41,7 @@
 
     <!-- Slide 1 -->
     <div class="carousel-item active">
-      <a href="{% url 'category' cat_name='Sofa' %}">
+      <a href="{% url 'category' cat_name='Sofas & Seating' %}">
       <img src="{% static 'images/hero-carousel1.webp' %}" 
            class="d-block w-100 h-100" 
            style="object-fit: cover;" 
@@ -51,7 +51,7 @@
 
     <!-- Slide 2 -->
     <div class="carousel-item">
-      <a href="{% url 'category' cat_name='Tables' %}">
+      <a href="{% url 'category' cat_name='Kitchen & Dining Furniture' %}">
       <img src="{% static 'images/hero-carousel2.webp' %}" 
            class="d-block w-100 h-100" 
            style="object-fit: cover;" 
@@ -60,7 +60,7 @@
 
     <!-- Slide 3 -->
     <div class="carousel-item">
-      <a href="{% url 'category' cat_name='Beds' %}">
+      <a href="{% url 'category' cat_name='Beds & Side Tables' %}">
       <img src="{% static 'images/hero-carousel3.webp' %}" 
            class="d-block w-100 h-100" 
            style="object-fit: cover;" 
@@ -392,7 +392,7 @@
 
 <!--New Launches-->
 <div class="new-launch">
-	<div class="launch-title">⭐ New Launches ⭐</div>
+	<div class="launch-title">New Launches</div>
 	<div class="scroll-products">
     {% include "furni/new_launches.html" with products=products wish_items=wish_items %}
    
