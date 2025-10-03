@@ -7,7 +7,7 @@
 */ -->
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html lang="en"">
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -24,70 +24,176 @@
 		<link href="{% static 'css/style.css' %}" rel="stylesheet">
 		<title>Module Furnitures</title>
 		<link rel="icon" type="image/png" href="{% static 'images\module-logo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+<script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      prefix: 'tw-',
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
     </head>
     
     <body>
 
 		<!-- Start Header/Navigation -->
-		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+<nav class="navbar navbar-expand-md navbar-dark py-1" style="background-color: #E5D9D9;">
+  <div class="container">
 
-			<div class="container">
-				<a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'images\module-logo.png' %}" class="img-logo"></a>
-
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-
-				<div class="collapse navbar-collapse" id="navbarsFurni">
-					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-						<li class="nav-item active">
-							<a class="nav-link" href="{% url 'home' %}">Home</a>
-						</li>
-						<li><a class="nav-link" href="{% url 'shop' %}">Shop</a></li>
-						<li><a class="nav-link" href="{% url 'aboutus' %}">About us</a></li>
-						<li><a class="nav-link" href="{% url 'contactus' %}">Contact us</a></li>
-					</ul>
-
-					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-  <!-- Profile Dropdown -->
-   {% if user.is_authenticated %}
-  <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <img src="{% static 'images/user.svg' %}" alt="Profile">
+    <!-- Logo -->
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'images\module-logo.png' %}" alt="Logo" class="img-logo" style="height: 140px; width: 140px;">
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-        <li><h6 class="dropdown-header">{{user.first_name}}</h6></li>
-        
-        <li><a class="dropdown-item" href="{% url 'logoutpage' %}">
-          <i class="fas fa-sign-out-alt me-2"></i> Log out
-        </a></li>
-		<li><a class="dropdown-item" href="{% url 'profile' %}">
-          <i class="fa-solid fa-user me-2"></i> Profile
-        </a></li>
-		<li><a class="dropdown-item" href="{% url 'orders' %}">
-          <i class="fa-solid fa-truck me-2"></i> Orders
-        </a></li>
-        <!--<li><hr class="dropdown-divider"></li>-->
-    </ul>
-	{% else %}
-	<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-		<li>
-			<a class="nav-link" href="{% url 'loginpage' %}"><img src="{% static 'images/user.svg' %}"></a>
-		</li>
-	</ul>
-	{% endif %}
-  </li>
+
+    <!-- Toggler -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="d-flex flex-column flex-md-row align-items-md-center w-100 py-1">
+      <div class="flex-grow-1 my-2 my-md-0 px-md-3">
+          <div class="position-relative">
+            <form action="{% url 'search' %}" method="get">
+            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Hinted search text" required value="{{search_word}}">
+            <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
+              <button type="submit" style="border: none; background-color: transparent;">
+              <i class="fas fa-search"></i>
+              </button>
+            </span>
+            </form>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 ms-md-3 my-2 my-md-0 py-1">
+  <!-- Track Order Button -->
+  <a class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#trackOrderModal">Track Order</a>
+
+  <!-- Wishlist Icon -->
+  <a class="fa fa-heart fs-5 text-dark" href="{% url 'wishlist' %}" style="text-decoration: none;"></a>
 
   <!-- Cart Icon -->
-  <li>
-    <a class="nav-link" href="{% url 'cart' %}">
-      <img src="{% static 'images/cart.svg' %}" alt="Cart">
-    </a>
-  </li>
-</ul>
+  <a class="fa fa-shopping-cart fs-5 text-dark" href="{% url 'cart' %}" style="text-decoration: none;"></a>
 
-				</div>
-			</div>
-				
-		</nav>
+  <!-- User Dropdown or Login Icon -->
+  {% if user.is_authenticated %}
+  <div class="dropdown">
+    <a class="fa fa-user-alt fs-5 text-dark dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;"></a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+      <li><h6 class="dropdown-header">{{ user.first_name }}</h6></li>
+      <li><a class="dropdown-item" href="{% url 'profile' %}">
+        <i class="fa-solid fa-user me-2"></i> Profile
+      </a></li>
+      <li><a class="dropdown-item" href="{% url 'orders' %}">
+        <i class="fa-solid fa-truck me-2"></i> Orders
+      </a></li>
+      <li><a class="dropdown-item" href="{% url 'logoutpage' %}">
+        <i class="fas fa-sign-out-alt me-2"></i> Log out
+      </a></li>
+    </ul>
+  </div>
+  {% else %}
+  <a class="fa fa-sign-in-alt fs-5 text-dark" href="{% url 'loginpage' %}" style="text-decoration: none;"></a>
+  {% endif %}
+</div>
+
+    </div>
+    <!-- Collapse (first row + categories for mobile) -->
+    <div class="collapse navbar-collapse" id="mainNavbar">
+
+      <!-- First row -->
+<hr style="border: none; border-top: 2px dashed #555; margin: 10px 0;">
+      <!-- Categories (mobile only) -->
+      <ul class="nav nav-pills flex-column d-md-none p-2" style="background-color: #E5D9D9;">
+      {% for room in rooms %}
+<li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.id %}active{% endif %}" href="{% url 'rooms' room_type=room.id %}">{{room.name}}</a></li>
+      {% endfor %}
+      </ul>
+
+    </div>
+  </div>
+  
+</nav>
+
+<hr style="border: none; border-top: 2px dashed #555; margin: 0px 0;">
+<!-- Categories (desktop only) -->
+<div class=" d-none d-md-block py-1"  style="background-color: #E5D9D9;"" >
+  <div class="container">
+    <ul class="nav nav-pills justify-content-center">
+      {% for room in rooms %}
+     <li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.id %}active{% endif %}" href="{% url 'rooms' room_type=room.id %}">{{room.name}}</a></li>
+
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+<style>
+  button.btn.btn-sm.btn-light {
+    background-color: #E5D9D9;
+    color: black;
+}
+a.nav-link {
+  color: black;
+  text-decoration: none;
+}
+.navbar-dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.55)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+</style>
+<div class="modal fade" id="trackOrderModal" tabindex="-1" aria-labelledby="trackOrderLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="trackOrderLabel">Track Your Order</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="trackOrderForm">
+          <div class="mb-3">
+            <label for="orderNo" class="form-label">Order Number</label>
+            <input type="text" id="orderNo" name="orderNo" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="emailid" class="form-label">Email Address</label>
+            <input type="email" id="emailid" name="email" class="form-control" required>
+          </div>
+          <p id="delivery" style="color: red;"></p>
+          <button type="submit" class="btn btn-primary w-100">Track</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function productSearch() {
+      const searchform = document.getElementById("product-search");
+      const searchword = document.getElementById("product-search-input");
+      let word = searchword.value;
+      searchform.setAttribute("action",`shop/search/${encodeURIComponent(word)}/`);
+    }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById('trackOrderForm');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const orderNo = document.getElementById('orderNo').value;
+        const email = document.getElementById('emailid').value;
+		const url = `/view_single_order/${orderNo}/${encodeURIComponent(email)}`;
+        fetch(url, { method: "GET" })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = url;
+                } else {
+                    document.getElementById('delivery').innerText = "The order does not exist";
+                }
+            })
+            .catch(error => {
+                document.getElementById('delivery').innerText = "An error occurred";
+                console.error(error);
+            });
+    });
+});
+
+</script>
 		<!-- End Header/Navigation -->

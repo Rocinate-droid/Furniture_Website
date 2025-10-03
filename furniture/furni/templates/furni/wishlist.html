@@ -1,0 +1,49 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load humanize %}
+
+<div class="container py-5">
+  <div class="row">
+    <!-- LEFT: CART ITEMS -->
+    <div class="col-lg-8">
+      <div class="card mb-3 p-3">
+        {% if wish_items|length >= 1 %}
+        <h4 class="mb-3">My Wishlist ({{ wish_items|length }})</h4>
+        {% else %}
+        <h4 class="mb-3">Your Wishlist is empty</h4>
+        {% endif %}
+
+        <div id="cart_content">
+        {% include "furni/wishlist_items.html" with wish_items=wish_items %}
+        </div>
+      </div>
+      <a href="{% url 'shop' %}" class="btn btn-outline-dark">← Continue Shopping</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function changeQuantity(itemId, delta) {
+    console.log(itemId)
+    const qtyInput = document.getElementById(`qty_prod_${itemId}`);
+    let currentQty = parseInt(qtyInput.value) || 1;
+    currentQty = Math.max(1, currentQty + delta);
+    qtyInput.value = currentQty;
+    update_Quantity(itemId);
+  }
+  function getUpdateUrl(item_id) {
+    const quantityelement = document.getElementById(`qty_prod_${item_id}`).value;
+    return `update/wishlist/${item_id}/${quantityelement}/`;
+  }
+  function update_Quantity(id) {
+    const url = getUpdateUrl(id);
+    fetch(url, {
+      headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("cart_content").innerHTML = html;
+      })
+  }
+</script>
+{% endblock %}

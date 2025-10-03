@@ -2,10 +2,10 @@ from datetime import date, timedelta
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from .models import Categorie
+from .models import Categorie, Room
 from .models import Testimonial, Review
 from .models import Product
-from .models import Cart,CartItem
+from .models import Cart,CartItem, Wishlist, WishlistItem
 from .forms import contactForm
 from .models import Orders
 from .models import OrderItem
@@ -38,11 +38,24 @@ def home(request):
     
     categories = Categorie.objects.all()
     testimonials = Testimonial.objects.all()
-    context = {'categories' : categories[0:3], 'testimonials' : testimonials}
+    products = Product.objects.all()
+    for product in products:
+        product.savings = product.original_price - product.discounted_price
+        product.savings_percentage = int((product.savings / product.original_price ) * 100)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string("furni/new_launches.html", {'products': products})
+        return HttpResponse(html) 
+    if request.user.is_authenticated:
+        wishlistcreated, created = Wishlist.objects.get_or_create(customer=request.user)
+        wish_items = WishlistItem.objects.filter(wishlist=wishlistcreated).values_list('product_id', flat=True)
+        context = {'categories' : categories, 'testimonials' : testimonials, 'products': products, 'wish_items':list(wish_items)}
+    else:
+        context = {'categories' : categories, 'testimonials' : testimonials, 'products': products}
     return render(request, "furni/home.html", context)
 
 def shop(request):
     categories = Categorie.objects.all()
+    
     context = {'categories' : categories}
     return render(request, "furni/shop.html", context )
 
@@ -80,9 +93,8 @@ def contact(request):
     context = {'form': form }
     return render(request, "furni/contact.html", context)
 
-def category(request, cat_id):
-    category = Categorie.objects.get(id=cat_id)
-    products = Product.objects.filter(category_id=cat_id)
+def category(request, cat_name):
+    products = Product.objects.filter(category__name=cat_name)
     price = request.GET.get('price')
     sort  = request.GET.get('sort')
     if sort:
@@ -101,6 +113,54 @@ def category(request, cat_id):
         return HttpResponse(html)
     context = {'category': category, 'products': products}
     return render(request, "furni/category.html", context)
+
+def rooms(request,room_type):
+    products = Product.objects.filter(room_or_Product_Type=room_type)
+    price = request.GET.get('price')
+    sort  = request.GET.get('sort')
+    if sort:
+        if sort == "low_to_high":
+            products = products.order_by('discounted_price')
+        elif sort == "high_to_low":
+            products = products.order_by('-discounted_price')
+    if price:
+            min_price, max_price = map(int, price.split("-"))
+            products = products.filter(Q(discounted_price__gte=min_price) & Q(discounted_price__lte=max_price))
+    for p in products:
+        p.savings = p.original_price - p.discounted_price
+        p.savings_percentage = int((p.savings / p.original_price) * 100)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string("furni/product_list.html", {'products': products})
+        return HttpResponse(html)
+    context = {'products': products, 'current_room' : room_type}
+    return render(request, "furni/category.html", context)
+
+def product_search(request):
+    search_word = request.GET.get("search_word")
+    products = Product.objects.all()
+    if search_word != None:
+        print("gekko")
+        search_word.strip()
+        products = products.filter(Q(name__icontains=search_word) | Q(category__name__icontains=search_word) | Q(room_or_Product_Type__name__icontains=search_word))
+    price = request.GET.get('price')
+    sort  = request.GET.get('sort')
+    if sort:
+        if sort == "low_to_high":
+            products = products.order_by('discounted_price')
+        elif sort == "high_to_low":
+            products = products.order_by('-discounted_price')
+    if price:
+            min_price, max_price = map(int, price.split("-"))
+            products = products.filter(Q(discounted_price__gte=min_price) & Q(discounted_price__lte=max_price))
+    for p in products:
+        p.savings = p.original_price - p.discounted_price
+        p.savings_percentage = int((p.savings / p.original_price) * 100)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string("furni/product_list.html", {'products': products})
+        return HttpResponse(html)
+    context = {'products' : products, "search_word" : search_word,}
+    return render(request, "furni/category.html", context)
+
 
 def product(request,cat_id,prod_id):
     product = get_object_or_404(Product,id = prod_id,category_id=cat_id)
@@ -149,10 +209,64 @@ def product(request,cat_id,prod_id):
             review_dict["one_star"] = review_dict["one_star"] + 1
     if Review.objects.count() != 0:
         overall_rating = ((5 * review_dict["five_star"]) + (4 * review_dict["four_star"]) + (3 * review_dict["three_star"]) + (2 * review_dict["two_star"]) + (1 * review_dict["one_star"]))/Review.objects.count()
-    print(overall_rating)
     context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict}
     return render(request, "furni/product.html", context)
 
+
+def view_wishlist(request):
+    user_id = request.session.get('user_id')
+    if request.user.is_authenticated:
+        wishlistcreated, created = Wishlist.objects.get_or_create(customer=request.user)
+        wish_items = WishlistItem.objects.filter(wishlist=wishlistcreated)
+    else:
+        return redirect('loginpage')
+    context = {'wish_items' : wish_items,}
+    return render(request, "furni/wishlist.html", context)
+
+def add_to_wishlist(request,product_id,qty):
+    product = Product.objects.get(id=product_id)
+    if request.user.is_authenticated:
+        wishlistcreated, created = Wishlist.objects.get_or_create(customer=request.user)
+        wish_item, created2 = WishlistItem.objects.get_or_create(product=product,wishlist=wishlistcreated,defaults={'quantity':qty})
+    if not created2:
+        wish_item.quantity += qty
+        wish_item.save()
+    return redirect(view_wishlist)
+
+def delete_from_wishlist(request, wish_item_id):
+    if request.user.is_authenticated:
+        wishlistcreated, created = Wishlist.objects.get_or_create(customer=request.user)
+        wishitem = WishlistItem.objects.get(product__id=wish_item_id,wishlist=wishlistcreated)
+    wishitem.delete()
+    return redirect(view_wishlist)
+
+def update_wishlist(request, wish_item_id, qty):
+    if request.user.is_authenticated:
+        wishlistcreated, created = Wishlist.objects.get_or_create(customer=request.user)
+        wishitem = get_object_or_404(WishlistItem, id=wish_item_id)
+        wishitem.quantity = qty
+        wishitem.save()
+        wish_items = WishlistItem.objects.filter(wishlist=wishlistcreated)
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            html = render_to_string("furni/wishlist_items.html", {'wish_items': wish_items})
+            return HttpResponse(html)
+    return redirect(view_wishlist)
+
+def transfer_to_cart(request, wish_item_id):
+    if request.user.is_authenticated:
+        wishlistcreated, created = Wishlist.objects.get_or_create(customer=request.user)
+        wishitem = get_object_or_404(WishlistItem, wishlist=wishlistcreated, id=wish_item_id)
+        cartcreated, created2 = Cart.objects.get_or_create(customer=request.user)
+        cart_item, cartitemcreated = CartItem.objects.get_or_create(cart=cartcreated,product=wishitem.product,defaults={'quantity': wishitem.quantity})
+        if not cartitemcreated:
+            cart_item.quantity += wishitem.quantity 
+            cart_item.save()
+        wishitem.delete()
+        wish_items = WishlistItem.objects.filter(wishlist=wishlistcreated)
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            html = render_to_string("furni/wishlist_items.html", {'wish_items': wish_items})
+            return HttpResponse(html)
+    return redirect(view_cart)
 
 def view_cart(request):
     user_id = request.session.get('user_id')

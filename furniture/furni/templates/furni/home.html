@@ -1,47 +1,407 @@
 {% extends 'main.html' %}
 {% block content %}
 {% load static %}
+{% load humanize %}
+{% load dict_extras %}
+<style>
+	/* Smooth transition for sliding */
+    .carousel-inner {
+      transition: transform 0.5s ease-in-out;
+    }
+	.hide-on-mobile {
+		flex: 1; padding: 10px; justify-content: flex-start; align-items: center; display: flex; max-width: 100%;
+	}
+  .slider-parent {
+    flex: 1; padding: 10px; justify-content: flex-end; align-items: center; display: flex; max-width: 100%;
+  }
+	@media (max-width: 904px) {
+    .hide-on-mobile {
+      display: none;
+    }
+    .offer-slider {
+      max-height: 105px;
+    }
+    .slider-parent {
+      justify-content: center;
+    }
+  }
+</style>
 		<!-- Start Hero Section -->
-<div class="hero position-relative" style="height: 60vh; overflow:hidden; background:none;">
+<!-- Start Hero Section -->
+<div id="heroCarousel" class="carousel slide carousel-fade position-relative" 
+     data-bs-ride="carousel" data-bs-interval="2500" style=" overflow: hidden;">
 
-  <!-- Background Video -->
-  <video autoplay muted loop playsinline
-         class="position-absolute top-0 start-0 w-100 h-100"
-         style="height: 100%; width: 100%; object-fit: cover; z-index:0;">
-      <source src="{% static 'videos/video4.mp4' %}" type="video/mp4">
-      Your browser does not support the video tag.
-  </video>
-
-  <!-- Dark overlay -->
-  <div class="position-absolute top-0 start-0 w-100 h-100"
-       style="background: rgba(0,0,0,0.45); z-index:1;">
+  <!-- Carousel Items -->
+  <div class="carousel-inner" >
+	 <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
   </div>
 
+    <!-- Slide 1 -->
+    <div class="carousel-item active">
+      <a href="{% url 'category' cat_name='Sofa' %}">
+      <img src="{% static 'images/hero-carousel1.webp' %}" 
+           class="d-block w-100 h-100" 
+           style="object-fit: cover;" 
+           alt="Banner 1">
+      </a>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="carousel-item">
+      <a href="{% url 'category' cat_name='Tables' %}">
+      <img src="{% static 'images/hero-carousel2.webp' %}" 
+           class="d-block w-100 h-100" 
+           style="object-fit: cover;" 
+           alt="Banner 2"></a>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="carousel-item">
+      <a href="{% url 'category' cat_name='Beds' %}">
+      <img src="{% static 'images/hero-carousel3.webp' %}" 
+           class="d-block w-100 h-100" 
+           style="object-fit: cover;" 
+           alt="Banner 3"></a>
+    </div>
+  </div>
+  <!-- Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+<style>
+  .offer-slider {
+    background-color: wheat;
+    display: flex;
+    overflow: hidden;
+    border-radius: 20px;
+    flex: 1;
+    max-width: 587.862px;
+    max-height: 125px;
+  }
+  .sale-logo {
+    color: transparent; 
+    align-self: center;
+    padding: 10px;
+    width:120px;
+    height:125px
+  }
   
-  
-  <!-- Content -->
-  <div class="container position-relative text-white" style="z-index:2;">
-      <div class="row justify-content-between">
-          <div class="col-lg-6">
-              <div class="intro-excerpt">
-                  <h1>Furniture That <span class="d-block">Feels Like Home</span></h1>
-                  <p class="mb-4" style="color: white;">From quiet mornings to lively gatherings, our designs are built for real life, real moments, and real comfort.</p>
-                  <p>
-                      <a href="shop" class="btn btn-white-outline">Shop Now</a>
-                      
-                  </p>
-              </div>
+  @media (max-width: 600px) {
+    .offer-slider {
+      max-height: 105px;
+    }
+    .sale-logo {
+      padding: 20px;
+    }
+  }
+</style>
+<div style="display: flex; background-color: #D9D9D9; flex-wrap: wrap;">
+	<div class="slider-parent">
+		<div class="offer-slider"> 
+				<img class="sale-logo" alt="why-wakefit" loading="lazy"  src="{% static 'images/sale.png' %}">
+				<div class="" style="background-color: white; display: flex; align-items: center;  gap: 20px; flex: 1;
+ padding: 10px 10px;">
+<div class="tw-relative tw-w-full tw-max-w-xl tw-mx-auto" role="region" aria-roledescription="carousel" style="padding-top: 20px;">
+  <div class="tw-overflow-hidden">
+    <div id="carouselInner" class="tw-flex tw-transition-transform tw-duration-500">
+
+      <!-- Slide 1 -->
+      <div role="group" aria-roledescription="slide" class="tw-w-full tw-shrink-0 tw-grow-0 tw-p-3">
+        <div class="tw-flex tw-items-center tw-gap-3">
+          <div class="tw-flex tw-gap-2">
+            <img alt="HDFC logo"
+              class="tw-h-10 tw-w-auto tw-rounded-md tw-object-contain"
+              src="https://ik.imagekit.io/2xkwa8s1i/bank-logo/HDFC-logo.png?tr=w-96">
           </div>
+          <div class="tw-flex tw-flex-col tw-text-start tw-leading-tight">
+            <p class="tw-text-xs tw-font-medium tw-text-black">Flat</p>
+            <div class="tw-flex tw-items-center tw-gap-1">
+              <p class="tw-text-lg tw-font-bold tw-text-[#129C80]">11% OFF</p>
+            </div>
+            <p class="tw-text-xs tw-text-black">Save up to ₹1,850 with HDFC Bank</p>
+          </div>
+        </div>
       </div>
+
+      <!-- Slide 2 -->
+      <div role="group" aria-roledescription="slide" class="tw-w-full tw-shrink-0 tw-grow-0 tw-p-3">
+        <div class="tw-flex tw-items-center tw-gap-3">
+          <div class="tw-flex tw-gap-2">
+            <img alt="IDFC logo"
+              class="tw-h-10 tw-w-auto tw-rounded-md tw-object-contain"
+              src="https://ik.imagekit.io/2xkwa8s1i/bank-logo/idfc-logo.png?tr=w-96">
+            <img alt="AU Small logo"
+              class="tw-h-10 tw-w-auto tw-rounded-md tw-object-contain"
+              src="https://ik.imagekit.io/2xkwa8s1i/bank-logo/AUSmall-logo.png?tr=w-96">
+          </div>
+          <div class="tw-flex tw-flex-col tw-text-start tw-leading-tight">
+            <p class="tw-text-xs tw-font-medium tw-text-black">Flat</p>
+            <div class="tw-flex tw-items-center tw-gap-1">
+              <p class="tw-text-lg tw-font-bold tw-text-[#129C80]">11% OFF</p>
+            </div>
+            <p class="tw-text-xs tw-text-black">Valid for IDFC & AU Small Finance Bank</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
 
 
- 
+				</div>
+			</div>
+	</div>
+
+	<div class="hide-on-mobile">
+		
+			<div class="" style="background-color: wheat; display: flex; overflow: hidden;  border-radius: 20px;" > 
+				<img alt="why-wakefit" loading="lazy" width="120" height="125" src="{% static 'images/why-module.png' %}" style="color: transparent; display: flex; align-self: center;">
+				<div class="" style=" display: flex; background-color: white; align-items: center;  gap: 20px;
+  padding: 10px 20px;">
+				<button class="items-center justify-center gap-y-1.5 rounded-sm min-w-0" style="border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;   /* stack icon + text */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;">
+				<img alt="why-wakefit" loading="lazy" width="42" height="43" src="{% static 'images/truck.svg' %}" style="color: transparent; display: flex; align-self: center;">
+				<p class="line-clamp-2 self-start text-center text-[10px] not-italic text-[#7D7E7F] md:text-[0.813rem] lg:text-sm">Fast Shipping</p>
+				</button>
+				<button class="items-center justify-center gap-y-1.5 rounded-sm min-w-0" style="border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;   /* stack icon + text */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;">
+				<img alt="why-wakefit" loading="lazy" width="42" height="42" src="{% static 'images/support.svg' %}" style="color: transparent;">
+				<p class="line-clamp-2 self-start text-center text-[10px] not-italic text-[#7D7E7F] md:text-[0.813rem] lg:text-sm">24/7 Support</p>
+				</button>
+				<button class="items-center justify-center gap-y-1.5 rounded-sm min-w-0" style="border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;   /* stack icon + text */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;">
+				<img alt="why-wakefit" loading="lazy" width="42" height="42" src="{% static 'images/return.svg' %}" style="color: transparent;">
+				<p class="line-clamp-2 self-start text-center text-[10px] not-italic text-[#7D7E7F] md:text-[0.813rem] lg:text-sm">Easy Returns</p>
+				</button>
+				<button class="items-center justify-center gap-y-1.5 rounded-sm min-w-0" style="border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;   /* stack icon + text */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;">
+				<img alt="why-wakefit" loading="lazy" width="42" height="42" src="{% static 'images/bag.svg' %}" style="color: transparent;">
+				<p class="line-clamp-2 self-start text-center text-[10px] not-italic text-[#7D7E7F] md:text-[0.813rem] lg:text-sm">Easy Shopping</p>
+				</button>
+				</div>
+			</div>
+		
+	</div>
+</div>
 
 
-		<!-- Start Why Choose Us Section -->
+<!-- End Hero Section -->
+
+
+
+
+<style>
+	.categories-section {
+  text-align: center;
+  padding: 40px 3px 20px;
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.cat-grid {
+  display: grid;
+
+    grid-template-columns: repeat(3,minmax(0,1fr));
+
+  gap: 10px;
+  justify-items: center;
+  padding: 5px;
+}
+    grid-template-columns: repeat(6,minmax(0,1fr));
+
+.cat-card {
+  width: 180px;                 /* adjust size as needed */
+  text-align: center;
+}
+
+.image-box {
+  position: relative;
+      /* similar to dotted border in screenshot */
+  border-radius: 10px;
+  overflow: hidden;
+  height: 180px;                 /* makes all cards uniform */
+}
+
+.image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;             /* fill box while keeping aspect ratio */
+}
+
+
+.discount-badge {
+    border-bottom-left-radius: 10px;
+    /* padding-right: 10px; */
+    position: absolute;
+    /* bottom: 140px; */
+    top: 0;
+    right: 0;
+    /* left: 140px; */
+    background: wheat;
+    opacity: 0.8;
+    color: #fff;
+    /* border-bottom-left-radius: 80px; */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 10px;
+    line-height: 1.2;
+}
+
+.cat-label {
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+@media (min-width: 1024px) {
+    .cat-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 30px;
+        padding: 50px;
+    }
+    .categories-section {
+      padding: 40px 20px;
+    }
+}
+
+</style> 
+
+<style>
+  .iwishAddWrap {
+    box-shadow: 0px 2px 10px rgb(222 0 0 / 20%);
+  }
+
+</style>
+  </div>
+<div class="categories-section">
+  <h2 class="section-title">Shop By Categories</h2>
+
+  <div class="cat-grid">
+    {% for category in categories %}
+    <a href="{% url 'category' cat_name=category.name %}" style="text-decoration: none;">
+    <div class="cat-card">
+      <div class="image-box">
+        <img src="{{category.img.url}}" alt="{{category.name}}">
+        
+      </div>
+      <p class="cat-label">{{category.name}}</p>
+    </div>
+    </a>
+    {% endfor %}
+
+
+    <!-- Repeat for all categories -->
+  </div>
+</div>
+
+
+<style>
+	.new-launch {
+		display: grid;
+		grid-template-columns:repeat(4, 1fr);
+		grid-template-rows:repeat(1, 1fr);
+		gap: 10px;
+		overflow-x: auto;
+		padding: 40px 20px;
+		/*grid-auto-rows: minmax(100px, auto);*/
+		background-color: #FDEEC6;
+	}
+	.scroll-products {
+		display: grid;
+  height: auto;
+  grid-gap: 0 20px; /* row gap: 0, column gap: 20px */
+  grid-auto-flow: column; /* place grid items in columns */
+  grid-auto-columns:auto ; /* default size for the columns in the grid */
+  overflow-x: scroll;
+  grid-column: 1 / 6;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  padding: 50px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+	.scroll-products::-webkit-scrollbar {
+		scroll-behavior:smooth;
+  display: none;
+
+
+}
+	.prod-card {
+		padding: 5px;
+		width: 180px;         
+	}
+	.launch-title {
+		grid-column: 1 / 6;
+		font-size: 2rem;
+		margin-bottom: 30px;
+		font-weight: 600;
+		text-align: center;
+	}
+	.launch-card {
+
+		padding: 5px;
+		width: 238px;         
+	}
+</style>
+
+<!--New Launches-->
+<div class="new-launch">
+	<div class="launch-title">⭐ New Launches ⭐</div>
+	<div class="scroll-products">
+    {% include "furni/new_launches.html" with products=products wish_items=wish_items %}
+   
+
+	</div>
+</div>
+
+
+		<!-- 
 		<div class="why-choose-section">
 			<div class="container">
 				
@@ -90,11 +450,11 @@
 			
 			</div>
 		</div>
-		<!-- End Why Choose Us Section -->
+		-->
 		 
 		
 		<!-- Start We Help Section -->
-		<div class="we-help-section">
+		<div class="we-help-section" style="padding-bottom: 2rem;">
 			<div class="container">
 				<div class="row justify-content-between">
 					<div class="col-lg-7 mb-5 mb-lg-0">
@@ -114,7 +474,7 @@
 							<li>Customizable pieces to fit your space perfectly</li>
 							<li>Hassle-free delivery and easy returns</li>
 						</ul>
-						<p><a href="shop" class="btn">Browse Collections</a></p>
+						<!--<p><a href="" class="btn">Browse Collections</a></p>-->
 					</div>
 				</div>
 			</div>
@@ -122,30 +482,6 @@
 		<!-- End We Help Section -->
 
 
-		<!-- Start Product Section -->
-		<div class="product-section">
-			<div class="container">
-				<div class="row">
-					<!-- Start Column 1 -->
-					<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
-						<h2 class="mb-4 section-title">Crafted with excellent material.</h2>
-						<p class="mb-4">From cozy nooks to open-plan living, we help you create interiors that balance beauty, comfort, and functionality — uniquely tailored to you, explore our wide range of collections</p>
-					</div> 
-					<!-- End Column 1 -->
-					{% for category in categories %}
-					<!-- Start Column 2 -->
-					<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-						<a class="product-item" href="{% url 'category' category.id %}">
-							<img src="{{category.img.url}}" class="img-fluid product-thumbnail">
-							<h3 class="product-title">{{category.name}}</h3>
-						</a>
-					</div> 
-			        {% endfor %}
-
-				</div>
-			</div>
-		</div>
-		<!-- End Product Section -->
 
 		<!-- Start Popular Product
 		<div class="popular-product">
@@ -295,44 +631,57 @@
 			</div>
 		</div>
 		End Blog Section -->
-		<script>
-  // Get modal and buttons
-  const modal = document.getElementById("orderModal");
-  const openBtn = document.getElementById("openModalBtn");
-  const closeBtn = document.getElementById("closeModalBtn");
+		
+<script>
+  const carouselInner = document.getElementById('carouselInner');
+  const slides = carouselInner.children;
+  let currentIndex = 0;
+  const totalSlides = slides.length;
 
-  // Open modal
-  openBtn.onclick = () => {
-    modal.style.display = "block";
-  };
+  function showSlide(index) {
+    const offset = -index * 100; // shift by 100% per slide
+    carouselInner.style.transform = `translateX(${offset}%)`;
+  }
 
-  // Close modal
-  closeBtn.onclick = () => {
-    modal.style.display = "none";
-  };
+  function nextSlide() {
+    currentIndex = (currentIndex + 1) % totalSlides;
+    showSlide(currentIndex);
+  }
 
-  // Close if clicked outside
-  window.onclick = (event) => {
-    if (event.target == modal) {
-      modal.style.display = "none";
+  // Auto-slide every 3 seconds
+  setInterval(nextSlide, 3000);
+
+  // Initialize first slide
+  showSlide(currentIndex);
+
+  function getWishStatus(product_id) {
+    const like_icon = document.getElementById(`cart-like${product_id}`);
+    if (like_icon.getAttribute("fill") == "none") {
+      console.log(like_icon.getAttribute("fill"));
+      const url = `add/wishlist/${product_id}/1/`;
+      console.log(url);
+      like_icon.setAttribute("fill","red");
+      return url;
+    } else if(like_icon.getAttribute("fill") == "red") {
+      const url = `remove/wishlist/${product_id}/`;
+      like_icon.setAttribute("fill","none");
+      console.log(url);
+      return url;
     }
-  };
+  }
 
-  // Submit function
-  function submitOrder() {
-    const orderNo = document.getElementById("orderNumber").value;
-    const email = document.getElementById("userEmail").value;
+  function addToWishlist(product_id) {
+    const url = getWishStatus(product_id)
+    fetch(url, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      }
+    })
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("scroll-products").innerHTML = html;
+      })
 
-    if (!orderNo || !email) {
-      alert("Please enter both Order Number and Email.");
-      return;
-    }
-
-    console.log("Order Number:", orderNo);
-    console.log("User Email:", email);
-    alert(`Order Submitted!\nOrder No: ${orderNo}\nEmail: ${email}`);
-
-    modal.style.display = "none";
   }
 </script>
 {% endblock content %}
