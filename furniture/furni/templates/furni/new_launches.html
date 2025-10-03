@@ -1,0 +1,28 @@
+ {% load humanize %}
+ {% for product in products %}
+	<div class="launch-card"><div class="card border-0 shadow-sm h-100">
+    <div class="position-relative">
+      <a href="{% url 'product' cat_id=product.category.id prod_id=product.id %}">
+        <img src="{{product.img.url}}" class="card-img-top" alt="Product">
+        </a>
+        <button onclick="addToWishlist({{product.id}})" style="background: transparent;border: none !important;" ><div class="discount-badge"><svg {% if product.id in wish_items %} fill="red" {% else %} fill="none" {% endif %} class="icon" id="cart-like{{product.id}}" height="24" width="24" stroke="red" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+</div></button>
+      
+    </div>
+    <a href="{% url 'product' cat_id=product.category.id prod_id=product.id %}" style="text-decoration: none;">
+    <div class="card-body">
+      
+      <h5 class="card-title fs-6">{{product.name}}</h5>
+      <p class="mb-1">
+        <span class="fw-bold">₹{{product.discounted_price | intcomma}}</span>
+        <del class="text-muted small">₹{{product.original_price | intcomma}}</del>
+      </p>
+      <p class="text-success small mb-1">
+        Save ₹{{product.savings}} ({{product.savings_percentage}}% OFF)
+      </p>
+      <p class="text-muted small">{{product.color_options}} color options</p>
+    </div>
+  </a>
+  </div></div>
+
+  {% endfor %}

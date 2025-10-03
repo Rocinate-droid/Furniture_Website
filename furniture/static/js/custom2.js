@@ -91,7 +91,7 @@
     mainImage.src = el.src;
   }
 
-  function adjustQty(val) {
+  function adjustQty(val, productId) {
     let qty = parseInt(qtyInput.value);
     qty = isNaN(qty) ? 1 : qty;
     qty = Math.max(1, qty + val);

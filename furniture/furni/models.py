@@ -18,6 +18,13 @@ class Categorie(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
+
+class Room(models.Model):
+    name = models.CharField(max_length=200)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.name
     
 class Product(models.Model):
     assembly_choices = [
@@ -29,6 +36,7 @@ class Product(models.Model):
         ("Not Available", "Not Available")
     ]
     category = models.ForeignKey(Categorie, on_delete=models.CASCADE)
+    room_or_Product_Type = models.ForeignKey(Room, on_delete=models.CASCADE)
     serial_no = models.CharField(max_length=100)
     name = models.CharField(max_length=200)
     discounted_price = models.IntegerField()
@@ -59,6 +67,29 @@ class Review(models.Model):
             return f"{self.customer.first_name} : {self.product.name} : {self.rating}⭐"
         return f"{self.name} : {self.product.name} : {self.rating}⭐"
 
+
+class Wishlist(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        if self.customer:
+            return self.customer.username
+        return self.anonymous
+    
+class WishlistItem(models.Model):
+    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.PositiveIntegerField(default=0)
+    @property
+    def total_cost(self):
+        if self.product:
+            return self.product.discounted_price * self.quantity
+        return 0
+    def __str__(self):
+        if self.wishlist.customer:
+            return f"{self.wishlist.customer.username}'s cart item - {self.product.name if self.product else 'No product'}"
+        return f"Anonymous cart item - {self.product.name if self.product else 'No product'}"
 
 class Cart(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

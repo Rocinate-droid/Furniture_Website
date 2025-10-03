@@ -55,10 +55,10 @@
 
       <!-- Quantity & Price -->
       <div class="d-flex align-items-center mb-3">
-        <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(-1)">-</button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(-1, {{product.id}})">-</button>
         <input id="qtyInput" type="text" value="1" class="form-control form-control-sm mx-2 text-center"
           style="width: 50px;">
-        <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(1)">+</button>
+        <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(1, {{product.id}})">+</button>
         <strong class="ms-3">₹<span id="totalPrice">{{product.discounted_price}}</span></strong>
       </div>
 

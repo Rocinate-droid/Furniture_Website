@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Categorie
+from .models import Categorie, Room
 from .models import Testimonial, Review
 from .models import Product
 from .models import Contact
@@ -10,6 +10,7 @@ from .models import CartItem
 from .models import BillingAddress, ShippingAddress
 from .models import Orders
 from .models import Cart
+from .models import Wishlist
 from .models import OrderItem, Replacement
 
 class orderProducts(admin.TabularInline):
@@ -48,4 +49,6 @@ admin.site.register(Cart)
 admin.site.register(Orders, orderAdmin)
 admin.site.register(OrderItem)
 admin.site.register(Review)
+admin.site.register(Wishlist)
+admin.site.register(Room)
 admin.site.register(Replacement, replacementAdmin)
