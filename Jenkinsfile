@@ -1,5 +1,8 @@
 pipeline{
     agent any
+    environment {
+        DJANGO_KEY = 'django-insecure-3%w@xqpj%*r7gh*w+6+)+07l0#eaz2v5v33&n6j035xmj0=v'
+    }
     stages {
         stage ('Configure Nginx'){
             steps {
