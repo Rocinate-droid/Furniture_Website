@@ -1,17 +1,25 @@
-{% for item in wish_items %}
 {% load humanize %}
+<div class="card mb-3 p-3">
+        {% if wish_items|length >= 1 %}
+        <h4 class="mb-3">My Wishlist ({{ wish_items|length }})</h4>
+        {% else %}
+        <h4 class="mb-3">Your Wishlist is empty</h4>
+        {% endif %}
+
+        <div id="cart_content">
+        {% for item in wish_items %}
 <!-- Product Image -->
  {% if item.product %}
  <div class="d-flex border-bottom py-3" id="cart_content">
           <div class="me-3">
-            <a href="{% url 'product' cat_id=item.product.category.id prod_id=item.product.id %}">
+            <a href="{% url 'product' cat_id=item.product.category.slug prod_id=item.product.slug %}">
               <img src="{{ item.product.img.url }}" alt="{{ item.product.name }}" style="width:100px; height:auto;" class="rounded">
             </a>
           </div>
 
           <!-- Product Info -->
           <div class="flex-grow-1">
-            <a href="{% url 'product' cat_id=item.product.category.id prod_id=item.product.id %}" class="text-decoration-none">
+            <a href="{% url 'product' cat_id=item.product.category.slug prod_id=item.product.slug %}" class="text-decoration-none">
               <h5 class="mb-1">{{ item.product.name }}</h5>
             </a>
             <p class="text-muted small mb-1">Seller: <strong>Module</strong></p>
@@ -36,8 +44,11 @@
           <!-- Remove -->
           <div>
             <a href="{% url 'delete_from_wishlist' wish_item_id=item.product.id %}" class="btn btn-sm btn-outline-danger">Remove</a>
-            <a href="{% url 'transfer_to_cart' wish_item_id=item.id %}" class="btn btn-sm btn-outline-danger">Add to cart</a>
+            <button data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" onclick="transferToCart({{item.id}})" class="btn btn-sm btn-outline-danger">Add to cart</button>
           </div>
         </div>
         {% endif %}
 {% endfor %}
+
+        </div>
+      </div>

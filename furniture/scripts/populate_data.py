@@ -2,9 +2,7 @@
 from furni.models import Room  # Replace with your app/model
 
 room_names = [
-    "Living Room",
     "Bed Room",
-    "Dining Room",
     "Home Office",
     "Plastic Chairs",
     "Kitchen",

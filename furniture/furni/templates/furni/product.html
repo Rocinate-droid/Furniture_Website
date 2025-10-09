@@ -3,7 +3,7 @@
 {% block content %}
 {% load static %}
 {% load dict_extras %}
-<div class="container py-5">
+<div class="container py-5" id="product-part">
   <div class="row">
     <!-- Product Images (Sticky Left) -->
     <div class="col-md-6">
@@ -63,20 +63,23 @@
       </div>
 
       <!-- Actions -->
-      <form>
+      
         <div class="d-flex flex-column flex-sm-row gap-2 mb-4">
-          <button class="btn btn-orange w-100" id="buynow" formaction="/buy/{{ product.id }}/1/">Buy Now</button>
-          <button class="btn btn-outline-secondary w-100" id="addtocart" formaction="/add/{{ product.id }}/1/">Add to
-            Cart</button>
-            {% if user.is_authenticated %}
-             <button class="btn btn-outline-secondary w-100" id="addtowishlist" formaction="/add/wishlist/{{ product.id }}/1/">Add to
-            Wishlist</button>
-            {% else %}
-            <button class="btn btn-outline-secondary w-100" id="addtowishlist" formaction="{% url 'loginpage' %}">Add to
-            Wishlist</button>
-            {% endif %}
+           {% if user.is_authenticated %}
+        <button class="btn btn-outline-secondary w-10 changebutton" onclick="addToWishlist({{product.id}})" style="background: transparent;border: none !important;background-color: #E5D9D9" ><div class="discount-badge"><svg {% if product.id in wish_items %} fill="red" {% else %} fill="none" {% endif %} class="icon" id="cart-like{{product.id}}" height="24" width="24" stroke="red" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> 
+        </div></button>
+        {% else %}
+        <button class="btn btn-outline-secondary w-10 changebutton" onclick="location.href='/login'" style="border: none !important; background-color: #E5D9D9;" ><div class="discount-badge"><svg {% if product.id in wish_items %} fill="red" {% else %} fill="none" {% endif %} class="icon" id="cart-like{{product.id}}" height="24" width="24" stroke="red" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> 
+        </div></button>
+        
+        {% endif %}
+         <button class="btn btn-outline-secondary w-50 changebutton" id="addtocart" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" onclick="addToCart({{product.id}})">Add to Cart</button>
+           
+          <a class="btn btn-orange w-50 changebutton id="buynow" href="/buy/{{ product.id }}/1/">Buy Now</a>
+         
+
+            
         </div>
-      </form>
 
       <!-- ===== Offers Section ===== 
 
@@ -197,62 +200,15 @@
           <select class="form-select form-select-sm" id="sort_order" style="max-width:200px;" onchange="">
             <option selected value="most_recent">Most Recent</option>
             <option value="highest_rating">Highest Rating</option>
-            <option value="lowest-rating">Lowest Rating</option>
+            <option value="lowest_rating">Lowest Rating</option>
           </select>
         </div>
         {% endif %}
 
         <!-- Reviews Loop -->
-        {% for review in reviews %}
-        <div class="border-top pt-3 pb-3">
-          <div class="d-flex align-items-center mb-1">
-            <div class="rounded-circle bg-dark d-flex justify-content-center align-items-center me-2"
-              style="width:40px;height:40px;font-weight:bold;">
-              {% if review.customer %}
-              {{ review.customer.first_name|first|upper }}
-              {% else %}
-              {{ review.name|first|upper }}
-              {% endif %}
-            </div>
-            <div>
-              <div>
-                <span class="text-warning">
-                  {% if review.rating == 5 %}★★★★★
-                  {% elif review.rating == 4 %}★★★★
-                  {% elif review.rating == 3 %}★★★
-                  {% elif review.rating == 2 %}★★
-                  {% elif review.rating == 1 %}★
-                  {% endif %}
-                </span>
-                <small class="text-muted">{{ review.created_at|timesince }} ago</small>
-              </div>
-              <div>
-                {% if review.customer.first_name %}
-                <span class="badge bg-dark">Verified</span>
-                <strong>{{ review.customer.first_name | capfirst }}</strong>
-                {% else %}
-                <strong>{{ review.name | capfirst }}</strong>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-          <div class="fw-bold">{{ review.title }}</div>
-          
-          <p class="mb-0">{{ review.review }}</p>
-          {% if review.img %}
-          <div class="jdgm-rev__pics">
-            <a class="jdgm-rev__pic-link" target="_blank" rel="nofollow"
-              href="{{review.img.url}}"
-              data-mfp-src="{{review.img.url}}"
-              aria-label="Link to user picture 1">
-              <img class="jdgm-rev__pic-img" alt="User picture"
-                data-src="{{review.img.url}}"
-                src="{{review.img.url}}">
-            </a>
-          </div>
-          {% endif %}
+         <div id="review-cards">
+         {% include "furni/review-cards.html" with reviews=reviews %}
         </div>
-        {% endfor %}
       </div>
 
     </div>
@@ -353,6 +309,11 @@
 </div>
 
 <style>
+  @media screen and (max-width: 576px) {
+  .changebutton {
+    width: 100%!important;
+  }
+}
   .border-orange {
     border: 1px solid #ff6600;
     border-radius: 6px;
@@ -463,5 +424,36 @@
     border-radius: 4px;
 }
 </style>
+<script>
+  function addToCart(productId) {
+    const qty = document.getElementById("qtyInput").getAttribute("value")
+    const url = `/add/${productId}/${qty}/`
+    fetch(url, {
+      headers: { "X-Requested-With": "XMLHttpRequest",
+      "X-Template-Type": "quick-cart"
+      }
+    })
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("quick-cart-page").innerHTML = html;
+      })
+  }
+  function reviewSort() {
+    const base = window.location.pathname;
+    const sort_order = document.getElementById("sort_order").value;
+    const params = new URLSearchParams();
+    params.append("sort_order",sort_order);
+    const review_url = base + "?" + params.toString();
+    fetch(review_url, {
+      headers: { "X-Requested-With": "XMLHttpRequest",
+      }
+    })
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("review-cards").innerHTML = html;
+      })
+  }
+    document.getElementById("sort_order").addEventListener("change", reviewSort)
+</script>
 
 {% endblock content %}

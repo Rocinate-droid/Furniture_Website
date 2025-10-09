@@ -98,9 +98,9 @@
     qty = Math.max(1, qty + val);
     qtyInput.value = qty;
     qtyValue = qty;
-    url.setAttribute("formaction", `/add/${productId}/${qtyValue}/`);
-    url2.setAttribute("formaction", `/buy/${productId}/${qtyValue}/`);
-    url3.setAttribute("formaction", `/add/wishlist/${productId}/${qtyValue}/`);
+    qtyInput.setAttribute("value", `${qtyValue}`)
+    url2.setAttribute("href", `/buy/${productId}/${qtyValue}/`);
+    url3.setAttribute("href", `/add/wishlist/${productId}/${qtyValue}/`);
     totalPriceEl.textContent = qty * pricePerUnit;
   }
 
@@ -155,3 +155,33 @@
         reader.readAsDataURL(file);
       }
     });
+
+    function getWishStatus(product_id) {
+    const like_icon = document.getElementById(`cart-like${product_id}`);
+    if (like_icon.getAttribute("fill") == "none") {
+      console.log(like_icon.getAttribute("fill"));
+      const url = `/add/wishlist/${product_id}/1/`;
+      console.log(url);
+      like_icon.setAttribute("fill","red");
+      return url;
+    } else if(like_icon.getAttribute("fill") == "red") {
+      const url = `/remove/wishlist/${product_id}/`;
+      like_icon.setAttribute("fill","none");
+      console.log(url);
+      return url;
+    }
+  }
+
+  function addToWishlist(product_id) {
+    const url = getWishStatus(product_id)
+    fetch(url, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      }
+    })
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("scroll-products").innerHTML = html;
+      })
+
+  }

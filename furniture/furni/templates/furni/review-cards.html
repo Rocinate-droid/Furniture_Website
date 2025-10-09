@@ -1,0 +1,52 @@
+{% load dict_extras %}
+{% load humanize %}
+{% for review in reviews %}
+<div class="border-top pt-3 pb-3">
+          <div class="d-flex align-items-center mb-1">
+            <div class="rounded-circle bg-dark d-flex justify-content-center align-items-center me-2"
+              style="width:40px;height:40px;font-weight:bold;">
+              {% if review.customer %}
+              {{ review.customer.first_name|first|upper }}
+              {% else %}
+              {{ review.name|first|upper }}
+              {% endif %}
+            </div>
+            <div>
+              <div>
+                <span class="text-warning">
+                  {% if review.rating == 5 %}★★★★★
+                  {% elif review.rating == 4 %}★★★★
+                  {% elif review.rating == 3 %}★★★
+                  {% elif review.rating == 2 %}★★
+                  {% elif review.rating == 1 %}★
+                  {% endif %}
+                </span>
+                <small class="text-muted">{{ review.created_at|timesince }} ago</small>
+              </div>
+              <div>
+                {% if review.customer.first_name %}
+                <span class="badge bg-dark">Verified</span>
+                <strong>{{ review.customer.first_name | capfirst }}</strong>
+                {% else %}
+                <strong>{{ review.name | capfirst }}</strong>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="fw-bold">{{ review.title }}</div>
+          
+          <p class="mb-0">{{ review.review }}</p>
+          {% if review.img %}
+          <div class="jdgm-rev__pics">
+            <a class="jdgm-rev__pic-link" target="_blank" rel="nofollow"
+              href="{{review.img.url}}"
+              data-mfp-src="{{review.img.url}}"
+              aria-label="Link to user picture 1">
+              <img class="jdgm-rev__pic-img" alt="User picture"
+                data-src="{{review.img.url}}"
+                src="{{review.img.url}}">
+            </a>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}

@@ -1,0 +1,103 @@
+{% load humanize %}
+{% load mathfilters %}
+
+{% if cart_items|length != 0 %}
+<div class="offcanvas-header">
+  <h5 class="offcanvas-title text-success w-100 text-center">
+    Cart ({{ cart_items|length }})
+  </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+</div>
+{% else %}
+<div class="offcanvas-header">
+  <h5 class="offcanvas-title text-success w-100 text-center">
+    Your cart is empty
+  </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<div class="offcanvas-body d-flex flex-column">
+
+  <!-- 🟩 Scrollable Cart Items -->
+  <div id="quick-cart-list" class="flex-grow-1 overflow-auto">
+    <ul class="list-unstyled mb-0" id="cart-product-details">
+      {% for cart_item in cart_items %}
+      <li class="d-flex align-items-center mb-3 border-bottom pb-2">
+
+        <!-- Product Image -->
+        <div class="me-3" style="width: 80px; height: 80px; overflow: hidden; border-radius: 8px;">
+          <a href="{% url 'product' cat_id=cart_item.product.category.slug prod_id=cart_item.product.slug %}">
+            <img src="{{ cart_item.product.img.url }}" alt="Product"
+                 class="img-fluid rounded"
+                 style="object-fit: cover; width: 100%; height: 100%;">
+          </a>
+        </div>
+
+        <!-- Product Details -->
+        <div class="flex-grow-1">
+          <a href="{% url 'product' cat_id=cart_item.product.category.slug prod_id=cart_item.product.slug %}" style="text-decoration: none;">
+            <div class="fw-semibold" style="font-size: medium;">{{ cart_item.product.name }}</div>
+            <div class="text-muted small" style="font-size: small;">
+              ₹{{ cart_item.product.original_price|mul:cart_item.quantity|intcomma }}
+            </div>
+          </a>
+
+          <!-- Quantity Controls -->
+          <div class="d-flex align-items-center mt-2">
+            <button class="btn btn-sm btn-outline-secondary px-2" style="padding: 0;"
+                    onclick="updateQuantity(this, -1, {{ cart_item.id }})">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+
+            <input type="text" class="form-control form-control-sm text-center mx-2"
+                   value="{{ cart_item.quantity }}" readonly style="width: 50px; height: 10px;">
+
+            <button class="btn btn-sm btn-outline-secondary px-2" style="padding: 0;"
+                    onclick="updateQuantity(this, 1, {{ cart_item.id }})">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Delete Icon -->
+        <div class="ms-2">
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteCartItem({{ cart_item.id }})" style="padding: 8px;">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- 🟩 Fixed Totals & Checkout -->
+  {% if cart_items|length > 0 %}
+  <div id="quick-cart-total" class="mt-2">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between mb-2">
+        <span>Price ({{ cart_items|length }} items)</span>
+        <span>₹{{ total_original|intcomma }}</span>
+      </div>
+      <div class="d-flex justify-content-between text-success mb-2">
+        <span>Discount</span>
+        <span>-₹{{ discount|intcomma }}</span>
+      </div>
+      <hr>
+      <div class="d-flex justify-content-between fw-bold mb-2">
+        <span>Grand Total</span>
+        <span>₹{{ grand_total|intcomma }}</span>
+      </div>
+      <p class="text-success small">You will save ₹{{ discount|intcomma }} on this order</p>
+      <p class="text-success small">Shipping will be calculated on checkout page</p>
+
+      <!-- ✅ Checkout Button -->
+      <button class="btn btn-dark w-100 mt-2"
+              onclick="window.location='{% url 'checkout' %}'">
+        Proceed to Checkout
+      </button>
+    </div>
+  </div>
+  {% endif %}
+
+</div>

@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import secrets
 import string
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -13,16 +14,26 @@ def generate_order_id(length=8, prefix="ORD"):
 
 class Categorie(models.Model):
     name = models.CharField(max_length=200)
+    slug = models.SlugField(default="", null=False, blank=True)
     img = models.ImageField(upload_to='categories/')
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.name
 
 class Room(models.Model):
     name = models.CharField(max_length=200)
+    slug = models.SlugField(default="", null=False, blank=True, unique=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.name
     
@@ -36,6 +47,7 @@ class Product(models.Model):
         ("Not Available", "Not Available")
     ]
     category = models.ForeignKey(Categorie, on_delete=models.CASCADE)
+    slug = models.SlugField(default="", null=False, blank=True, unique=True)
     room_or_Product_Type = models.ForeignKey(Room, on_delete=models.CASCADE)
     serial_no = models.CharField(max_length=100)
     name = models.CharField(max_length=200)
@@ -50,6 +62,10 @@ class Product(models.Model):
     customization = models.CharField(max_length=50,choices=customization_choices,default="Available")
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.name
     

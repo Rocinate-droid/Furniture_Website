@@ -1,0 +1,24 @@
+ {% load humanize %}
+{% load mathfilters %}
+{% if cart_items|length > 0 %}
+ <div class="card p-3">
+        <div class="d-flex justify-content-between mb-2">
+          <span>Price ({{ cart_items|length }} item{% if cart_items|length > 1 %}s{% endif %})</span>
+          <span>₹{{ total_original|intcomma }}</span>
+        </div>
+        <div class="d-flex justify-content-between text-success mb-2">
+          <span>Discount</span>
+          <span>-₹{{ discount|intcomma }}</span>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between fw-bold mb-2">
+          <span>Grand Total</span>
+          <span>₹{{ grand_total|intcomma }}</span>
+        </div>
+        <p class="text-success small">You will save ₹{{ discount|intcomma }} on this order</p>
+        <p class="text-success small">Shipping will be calculated on checkout page</p>
+        
+        <button class="btn btn-dark btn-lg w-100 mt-2" onclick="window.location='{% url 'checkout' %}'">Proceed to Checkout</button>
+
+    </div>        
+    {% endif %}

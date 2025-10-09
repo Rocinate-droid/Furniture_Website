@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from .models import Categorie, Room
+
 from .models import Testimonial, Review
 from .models import Product
 from .models import Cart,CartItem, Wishlist, WishlistItem
@@ -94,7 +95,8 @@ def contact(request):
     return render(request, "furni/contact.html", context)
 
 def category(request, cat_name):
-    products = Product.objects.filter(category__name=cat_name)
+    category = Categorie.objects.get(slug=cat_name)
+    products = Product.objects.filter(category__name=category.name)
     price = request.GET.get('price')
     sort  = request.GET.get('sort')
     if sort:
@@ -115,7 +117,8 @@ def category(request, cat_name):
     return render(request, "furni/category.html", context)
 
 def rooms(request,room_type):
-    products = Product.objects.filter(room_or_Product_Type=room_type)
+    room = Room.objects.get(slug=room_type)
+    products = Product.objects.filter(room_or_Product_Type=room.id)
     price = request.GET.get('price')
     sort  = request.GET.get('sort')
     if sort:
@@ -163,17 +166,20 @@ def product_search(request):
 
 
 def product(request,cat_id,prod_id):
-    product = get_object_or_404(Product,id = prod_id,category_id=cat_id)
+    category = Categorie.objects.get(slug=cat_id)
+    selected_product = get_object_or_404(Product,slug=prod_id)
+    product = get_object_or_404(Product,id = selected_product.id,category_id=category.id)
     product.savings = product.original_price - product.discounted_price
     product.savings_percentage = int((product.savings / product.original_price ) * 100)
     reviews = Review.objects.filter(product=product)
+    sort  = request.GET.get('sort_order')
     
     review_dict = {"five_star":0,"four_star":0,"three_star":0,"two_star":0,"one_star":0}
     overall_rating = 0.0
     if request.method == "POST":
         if request.user.is_authenticated:
             try:
-                old_review = Review.objects.get(customer=request.user, product=prod_id)
+                old_review = Review.objects.get(customer=request.user, product=selected_product.id)
                 form = reviewForm(request.POST, request.FILES, instance=old_review)
             except Review.DoesNotExist:
                 form = reviewForm(request.POST, request.FILES)
@@ -190,7 +196,7 @@ def product(request,cat_id,prod_id):
     else:
         if request.user.is_authenticated:
             try:
-                old_review = Review.objects.get(customer=request.user, product=prod_id)
+                old_review = Review.objects.get(customer=request.user, product=selected_product.id)
                 form = reviewForm(instance=old_review)
             except Review.DoesNotExist:
                 form = reviewForm()
@@ -207,9 +213,28 @@ def product(request,cat_id,prod_id):
             review_dict["two_star"] = review_dict["two_star"] + 1
         elif review.rating == 1:
             review_dict["one_star"] = review_dict["one_star"] + 1
-    if Review.objects.count() != 0:
-        overall_rating = ((5 * review_dict["five_star"]) + (4 * review_dict["four_star"]) + (3 * review_dict["three_star"]) + (2 * review_dict["two_star"]) + (1 * review_dict["one_star"]))/Review.objects.count()
-    context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict}
+    if reviews.count() > 0:
+        overall_rating = ((5 * review_dict["five_star"]) + (4 * review_dict["four_star"]) + (3 * review_dict["three_star"]) + (2 * review_dict["two_star"]) + (1 * review_dict["one_star"]))/reviews.count()
+    reviews = reviews.order_by('-created_at')
+    if sort:
+        if sort == "highest_rating":
+            print("hello1")
+            reviews = reviews.order_by('-rating')
+        elif sort == "lowest_rating":
+            print("hello2")
+            reviews = reviews.order_by('rating')
+        else:
+            reviews = reviews.order_by('-created_at')
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string("furni/review-cards.html", {'reviews': reviews})
+        return HttpResponse(html)
+    if request.user.is_authenticated:
+        wishlistcreated, created = Wishlist.objects.get_or_create(customer=request.user)
+        wish_items = WishlistItem.objects.filter(wishlist=wishlistcreated).values_list('product_id', flat=True)
+        
+        context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict, "wish_items":wish_items}
+    else:
+        context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict}
     return render(request, "furni/product.html", context)
 
 
@@ -263,9 +288,44 @@ def transfer_to_cart(request, wish_item_id):
             cart_item.save()
         wishitem.delete()
         wish_items = WishlistItem.objects.filter(wishlist=wishlistcreated)
-        if request.headers.get("x-requested-with") == "XMLHttpRequest":
-            html = render_to_string("furni/wishlist_items.html", {'wish_items': wish_items})
-            return HttpResponse(html)
+        user_id = request.session.get('user_id')
+    if request.user.is_authenticated:
+        cartcreated, created = Cart.objects.get_or_create(customer=request.user)
+        cart_items = CartItem.objects.filter(cart=cartcreated)
+    else:
+        if 'user_id' in request.session:
+            user_id = request.session.get('user_id')
+        else:
+            request.session['user_id'] = int(uuid.uuid4())
+            user_id = request.session.get('user_id')
+        cartcreated, created = Cart.objects.get_or_create(anonymous=user_id)
+        cart_items = CartItem.objects.filter(cart=cartcreated)
+    total_amount = 0
+    total_original = 0
+    discount = 0
+    delivery = None
+    grand_total = 0
+    for item in cart_items:
+        if item.product:
+            total_original += item.product.original_price * item.quantity
+            discount += (item.product.original_price - item.product.discounted_price) * item.quantity
+        total_amount += item.total_cost
+        grand_total += item.total_cost
+    if grand_total >= 50000:
+        delivery = "Free Delivery"
+    else:
+        delivery = 999
+        grand_total += delivery
+    context = {'cart_items' : cart_items, 'total_amount' : total_amount, 'total_original' : total_original, 'discount' : discount, 'delivery': delivery, 'grand_total' : grand_total }
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        wishlist_html = render_to_string("furni/wishlist_items.html", {'wish_items': wish_items}),
+        cart_html = render_to_string("furni/quick-cart.html", context )
+        return JsonResponse({
+            'wishlist_html' : wishlist_html,
+            'cart_html' : cart_html
+        })
+        html = render_to_string("furni/wishlist_items.html", {'wish_items': wish_items})
+        return HttpResponse(html)
     return redirect(view_cart)
 
 def view_cart(request):
@@ -311,6 +371,26 @@ def add_to_cart(request,product_id,qty):
     if not created2:
         cart_item.quantity += qty
         cart_item.save()
+    cart_items = CartItem.objects.filter(cart=cartcreated)
+    total_amount = 0
+    total_original = 0
+    discount = 0
+    delivery = None
+    grand_total = 0
+    for item in cart_items:
+        if item.product:
+            total_original += item.product.original_price * item.quantity
+            discount += (item.product.original_price - item.product.discounted_price) * item.quantity
+        total_amount += item.total_cost
+        grand_total += item.total_cost
+    if grand_total >= 50000:
+        delivery = "Free Delivery"
+    else:
+        delivery = 999
+        grand_total += delivery
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string("furni/quick-cart.html", {'cart_items': cart_items, 'grand_total': grand_total, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original, 'delivery':delivery, 'total_amount' :total_amount,})
+        return HttpResponse(html)
     return redirect(view_cart)
 
 
@@ -322,6 +402,27 @@ def delete_from_cart(request, cart_item_id):
         cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
         cartProduct = CartItem.objects.get(id=cart_item_id,cart=cartcreated)
     cartProduct.delete()
+    cart_items = CartItem.objects.filter(cart=cartcreated)
+    total_amount = 0
+    total_original = 0
+    discount = 0
+    delivery = None
+    grand_total = 0
+    for item in cart_items:
+        if item.product:
+            total_original += item.product.original_price * item.quantity
+            discount += (item.product.original_price - item.product.discounted_price) * item.quantity
+        total_amount += item.total_cost
+        grand_total += item.total_cost
+    if grand_total >= 50000:
+        delivery = "Free Delivery"
+    else:
+        delivery = 999
+        grand_total += delivery
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string("furni/quick-cart.html", {'cart_items': cart_items, 'grand_total': grand_total, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original, 'delivery':delivery, 'total_amount' :total_amount,})
+        return HttpResponse(html)
+
     return redirect(view_cart)
 
 
@@ -355,12 +456,23 @@ def update_cart(request, cart_item_id, qty):
         grand_total += delivery
     context = {'grand_total': grand_total, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original, 'delivery':delivery, 'total_amount' :total_amount}
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        item_html = render_to_string("furni/cart_list.html", {'cart_items': cart_items}),
-        total_html = render_to_string("furni/cart_total.html", context )
-        return JsonResponse({
-            'cart_html' : item_html,
-            'total_html' : total_html
-        })
+        html = render_to_string("furni/quick-cart.html", {'cart_items': cart_items, 'grand_total': grand_total, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original, 'delivery':delivery, 'total_amount' :total_amount,})
+        return HttpResponse(html)
+        template_name = request.headers.get('X-Template-Type', 'default')
+        if template_name == "quick-cart":
+            item_html = render_to_string("furni/quick_cart_list.html", {'cart_items': cart_items}),
+            total_html = render_to_string("furni/quick_cart_total.html", context )
+            return JsonResponse({
+                'cart_html' : item_html,
+                'total_html' : total_html
+            })
+        else:
+            item_html = render_to_string("furni/cart_list.html", {'cart_items': cart_items}),
+            total_html = render_to_string("furni/cart_total.html", context )
+            return JsonResponse({
+                'cart_html' : item_html,
+                'total_html' : total_html
+            })
     return redirect(view_cart)
 
 def loginpage(request):
