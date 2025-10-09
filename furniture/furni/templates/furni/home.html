@@ -41,7 +41,7 @@
 
     <!-- Slide 1 -->
     <div class="carousel-item active">
-      <a href="{% url 'category' cat_name='Sofas & Seating' %}">
+      <a href="{% url 'category' cat_name='sofas-seating' %}">
       <img src="{% static 'images/hero-carousel1.webp' %}" 
            class="d-block w-100 h-100" 
            style="object-fit: cover;" 
@@ -51,7 +51,7 @@
 
     <!-- Slide 2 -->
     <div class="carousel-item">
-      <a href="{% url 'category' cat_name='Kitchen & Dining Furniture' %}">
+      <a href="{% url 'category' cat_name='kitchen-dining-furniture' %}">
       <img src="{% static 'images/hero-carousel2.webp' %}" 
            class="d-block w-100 h-100" 
            style="object-fit: cover;" 
@@ -60,7 +60,7 @@
 
     <!-- Slide 3 -->
     <div class="carousel-item">
-      <a href="{% url 'category' cat_name='Beds & Side Tables' %}">
+      <a href="{% url 'category' cat_name='beds-side-tables' %}">
       <img src="{% static 'images/hero-carousel3.webp' %}" 
            class="d-block w-100 h-100" 
            style="object-fit: cover;" 
@@ -323,7 +323,7 @@
 
   <div class="cat-grid">
     {% for category in categories %}
-    <a href="{% url 'category' cat_name=category.name %}" style="text-decoration: none;">
+    <a href="{% url 'category' cat_name=category.slug %}" style="text-decoration: none;">
     <div class="cat-card">
       <div class="image-box">
         <img src="{{category.img.url}}" alt="{{category.name}}">
@@ -654,34 +654,6 @@
   // Initialize first slide
   showSlide(currentIndex);
 
-  function getWishStatus(product_id) {
-    const like_icon = document.getElementById(`cart-like${product_id}`);
-    if (like_icon.getAttribute("fill") == "none") {
-      console.log(like_icon.getAttribute("fill"));
-      const url = `add/wishlist/${product_id}/1/`;
-      console.log(url);
-      like_icon.setAttribute("fill","red");
-      return url;
-    } else if(like_icon.getAttribute("fill") == "red") {
-      const url = `remove/wishlist/${product_id}/`;
-      like_icon.setAttribute("fill","none");
-      console.log(url);
-      return url;
-    }
-  }
-
-  function addToWishlist(product_id) {
-    const url = getWishStatus(product_id)
-    fetch(url, {
-      headers: {
-        "X-Requested-With": "XMLHttpRequest"
-      }
-    })
-      .then(response => response.text())
-      .then(html => {
-        document.getElementById("scroll-products").innerHTML = html;
-      })
-
-  }
+  
 </script>
 {% endblock content %}

@@ -2,7 +2,7 @@
  {% for product in products %}
 	<div class="launch-card"><div class="card border-0 shadow-sm h-100">
     <div class="position-relative">
-      <a href="{% url 'product' cat_id=product.category.id prod_id=product.id %}">
+      <a href="{% url 'product' cat_id=product.category.slug prod_id=product.slug %}">
         <img src="{{product.img.url}}" class="card-img-top" alt="Product">
         </a>
         {% if user.is_authenticated %}
@@ -14,7 +14,7 @@
         {% endif %}
       
     </div>
-    <a href="{% url 'product' cat_id=product.category.id prod_id=product.id %}" style="text-decoration: none;">
+    <a href="{% url 'product' cat_id=product.category.slug prod_id=product.slug %}" style="text-decoration: none;">
     <div class="card-body">
       
       <h5 class="card-title fs-6">{{product.name}}</h5>

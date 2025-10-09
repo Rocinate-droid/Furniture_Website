@@ -17,6 +17,15 @@ class orderProducts(admin.TabularInline):
     model = OrderItem
     extra = 0
 
+class RoomAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug" : ("name",)}
+
+class CategorieAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug" : ("name",)}
+
+class ProductAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug" : ("name",)}
+
 class orderAdmin(admin.ModelAdmin):
     inlines = [orderProducts]
     list_display = ("__str__","created_at","total_order_value","order_no",)
@@ -38,9 +47,9 @@ class BillingAddressAdmin(admin.ModelAdmin):
         return qs.filter(is_archived=False)
 
 
-admin.site.register(Categorie)
+admin.site.register(Categorie,CategorieAdmin)
 admin.site.register(Testimonial)
-admin.site.register(Product)
+admin.site.register(Product, ProductAdmin)
 admin.site.register(Contact)
 admin.site.register(CartItem)
 admin.site.register(BillingAddress, BillingAddressAdmin)
@@ -50,5 +59,5 @@ admin.site.register(Orders, orderAdmin)
 admin.site.register(OrderItem)
 admin.site.register(Review)
 admin.site.register(Wishlist)
-admin.site.register(Room)
+admin.site.register(Room, RoomAdmin)
 admin.site.register(Replacement, replacementAdmin)

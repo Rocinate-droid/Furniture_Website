@@ -6,16 +6,8 @@
   <div class="row">
     <!-- LEFT: CART ITEMS -->
     <div class="col-lg-8">
-      <div class="card mb-3 p-3">
-        {% if wish_items|length >= 1 %}
-        <h4 class="mb-3">My Wishlist ({{ wish_items|length }})</h4>
-        {% else %}
-        <h4 class="mb-3">Your Wishlist is empty</h4>
-        {% endif %}
-
-        <div id="cart_content">
-        {% include "furni/wishlist_items.html" with wish_items=wish_items %}
-        </div>
+      <div id="wishlist-items">
+      {% include 'furni/wishlist_items.html' with wish_items=wish_items %}
       </div>
       <a href="{% url 'shop' %}" class="btn btn-outline-dark">← Continue Shopping</a>
     </div>
@@ -35,14 +27,25 @@
     const quantityelement = document.getElementById(`qty_prod_${item_id}`).value;
     return `update/wishlist/${item_id}/${quantityelement}/`;
   }
-  function update_Quantity(id) {
+  function transferToCart(item_id,qty) {
+    const url = `transfer/cart/${item_id}/`;
+    fetch(url, {
+      headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("wishlist-items").innerHTML = data.wishlist_html;
+        document.getElementById("quick-cart-page").innerHTML = data.cart_html;
+      })
+  }
+   function update_Quantity(id) {
     const url = getUpdateUrl(id);
     fetch(url, {
       headers: { "X-Requested-With": "XMLHttpRequest" }
     })
       .then(response => response.text())
       .then(html => {
-        document.getElementById("cart_content").innerHTML = html;
+        document.getElementById("wishlist-items").innerHTML = html;
       })
   }
 </script>

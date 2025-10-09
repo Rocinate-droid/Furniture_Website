@@ -4,14 +4,14 @@
  {% if item.product %}
  <div class="d-flex border-bottom py-3" id="cart_content">
           <div class="me-3">
-            <a href="{% url 'product' cat_id=item.product.category.id prod_id=item.product.id %}">
+            <a href="{% url 'product' cat_id=product.category.slug prod_id=product.slug %}">
               <img src="{{ item.product.img.url }}" alt="{{ item.product.name }}" style="width:100px; height:auto;" class="rounded">
             </a>
           </div>
 
           <!-- Product Info -->
           <div class="flex-grow-1">
-            <a href="{% url 'product' cat_id=item.product.category.id prod_id=item.product.id %}" class="text-decoration-none">
+            <a href="{% url 'product' cat_id=product.category.slug prod_id=product.slug %}" class="text-decoration-none">
               <h5 class="mb-1">{{ item.product.name }}</h5>
             </a>
             <p class="text-muted small mb-1">Seller: <strong>Module</strong></p>

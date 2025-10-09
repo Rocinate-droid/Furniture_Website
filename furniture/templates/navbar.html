@@ -6,6 +6,8 @@
 * License: https://creativecommons.org/licenses/by/3.0/
 */ -->
 {% load static %}
+{% load humanize %}
+{% load mathfilters %}
 <!doctype html>
 <html lang="en"">
   <head>
@@ -38,9 +40,31 @@
     </head>
     
     <body>
-
+<style>
+  .top-banner{
+    height: 22px;
+  }
+  @media screen and (max-width:647px) {
+    .top-banner-text {
+      font-size:small;
+    }
+  }
+  @media screen and (max-width:592px) {
+    .top-banner-text {
+      font-size:x-small;
+    }
+  }
+  @media screen and (max-width:430px) {
+    .top-banner-text {
+      font-size:xx-small;
+    }
+</style>
+  <div class="top-banner">
+    <p class="top-banner-text" style="text-align: center; color: black;">Currently servicing only in <span style="color: red;">Thrissur, Ernakulam and Alapuzha,</span> Coming soon to all of Kerala</h2>
+  </div>
 		<!-- Start Header/Navigation -->
 <nav class="navbar navbar-expand-md navbar-dark py-1" style="background-color: #E5D9D9;">
+
   <div class="container">
 
     <!-- Logo -->
@@ -73,8 +97,11 @@
   <a class="fa fa-heart fs-5 text-dark" href="{% url 'wishlist' %}" style="text-decoration: none;"></a>
 
   <!-- Cart Icon -->
-  <a class="fa fa-shopping-cart fs-5 text-dark" href="{% url 'cart' %}" style="text-decoration: none;"></a>
 
+
+  <button class="fa fa-shopping-cart fs-5 text-dark" 
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" style="background-color: transparent; border: none;">
+    </button>
   <!-- User Dropdown or Login Icon -->
   {% if user.is_authenticated %}
   <div class="dropdown">
@@ -106,7 +133,7 @@
       <!-- Categories (mobile only) -->
       <ul class="nav nav-pills flex-column d-md-none p-2" style="background-color: #E5D9D9;">
       {% for room in rooms %}
-<li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.id %}active{% endif %}" href="{% url 'rooms' room_type=room.id %}">{{room.name}}</a></li>
+<li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.slug %}active{% endif %}" href="{% url 'rooms' room_type=room.slug %}">{{room.name}}</a></li>
       {% endfor %}
       </ul>
 
@@ -121,7 +148,7 @@
   <div class="container">
     <ul class="nav nav-pills justify-content-center">
       {% for room in rooms %}
-     <li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.id %}active{% endif %}" href="{% url 'rooms' room_type=room.id %}">{{room.name}}</a></li>
+     <li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.slug %}active{% endif %}" href="{% url 'rooms' room_type=room.slug %}">{{room.name}}</a></li>
 
     {% endfor %}
     </ul>
@@ -196,4 +223,97 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 </script>
+
+<style>
+
+  .cart-items-body {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .cart-image {
+    max-width: 70px;
+    height: 70px;
+    display: flex;
+  }
+  .cart-item {
+    align-self: flex-start;
+  }
+  .cart-item-delete {
+    align-self: flex-start;
+    margin-left: auto;
+  }
+  .cart-price-details {
+    display: flex;
+    flex: auto;
+  }
+ .offcanvas-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 🟩 Hide scrollbar but keep scroll functionality */
+#quick-cart-list {
+  overflow-y: auto;
+  max-height: calc(100vh - 400px);  /* keep as before */
+  padding-right: 6px;
+
+  /* Hide scrollbar */
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE & Edge */
+}
+
+#quick-cart-list::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari */
+}
+
+
+
+
+
+
+</style>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+  <div id="quick-cart-page">
+  {% include "furni/quick-cart.html" with cart_items=cart_items %}
+</div>
+</div>
+
+<script>
+  function updateQuantity(button, change, item_id) {
+    const input = button.parentElement.querySelector('input');
+    let current = parseInt(input.value, 10);
+    current += change;
+    if (current < 1) current = 1; // Prevent going below 1
+    input.value = current;
+    cartUpdate(current, item_id)
+  }
+  function cartUpdate(quantity,item_id){
+    const url = `/update/${item_id}/${quantity}/`
+    fetch(url, {
+      headers: { "X-Requested-With": "XMLHttpRequest",
+      "X-Template-Type": "quick-cart"
+      }
+    })
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("quick-cart-page").innerHTML = html;
+      })
+  }
+  function deleteCartItem(item_id) {
+    const url = `/remove/${item_id}/`
+    fetch(url, {
+      headers: { "X-Requested-With": "XMLHttpRequest",
+      "X-Template-Type": "quick-cart"
+      }
+    })
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById("quick-cart-page").innerHTML = html;
+      })
+  }
+</script>
+
 		<!-- End Header/Navigation -->
