@@ -75,12 +75,12 @@
   <div class="card mb-3">
     <div class="card-body row">
       <div class="col-md-2 text-center">
-        <a href="{% url 'product' cat_id=item.category.id prod_id=item.id  %}">
+        <a href="{% url 'product' cat_id=item.category.slug prod_id=item.slug  %}">
           <img src="{{ item.img.url }}" class="img-fluid" alt="{{ item.name }}">
         </a>
       </div>
       <div class="col-md-6">
-        <h6><a href="{% url 'product' cat_id=item.category.id prod_id=item.id  %}" style="text-decoration: none;">{{ item.name }}</a></h6>
+        <h6><a href="{% url 'product' cat_id=item.category.slug prod_id=item.slug  %}" style="text-decoration: none;">{{ item.name }}</a></h6>
         {% for indiv_item in orders.orderitem_set.all %}
           {% if item.id == indiv_item.product.id %}
             <p>QTY: {{ indiv_item.quantity }}</p>

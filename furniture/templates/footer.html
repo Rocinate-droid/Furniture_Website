@@ -54,13 +54,13 @@
                     <div class="col-6 col-sm-6 col-md-3">
                         <ul class="list-unstyled">
                             <li><a href="{% url 'aboutus' %}">About us</a></li>
-                            <li><a href="{% url 'services' %}">Services</a></li>
+                            <li><a href="{% url 'shipping_delivery' %}">Shipping and Delivery</a></li>
                         </ul>
                     </div>
 
                     <div class="col-6 col-sm-6 col-md-3">
                         <ul class="list-unstyled">
-                            <li><a href="#">Support</a></li>
+                            <li><a href="{% url 'purchase_returns' %}">Purchase & Returns</a></li>
                             <li><a href="{% url 'leaders' %}">Leadership</a></li>
                         </ul>
                     </div>
@@ -69,14 +69,14 @@
                         <ul class="list-unstyled">
                             <li><a href="#">Jobs</a></li>
                             <li>
-                                <a class="track-order-link" data-bs-toggle="modal" data-bs-target="#trackOrderModal">Track Order</a>
+                                <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
                             </li>
                         </ul>
                     </div>
 
                     <div class="col-6 col-sm-6 col-md-3">
                         <ul class="list-unstyled">
-                            <li><a href="">Blog</a></li>
+                            <li><a href="{% url 'terms_conditions' %}">Terms and Conditions</a></li>
                             <li><a href="{% url 'contactus' %}">Contact us</a></li>
                         </ul>
                     </div>
