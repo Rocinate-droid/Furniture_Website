@@ -99,6 +99,18 @@ def leaders(request):
 def carrers(request):
     return render(request, "furni/carrers.html")
 
+def purchase_returns(request):
+    return render(request, "furni/purchase-returns.html")
+
+def terms_conditions(request):
+    return render(request, "furni/terms-conditions.html")
+
+def shipping_delivery(request):
+    return render(request, "furni/shipping-delivery.html")
+
+def privacy_policy(request):
+    return render(request, "furni/privacy-policy.html")
+
 def contact(request):
     form = contactForm(request.POST or None)
     if form.is_valid():

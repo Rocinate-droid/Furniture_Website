@@ -52,13 +52,13 @@
        {% for indiv_order in order.products.all %}
       <div class="row mb-3 align-items-center">
         <div class="col-md-2 col-4">
-          <a href="{% url 'product' cat_id=indiv_order.category.id prod_id=indiv_order.id  %}" style="text-decoration: none;">
+          <a href="{% url 'product' cat_id=indiv_order.category.slug prod_id=indiv_order.slug  %}" style="text-decoration: none;">
           <img src="{{indiv_order.img.url}}" class="img-fluid border" alt="Product">
           </a>
         </div>
         <div class="col-md-7 col-8">
           <p class="mb-1">
-            <a href="{% url 'product' cat_id=indiv_order.category.id prod_id=indiv_order.id  %}" style="text-decoration: none;">
+            <a href="{% url 'product' cat_id=indiv_order.category.slug prod_id=indiv_order.slug  %}" style="text-decoration: none;">
             {{indiv_order.name}}
             </a>
             
