@@ -1,14 +1,17 @@
 from datetime import date, timedelta
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+import razorpay
+import traceback
+from django.conf import settings
 from .models import Categorie, Room
-
 from .models import Testimonial, Review
 from .models import Product
 from .models import Cart,CartItem, Wishlist, WishlistItem
 from .forms import contactForm
 from .models import Orders
+from django.views.decorators.csrf import csrf_exempt
 from .models import OrderItem
 from .models import BillingAddress
 from .models import Replacement
@@ -31,6 +34,9 @@ from django.dispatch import receiver
 
 # Create your views here.
 
+
+razorpay_client = razorpay.Client(
+    auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
 def home(request):
     if not request.user.is_authenticated:
@@ -257,10 +263,8 @@ def product(request,cat_id,prod_id):
     reviews = reviews.order_by('-created_at')
     if sort:
         if sort == "highest_rating":
-            print("hello1")
             reviews = reviews.order_by('-rating')
         elif sort == "lowest_rating":
-            print("hello2")
             reviews = reviews.order_by('rating')
         else:
             reviews = reviews.order_by('-created_at')
@@ -550,42 +554,59 @@ def logoutrequest(request):
     logout(request)
     return redirect(home)
 
+def create_order(request):
+    if request.method == 'POST':
+        form = addressForm(request.POST or None)
+        shipping = shippingAddressForm(request.POST or None)
+        ship = None
+        if form.is_valid():
+            address = form.save(commit=False)
+            if request.user.is_authenticated:
+                address.customer = request.user
+            else:
+                address.anonymous=request.session.get('user_id')
+            address.save()
+            if shipping.has_changed():
+                if shipping.is_valid():
+                    shippingAddress = shipping.save(commit=False)
+                    if request.user.is_authenticated:
+                        shippingAddress.customer = request.user
+                    else:
+                        shippingAddress.anonymous = request.session.get('user_id')
+                    shippingAddress.billing = address
+                    shippingAddress.save()
+                    ship = shippingAddress 
+            if request.user.is_authenticated:
+                cartcreated, created = Cart.objects.get_or_create(customer=request.user)
+                cart_items = CartItem.objects.filter(cart=cartcreated)
+                order = Orders.objects.create(customer=request.user, billing_address=address, shipping_address=ship)
+                orderno = order.order_no
+            else:
+                cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
+                cart_items = CartItem.objects.filter(cart=cartcreated)
+                order = Orders.objects.create(anonymous=request.session.get('user_id'), billing_address=address, shipping_address=ship)
+                orderno = order.order_no
+            for cart_item in cart_items:
+                OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity, price=cart_item.total_cost)
+            razorpay_order = razorpay_client.order.create(dict(amount=order.total_order_value * 100,
+                                                        currency="INR",
+                                                        payment_capture='0'))
+            razorpay_order_id = razorpay_order['id']
+            callback_url = "paymenthandler/"
+            CartItem.objects.filter(cart=cartcreated).delete()
+            context = {'razorpay_order_id':razorpay_order_id, 'razorpay_merchant_key':settings.RAZOR_KEY_ID, 'razorpay_amount':(order.total_order_value * 100), 'currency':"INR", 'callback_url':callback_url,'orderno' : orderno}
+
+            return JsonResponse( {
+                "razorpay_order_id":razorpay_order_id,
+                "razorpay_merchant_key":settings.RAZOR_KEY_ID,
+                "razorpay_amount":(order.total_order_value * 100),
+                "currency":"INR", 
+                'callback_url':callback_url,
+                'orderno' : orderno
+            })
+
 def checkout(request):
     page = "cart_checkout"
-    form = addressForm(request.POST or None)
-    shipping = shippingAddressForm(request.POST or None)
-    ship = None
-    if form.is_valid():
-        address = form.save(commit=False)
-        if request.user.is_authenticated:
-            address.customer = request.user
-        else:
-            address.anonymous=request.session.get('user_id')
-        address.save()
-        if shipping.has_changed():
-            if shipping.is_valid():
-                shippingAddress = shipping.save(commit=False)
-                if request.user.is_authenticated:
-                    shippingAddress.customer = request.user
-                else:
-                    shippingAddress.anonymous = request.session.get('user_id')
-                shippingAddress.billing = address
-                shippingAddress.save()
-                ship = shippingAddress 
-        if request.user.is_authenticated:
-            cartcreated, created = Cart.objects.get_or_create(customer=request.user)
-            cart_items = CartItem.objects.filter(cart=cartcreated)
-            order = Orders.objects.create(customer=request.user, billing_address=address, shipping_address=ship)
-            orderno = order.order_no
-        else:
-            cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
-            cart_items = CartItem.objects.filter(cart=cartcreated)
-            order = Orders.objects.create(anonymous=request.session.get('user_id'), billing_address=address, shipping_address=ship)
-            orderno = order.order_no
-        for cart_item in cart_items:
-            OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity, price=cart_item.total_cost)
-        CartItem.objects.filter(cart=cartcreated).delete()
-        return render(request, 'furni/thankyou.html', {'orderno' : orderno})
     if request.user.is_authenticated:
         cartcreated, created = Cart.objects.get_or_create(customer=request.user)
         cart_items = CartItem.objects.filter(cart=cartcreated)
@@ -602,8 +623,56 @@ def checkout(request):
     else:
         shipping_cost = 999
         grand_total += shipping_cost 
-    context = {'total_cost': total_cost, 'cart_items': cart_items, 'shipping_cost': shipping_cost, 'page' : page, 'grand_total': grand_total, 'form' : form}
+    context = {'total_cost': total_cost, 'cart_items': cart_items, 'shipping_cost': shipping_cost, 'page' : page, 'grand_total': grand_total}
     return render(request, 'furni/checkout.html', context)
+
+@csrf_exempt
+def paymenthandler(request):
+
+    # only accept POST request.
+    if request.method == "POST":
+        try:
+          
+            # get the required parameters from post request.
+            payment_id = request.POST.get('razorpay_payment_id', '')
+            razorpay_order_id = request.POST.get('razorpay_order_id', '')
+            signature = request.POST.get('razorpay_signature', '')
+            order_no = request.POST.get('order_no','')
+            raz_amount = request.POST.get('razorpay_amount')
+            params_dict = {
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }
+
+            # verify the payment signature.
+            result = razorpay_client.utility.verify_payment_signature(
+                params_dict)
+            if result is not None:
+                amount =  raz_amount # Rs. 200
+                try:
+
+                    # capture the payemt
+                    razorpay_client.payment.capture(payment_id, amount)
+
+                    # render success page on successful caputre of payment
+                    return render(request, 'furni/thankyou.html', {"order_no": order_no})
+                except:
+
+                    # if there is an error while capturing payment.
+                    return render(request, 'furni/failure.html')
+            else:
+
+                # if signature verification fails.
+                return render(request, 'furni/failure.html')
+        except:
+
+            # if we don't find the required parameters in POST data
+            return HttpResponseBadRequest()
+    else:
+       # if other than POST request is made.
+        return HttpResponseBadRequest()
+
 
 def buynow(request, product_id, qty):
     product = Product.objects.get(id=product_id)

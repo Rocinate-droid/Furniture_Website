@@ -196,7 +196,7 @@ class Orders(models.Model):
     @property
     def total_order_value(self):
         total = sum(item.price for item in self.orderitem_set.all())
-        if total <= 50000:
+        if total >= 50000:
             total += 999
         return total
     created_at = models.DateTimeField(auto_now_add=True)

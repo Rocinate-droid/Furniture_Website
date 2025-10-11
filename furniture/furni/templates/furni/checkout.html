@@ -9,6 +9,7 @@
 		margin: 0;
 	}
 </style>
+ <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <!-- Start Hero Section -->
 <div class="hero">
 	<div class="container">
@@ -54,7 +55,7 @@
 		</div>
 		{% endif %}
 
-		<form method="post">
+		<form method="post" id="checkout-form">
 			{% csrf_token %}
 			<div class="row">
 				<div class="col-md-6 mb-5 mb-md-0">
@@ -510,6 +511,40 @@
 		}
 	}
 
+
+document.addEventListener('DOMContentLoaded', function (){
+	const form =  document.getElementById("checkout-form");
+	const url = "/createorder/"
+	form.addEventListener('submit', function (event) {
+		event.preventDefault();
+		const formData = new FormData(form);
+		fetch(url, {
+			method:'POST',
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+	  body:formData
+    })
+      .then(response => response.json())
+      .then(
+		data => {
+			var options = {
+      key: data.razorpay_merchant_key, 
+      amount: data.razorpay_amount, 
+      currency: data.currency,
+      name: "Module Furnitures", 
+      order_id: data.razorpay_order_id, 
+      callback_url: data.callback_url,
+	  order_no: data.orderno
+    }
+	var rzp1 = new Razorpay(options);
+	rzp1.open()
+
+		}
+		
+	  )
+	})
+})
 </script>
 
 
