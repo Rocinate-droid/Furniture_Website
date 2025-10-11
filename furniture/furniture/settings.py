@@ -134,7 +134,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 RAZOR_KEY_ID = env('RAZOR_KEY_ID')
-RAZOR_KEY_SECRET = env('RAZOR_KEY_ID')
+RAZOR_KEY_SECRET = env('RAZOR_KEY_SECRET')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
