@@ -8,6 +8,7 @@ urlpatterns = [
     path('purchaseandreturns', views.purchase_returns, name = 'purchase_returns'),
     path('termsandconditions', views.terms_conditions, name = 'terms_conditions'),
     path('shipping_delivery', views.shipping_delivery, name = 'shipping_delivery'),
+    path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
     path('privacy_policy', views.privacy_policy, name = 'privacy_policy'),
     path('contact', views.contact, name = 'contactus'),
     path('services', views.services, name = 'services'),
