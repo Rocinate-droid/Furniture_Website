@@ -592,6 +592,8 @@ def create_order(request):
                                                         currency="INR",
                                                         payment_capture='0'))
             razorpay_order_id = razorpay_order['id']
+            order.razor_order_id = razorpay_order_id
+            order.payment_status = "Pending"
             callback_url = "paymenthandler/"
             CartItem.objects.filter(cart=cartcreated).delete()
             context = {'razorpay_order_id':razorpay_order_id, 'razorpay_merchant_key':settings.RAZOR_KEY_ID, 'razorpay_amount':(order.total_order_value * 100), 'currency':"INR", 'callback_url':callback_url,'orderno' : orderno}
@@ -637,8 +639,9 @@ def paymenthandler(request):
             payment_id = request.POST.get('razorpay_payment_id', '')
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature = request.POST.get('razorpay_signature', '')
-            order_no = request.POST.get('order_no','')
-            raz_amount = request.POST.get('razorpay_amount')
+            order = Orders.objects.get(razorpay_order_id=razorpay_order_id)
+            order_no = order.order_no
+            raz_amount = order.total_order_value
             params_dict = {
                 'razorpay_order_id': razorpay_order_id,
                 'razorpay_payment_id': payment_id,
@@ -654,15 +657,15 @@ def paymenthandler(request):
 
                     # capture the payemt
                     razorpay_client.payment.capture(payment_id, amount)
-
+                    order.payment_status = "Success"
                     # render success page on successful caputre of payment
                     return render(request, 'furni/thankyou.html', {"order_no": order_no})
                 except:
-
+                    order.payment_status = "Failed"
                     # if there is an error while capturing payment.
                     return render(request, 'furni/failure.html')
             else:
-
+                order.payment_status = "Failed"
                 # if signature verification fails.
                 return render(request, 'furni/failure.html')
         except:

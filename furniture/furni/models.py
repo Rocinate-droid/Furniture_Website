@@ -185,8 +185,15 @@ class ShippingAddress(models.Model):
         return self.ship_firstname
     
 class Orders(models.Model):
+    status = [
+        ("Pending","Pending"),
+        ("Failed","Failed"),
+        ("Success","Success")
+    ]
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     order_no = models.CharField(max_length=14, default=generate_order_id, unique=True, editable=False)
+    razor_order_id = models.CharField(max_length=50, editable=False)
+    payment_status = models.CharField(max_length=40, choices=status)
     anonymous = models.CharField(max_length=40, null=True, blank=True)
     products = models.ManyToManyField(Product, through='OrderItem')
     billing_address = models.ForeignKey(BillingAddress, on_delete=models.CASCADE)
