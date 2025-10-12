@@ -643,6 +643,7 @@ def paymenthandler(request):
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature = request.POST.get('razorpay_signature', '')
             order = Orders.objects.get(razor_order_id=razorpay_order_id)
+            print(order)
             order_no = order.order_no
             raz_amount = order.total_order_value
             print(order_no)
