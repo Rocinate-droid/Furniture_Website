@@ -514,11 +514,14 @@
 
 document.addEventListener('DOMContentLoaded', function (){
 	const page = "{{page}}";
+	const product = "{{product.id}}";
+	const quantity = "{{quantity}}";
+	const total_product_cost = "{{total_product_cost}}"
 	const form =  document.getElementById("checkout-form");
 	if (page == "cart_checkout") {
 		const url = `/createorder/` 
 	} else if (page == "buy_checkout") {
-		const url = `/createorder/?page=${page}&product=${product.id}&quantity=${qty}&total_product_cost=${total_product_cost}`
+		const url = `/createorder/?page=${page}&product=${product}&quantity=${qty}&total_product_cost=${total_product_cost}`
 	}
 	form.addEventListener('submit', function (event) {
 		event.preventDefault();
