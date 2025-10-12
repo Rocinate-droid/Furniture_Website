@@ -559,6 +559,7 @@ def create_order(request):
         form = addressForm(request.POST or None)
         shipping = shippingAddressForm(request.POST or None)
         ship = None
+        page = request.GET.get('page')
         if form.is_valid():
             address = form.save(commit=False)
             if request.user.is_authenticated:
@@ -576,18 +577,32 @@ def create_order(request):
                     shippingAddress.billing = address
                     shippingAddress.save()
                     ship = shippingAddress 
-            if request.user.is_authenticated:
-                cartcreated, created = Cart.objects.get_or_create(customer=request.user)
-                cart_items = CartItem.objects.filter(cart=cartcreated)
-                order = Orders.objects.create(customer=request.user, billing_address=address, shipping_address=ship)
-                orderno = order.order_no
-            else:
-                cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
-                cart_items = CartItem.objects.filter(cart=cartcreated)
-                order = Orders.objects.create(anonymous=request.session.get('user_id'), billing_address=address, shipping_address=ship)
-                orderno = order.order_no
-            for cart_item in cart_items:
-                OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity, price=cart_item.total_cost)
+            if page == "cart_checkout":
+                if request.user.is_authenticated:
+                    cartcreated, created = Cart.objects.get_or_create(customer=request.user)
+                    cart_items = CartItem.objects.filter(cart=cartcreated)
+                    order = Orders.objects.create(customer=request.user, billing_address=address, shipping_address=ship)
+                    orderno = order.order_no
+                else:
+                    cartcreated, created = Cart.objects.get_or_create(anonymous=request.session.get('user_id'))
+                    cart_items = CartItem.objects.filter(cart=cartcreated)
+                    order = Orders.objects.create(anonymous=request.session.get('user_id'), billing_address=address, shipping_address=ship)
+                    orderno = order.order_no
+                for cart_item in cart_items:
+                    OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity, price=cart_item.total_cost)
+            elif page == "buy_checkout":
+                product_id = request.GET.get('product')
+                passed_product = Product.objects.get(id=product_id)
+                qty = request.GET.get('quantity')
+                total_product_cost = request.GET.get('total_product_cost')
+                if request.user.is_authenticated:
+                    order = Orders.objects.create(customer=request.user, billing_address=address , shipping_address=ship)
+                    OrderItem.objects.create(order=order, product=passed_product, quantity=qty, price=total_product_cost)
+                    orderno = order.order_no
+                else:
+                    order = Orders.objects.create(anonymous=request.session.get('user_id'), billing_address=address , shipping_address=ship)
+                    OrderItem.objects.create(order=order, product=passed_product, quantity=qty, price=total_product_cost)
+                    orderno = order.order_no
             razorpay_order = razorpay_client.order.create(dict(amount=order.total_order_value * 100,
                                                         currency="INR",
                                                         payment_capture='0'))
@@ -631,25 +646,17 @@ def checkout(request):
 
 @csrf_exempt
 def paymenthandler(request):
-    print("Hello1")
     # only accept POST request.
     if request.method == "POST":
-        print("Hello2")
         try:
-            print("Hello3")
-            print(request.POST)
             # get the required parameters from post request.
             payment_id = request.POST.get('razorpay_payment_id', '')
-            print(payment_id)
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature = request.POST.get('razorpay_signature', '')
             order = Orders.objects.get(razor_order_id=razorpay_order_id)
             print(order)
             order_no = order.order_no
             raz_amount = order.total_order_value
-            print(order_no)
-            print(raz_amount)
-            print("Hello4")
             params_dict = {
                 'razorpay_order_id': razorpay_order_id,
                 'razorpay_payment_id': payment_id,
@@ -659,8 +666,6 @@ def paymenthandler(request):
             # verify the payment signature.
             result = razorpay_client.utility.verify_payment_signature(
                 params_dict)
-            print(result)
-            print("Hello5")
             if result is not None:
                 amount =  int(raz_amount * 100) # Rs. 200
                 try:
@@ -682,49 +687,19 @@ def paymenthandler(request):
                 # if signature verification fails.
                 return render(request, 'furni/failure.html')
         except:
-            print("Hello6")
-
             # if we don't find the required parameters in POST data
             return HttpResponseBadRequest()
     else:
-        print("Hello7")
        # if other than POST request is made.
         return HttpResponseBadRequest()
 
 
 def buynow(request, product_id, qty):
+    page = "buy_checkout"
     product = Product.objects.get(id=product_id)
     total_product_cost = product.discounted_price * qty
     form = addressForm(request.POST or None)
     shipping = shippingAddressForm(request.POST or None)
-    ship = None
-    if form.is_valid():
-        address = form.save(commit=False)
-        if request.user.is_authenticated:
-            address.customer = request.user
-        else:
-            address.anonymous=request.session.get('user_id')
-        address.save()
-        if shipping.has_changed():
-            if shipping.is_valid():
-                shippingAddress = shipping.save(commit=False)
-                if request.user.is_authenticated:
-                    shippingAddress.customer = request.user
-                else:
-                    shippingAddress.anonymous = request.session.get('user_id')
-                shippingAddress.billing = address
-                shippingAddress.save()
-                ship = shippingAddress  
-        if request.user.is_authenticated:
-            order = Orders.objects.create(customer=request.user, billing_address=address , shipping_address=ship)
-            OrderItem.objects.create(order=order, product=product, quantity=qty, price=total_product_cost)
-            orderno = order.order_no
-        else:
-            order = Orders.objects.create(anonymous=request.session.get('user_id'), billing_address=address , shipping_address=ship)
-            OrderItem.objects.create(order=order, product=product, quantity=qty, price=total_product_cost)
-            orderno = order.order_no
-        
-        return render(request, 'furni/thankyou.html', {'orderno' : orderno})
     shipping_cost = None
     total_cost = total_product_cost
     if total_product_cost >= 50000:

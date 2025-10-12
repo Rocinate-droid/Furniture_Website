@@ -513,8 +513,13 @@
 
 
 document.addEventListener('DOMContentLoaded', function (){
+	const page = "{{page}}";
 	const form =  document.getElementById("checkout-form");
-	const url = "/createorder/"
+	if (page == "cart_checkout") {
+		const url = `/createorder/` 
+	} else if (page == "buy_checkout") {
+		const url = `/createorder/?page=${page}&product=${product.id}&quantity=${qty}&total_product_cost=${total_product_cost}`
+	}
 	form.addEventListener('submit', function (event) {
 		event.preventDefault();
 		const formData = new FormData(form);
