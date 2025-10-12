@@ -630,10 +630,12 @@ def checkout(request):
 
 @csrf_exempt
 def paymenthandler(request):
-
+    print("Hello1")
     # only accept POST request.
     if request.method == "POST":
+        print("Hello2")
         try:
+            print("Hello3")
           
             # get the required parameters from post request.
             payment_id = request.POST.get('razorpay_payment_id', '')
@@ -645,6 +647,7 @@ def paymenthandler(request):
             print(request.POST)
             print(order_no)
             print(raz_amount)
+            print("Hello4")
             params_dict = {
                 'razorpay_order_id': razorpay_order_id,
                 'razorpay_payment_id': payment_id,
@@ -654,6 +657,7 @@ def paymenthandler(request):
             # verify the payment signature.
             result = razorpay_client.utility.verify_payment_signature(
                 params_dict)
+            print("Hello5")
             if result is not None:
                 amount =  raz_amount # Rs. 200
                 try:
@@ -672,10 +676,12 @@ def paymenthandler(request):
                 # if signature verification fails.
                 return render(request, 'furni/failure.html')
         except:
+            print("Hello6")
 
             # if we don't find the required parameters in POST data
             return HttpResponseBadRequest()
     else:
+        print("Hello7")
        # if other than POST request is made.
         return HttpResponseBadRequest()
 
