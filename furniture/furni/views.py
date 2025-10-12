@@ -668,14 +668,17 @@ def paymenthandler(request):
                     # capture the payemt
                     razorpay_client.payment.capture(payment_id, amount)
                     order.payment_status = "Success"
+                    order.save()
                     # render success page on successful caputre of payment
-                    return render(request, 'furni/thankyou.html', {"order_no": order_no})
+                    return render(request, 'furni/thankyou.html', {"orderno": order_no})
                 except:
                     order.payment_status = "Failed"
+                    order.save()
                     # if there is an error while capturing payment.
                     return render(request, 'furni/failure.html')
             else:
                 order.payment_status = "Failed"
+                order.save()
                 # if signature verification fails.
                 return render(request, 'furni/failure.html')
         except:
