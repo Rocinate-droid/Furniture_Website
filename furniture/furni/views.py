@@ -636,7 +636,7 @@ def checkout(request):
     for item in cart_items:
         grand_total += item.total_cost
         total_cost += item.total_cost
-    if grand_total >= 50000:
+    if grand_total > 50000:
             shipping_cost = "Free Shipping"
     else:
         shipping_cost = 999
@@ -702,7 +702,7 @@ def buynow(request, product_id, qty):
     shipping = shippingAddressForm(request.POST or None)
     shipping_cost = None
     total_cost = total_product_cost
-    if total_product_cost >= 50000:
+    if total_product_cost > 50000:
         shipping_cost = "Free Shipping"
     else:
         shipping_cost = 999
