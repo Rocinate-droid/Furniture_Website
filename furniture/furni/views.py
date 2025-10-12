@@ -594,6 +594,7 @@ def create_order(request):
             razorpay_order_id = razorpay_order['id']
             order.razor_order_id = razorpay_order_id
             order.payment_status = "Pending"
+            order.save()
             callback_url = "paymenthandler/"
             CartItem.objects.filter(cart=cartcreated).delete()
             context = {'razorpay_order_id':razorpay_order_id, 'razorpay_merchant_key':settings.RAZOR_KEY_ID, 'razorpay_amount':(order.total_order_value * 100), 'currency':"INR", 'callback_url':callback_url,'orderno' : orderno}
