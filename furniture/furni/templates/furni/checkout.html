@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function (){
 	let url = "";
 	const form =  document.getElementById("checkout-form");
 	if (page == "cart_checkout") {
-		url = `/createorder/` 
+		url = `/createorder/?page=${page}` 
 	} else if (page == "buy_checkout") {
 		url = `/createorder/?page=${page}&product=${product}&quantity=${qty}&total_product_cost=${total_product_cost}`
 	}
