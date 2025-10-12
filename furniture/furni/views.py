@@ -590,6 +590,7 @@ def create_order(request):
                     orderno = order.order_no
                 for cart_item in cart_items:
                     OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity, price=cart_item.total_cost)
+                CartItem.objects.filter(cart=cartcreated).delete()
             elif page == "buy_checkout":
                 product_id = request.GET.get('product')
                 passed_product = Product.objects.get(id=product_id)
@@ -611,7 +612,6 @@ def create_order(request):
             order.payment_status = "Pending"
             order.save()
             callback_url = "paymenthandler/"
-            CartItem.objects.filter(cart=cartcreated).delete()
             context = {'razorpay_order_id':razorpay_order_id, 'razorpay_merchant_key':settings.RAZOR_KEY_ID, 'razorpay_amount':(order.total_order_value * 100), 'currency':"INR", 'callback_url':callback_url,'orderno' : orderno}
 
             return JsonResponse( {
