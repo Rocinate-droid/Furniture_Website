@@ -708,7 +708,7 @@ def buynow(request, product_id, qty):
         shipping_cost = 999
         total_cost = total_product_cost + shipping_cost
     context = {'product':product, 'total_cost': total_cost , 'quantity': qty, 'shipping_cost': shipping_cost, 'total_product_cost': total_product_cost,'form': form,
-        'shipping': shipping,}
+        'shipping': shipping, 'page': page}
     return render(request, 'furni/checkout.html', context)
 
 @login_required
