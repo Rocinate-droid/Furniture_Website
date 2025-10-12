@@ -642,6 +642,9 @@ def paymenthandler(request):
             order = Orders.objects.get(razorpay_order_id=razorpay_order_id)
             order_no = order.order_no
             raz_amount = order.total_order_value
+            print(request.POST)
+            print(order_no)
+            print(raz_amount)
             params_dict = {
                 'razorpay_order_id': razorpay_order_id,
                 'razorpay_payment_id': payment_id,
