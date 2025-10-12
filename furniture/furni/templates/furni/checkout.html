@@ -517,11 +517,12 @@ document.addEventListener('DOMContentLoaded', function (){
 	const product = "{{product.id}}";
 	const qty = "{{quantity}}";
 	const total_product_cost = "{{total_product_cost}}"
+	let url = "";
 	const form =  document.getElementById("checkout-form");
 	if (page == "cart_checkout") {
-		const url = `/createorder/` 
+		url = `/createorder/` 
 	} else if (page == "buy_checkout") {
-		const url = `/createorder/?page=${page}&product=${product}&quantity=${qty}&total_product_cost=${total_product_cost}`
+		url = `/createorder/?page=${page}&product=${product}&quantity=${qty}&total_product_cost=${total_product_cost}`
 	}
 	form.addEventListener('submit', function (event) {
 		event.preventDefault();
