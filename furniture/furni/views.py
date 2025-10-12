@@ -65,11 +65,6 @@ def home(request):
             discount += (item.product.original_price - item.product.discounted_price) * item.quantity
         total_amount += item.total_cost
         grand_total += item.total_cost
-    if grand_total >= 50000:
-        delivery = "Free Delivery"
-    else:
-        delivery = 999
-        grand_total += delivery
     categories = Categorie.objects.all()
     testimonials = Testimonial.objects.all()
     products = Product.objects.all()
@@ -390,11 +385,6 @@ def view_cart(request):
             discount += (item.product.original_price - item.product.discounted_price) * item.quantity
         total_amount += item.total_cost
         grand_total += item.total_cost
-    if grand_total >= 50000:
-        delivery = "Free Delivery"
-    else:
-        delivery = 999
-        grand_total += delivery
     context = {'cart_items' : cart_items, 'total_amount' : total_amount, 'total_original' : total_original, 'discount' : discount, 'delivery': delivery, 'grand_total' : grand_total }
     return render(request, "furni/cart.html", context)
 
@@ -421,11 +411,6 @@ def add_to_cart(request,product_id,qty):
             discount += (item.product.original_price - item.product.discounted_price) * item.quantity
         total_amount += item.total_cost
         grand_total += item.total_cost
-    if grand_total >= 50000:
-        delivery = "Free Delivery"
-    else:
-        delivery = 999
-        grand_total += delivery
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         html = render_to_string("furni/quick-cart.html", {'cart_items': cart_items, 'grand_total': grand_total, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original, 'delivery':delivery, 'total_amount' :total_amount,})
         return HttpResponse(html)
@@ -452,11 +437,6 @@ def delete_from_cart(request, cart_item_id):
             discount += (item.product.original_price - item.product.discounted_price) * item.quantity
         total_amount += item.total_cost
         grand_total += item.total_cost
-    if grand_total >= 50000:
-        delivery = "Free Delivery"
-    else:
-        delivery = 999
-        grand_total += delivery
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         html = render_to_string("furni/quick-cart.html", {'cart_items': cart_items, 'grand_total': grand_total, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original, 'delivery':delivery, 'total_amount' :total_amount,})
         return HttpResponse(html)
@@ -487,11 +467,6 @@ def update_cart(request, cart_item_id, qty):
         total_amount += item.total_cost
         grand_total += item.total_cost
         discount += (item.product.original_price - item.product.discounted_price) * item.quantity
-    if grand_total >= 50000:
-        delivery = "Free Delivery"
-    else:
-        delivery = 999
-        grand_total += delivery
     context = {'grand_total': grand_total, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original, 'delivery':delivery, 'total_amount' :total_amount}
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         html = render_to_string("furni/quick-cart.html", {'cart_items': cart_items, 'grand_total': grand_total, 'cart_items': cart_items, 'discount': discount, 'total_original': total_original, 'delivery':delivery, 'total_amount' :total_amount,})
