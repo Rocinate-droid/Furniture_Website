@@ -636,15 +636,15 @@ def paymenthandler(request):
         print("Hello2")
         try:
             print("Hello3")
-          
+            print(request.POST)
             # get the required parameters from post request.
             payment_id = request.POST.get('razorpay_payment_id', '')
+            print(payment_id)
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature = request.POST.get('razorpay_signature', '')
             order = Orders.objects.get(razorpay_order_id=razorpay_order_id)
             order_no = order.order_no
             raz_amount = order.total_order_value
-            print(request.POST)
             print(order_no)
             print(raz_amount)
             print("Hello4")
