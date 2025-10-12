@@ -28,7 +28,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 class orderAdmin(admin.ModelAdmin):
     inlines = [orderProducts]
-    list_display = ("__str__","created_at","total_order_value","order_no",)
+    list_display = ("__str__","created_at","total_order_value","order_no","razor_order_id")
     readonly_fields = ['order_no', 'total_order_value', 'created_at']
 
 class replacementAdmin(admin.ModelAdmin):
