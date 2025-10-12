@@ -662,7 +662,7 @@ def paymenthandler(request):
             print(result)
             print("Hello5")
             if result is not None:
-                amount =  raz_amount # Rs. 200
+                amount =  int(raz_amount * 100) # Rs. 200
                 try:
 
                     # capture the payemt
