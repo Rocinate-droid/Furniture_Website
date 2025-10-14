@@ -1,34 +1,81 @@
 {% extends 'main.html' %}
 {% block content %}
 {% load static %}
-<section class="py-5 bg-light" style="margin-top: 10px">
-  <div class="container">
-    <h2 class="mb-4 text-primary fw-bold text-center">
-      Purchase and Returns
-    </h2>
-    <p class="mb-2 text-muted">
-     We offer a 14-Day Return Policy for all products.<br>
-Returns are accepted only for the following reasons:<br>
-Damaged Product<br>
-Manufacturing Defect<br>
-Incomplete Product<br>
-Incorrect Product<br>
-The time frame starts from the date the product was delivered as per the confirmation received from our logistics team or courier partners.<br>
-Please send us 2 images (one of damaged part and one of the entire product) of the product to ascertain the reason for return which can be initiated from the "contact us" Section or you can send us an email to modulefurnitures@gmail.com
-<ul>
-    <li>We are responsible for what we sell. If the product is damaged or defective incorrect or incomplete please inform us within 14 days of delivery to be eligible for a 100% replacement/refund.</li>
-    <li>We offer hassle-free returns through courier pickup or you can also request a replacement for the non furniture products online at our store. You do not have to bear any courier or shipping charges for returns.</li>
-    <li>All products bought online can only be returned in case of manufacturing defects or damaged product delivery or incorrect or incomplete. This needs to be brought to our notice (via phone / email / WhatsApp) within 48 hours from the delivery / assembly date. To return furniture, you can reach us at modulefurnitures@gmail.com , or call us on +91 8129718086</li>
-    <li>Any product returned to us should be in the same condition as received in its original packaging, invoice and tags.</li>
-<li>If you believe that the merchandise is not in good condition or if the packaging is tampered with or damaged, kindly refuse to accept the delivery and call our Customer Care at +91 8129718086 or e-mail us at modulefurnitures@gmail.com mentioning your order reference number. We shall make our best efforts to ensure that a replacement is done at the earliest.</li>
-<li>We do not accept return or exchange of gift vouchers. Cash on Delivery convenience charge is a non-refundable charge. (first we should add that there is a convenience charge)</li>
-<li>Module is committed to ensuring your satisfaction with any merchandise you have ordered from us.</li>
-</ul>
-<h3 class="text-center">
-    Cancellation Policy
-</h3>
-<p>If you change your mind after placing an order, you can cancel the order (or part of the order) within 24 hrs of the order confirmation, or before it is shipped, whichever is earlier. In case you wish to cancel the order post-dispatch, cancellation charges would be applicable.</p>
 
+<section class="py-5 bg-light" style="margin-top: 10px;">
+  <div class="container">
+    <h2 class="mb-4 text-primary fw-bold text-center">Purchase & Returns Policy</h2>
+
+    <p class="text-muted mb-4 text-center">
+      At <strong>Module Furnitures</strong>, we are committed to ensuring your satisfaction with every purchase.  
+      We offer a <strong>14-day return policy</strong> for all products.
+    </p>
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <h4 class="text-success fw-semibold mb-3">Return Eligibility</h4>
+        <p class="mb-3">Returns are accepted only for the following reasons:</p>
+        <ul class="list-unstyled ms-3">
+          <li>• Damaged Product</li>
+          <li>• Manufacturing Defect</li>
+          <li>• Incomplete Product</li>
+          <li>• Incorrect Product</li>
+        </ul>
+        <p class="mt-3">
+          The 14-day period begins from the date the product is delivered as per confirmation from our logistics team or courier partners.
+        </p>
+        <p>
+          To initiate a return, please share <strong>2 images</strong> — one showing the damaged part and another of the full product — through our 
+          <a href="{% url 'contactus' %}" class="text-decoration-none text-primary">Contact Us</a> page or by emailing 
+          <a href="mailto:modulefurnitures@gmail.com" class="text-decoration-none text-primary">modulefurnitures@gmail.com</a>.
+        </p>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <h4 class="text-success fw-semibold mb-3">Important Return Guidelines</h4>
+        <ul class="ms-3">
+          <li>
+            We take full responsibility for what we sell. If the product is damaged, defective, incorrect, or incomplete, please inform us within <strong>14 days of delivery</strong> to be eligible for a 100% replacement or refund.
+          </li>
+          <li>
+            We offer hassle-free returns via courier pickup. No additional courier or shipping charges apply for returns.
+          </li>
+          <li>
+            Returns for furniture are accepted only for manufacturing defects, damages, or incorrect deliveries. Notify us within <strong>48 hours</strong> of delivery or assembly.
+            Contact us via email at <a href="mailto:modulefurnitures@gmail.com" class="text-decoration-none text-primary">modulefurnitures@gmail.com</a> or call us at 
+            <a href="tel:+918129718086" class="text-decoration-none text-primary">+91 8129718086</a>.
+          </li>
+          <li>
+            Returned items must be in their <strong>original packaging</strong>, with invoice and tags intact.
+          </li>
+          <li>
+            If the packaging appears tampered with or damaged at the time of delivery, kindly <strong>refuse to accept the package</strong> and contact Customer Care immediately at 
+            <a href="tel:+918129718086" class="text-decoration-none text-primary">+91 8129718086</a> or email 
+            <a href="mailto:modulefurnitures@gmail.com" class="text-decoration-none text-primary">modulefurnitures@gmail.com</a> with your order reference number. We’ll arrange a replacement promptly.
+          </li>
+          <li>
+            Please note that <strong>gift vouchers</strong> cannot be returned or exchanged.  
+            <br>Cash on Delivery (COD) convenience charges are <strong>non-refundable</strong>.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h3 class="text-center text-success fw-semibold mb-3">Cancellation Policy</h3>
+        <p>
+          If you change your mind after placing an order, you can cancel it (in full or part) within <strong>24 hours</strong> of order confirmation or before it’s shipped — whichever comes first.
+        </p>
+        <p class="mb-0">
+          For cancellations requested after dispatch, applicable <strong>cancellation charges</strong> may apply.
+        </p>
+      </div>
+    </div>
+
+  </div>
 </section>
 
 {% endblock %}

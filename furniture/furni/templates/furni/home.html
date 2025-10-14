@@ -14,6 +14,15 @@
   .slider-parent {
     flex: 1; padding: 10px; justify-content: flex-end; align-items: center; display: flex; max-width: 100%;
   }
+  .mobile-offer{
+	padding-top: 10px;
+  }
+  @media screen and (max-width:764px){
+	.mobile-offer {
+		padding-top: 0px;
+		height: 80px;
+	}
+  }
 	@media (max-width: 904px) {
     .hide-on-mobile {
       display: none;
@@ -25,6 +34,21 @@
       justify-content: center;
     }
   }
+  .offer-slider-body {
+	background-color: white; 
+	display: flex; 
+	align-items: center;  
+	gap: 20px; flex: 1;
+	padding: 10px 10px;
+  }
+  @media screen and (max-width: 412px) {
+   .offer-slider-body {
+    padding: 0;
+  }
+  .sale-logo {
+	display: none;
+  }
+}
 </style>
 		<!-- Start Hero Section -->
 <!-- Start Hero Section -->
@@ -107,9 +131,8 @@
 	<div class="slider-parent">
 		<div class="offer-slider"> 
 				<img class="sale-logo" alt="why-wakefit" loading="lazy"  src="{% static 'images/sale.png' %}">
-				<div class="" style="background-color: white; display: flex; align-items: center;  gap: 20px; flex: 1;
- padding: 10px 10px;">
-<div class="tw-relative tw-w-full tw-max-w-xl tw-mx-auto" role="region" aria-roledescription="carousel" style="padding-top: 20px;">
+				<div class="offer-slider-body">
+<div class="tw-relative tw-w-full tw-max-w-xl tw-mx-auto mobile-offer" role="region" aria-roledescription="carousel">
   <div class="tw-overflow-hidden">
     <div id="carouselInner" class="tw-flex tw-transition-transform tw-duration-500">
 
@@ -122,9 +145,8 @@
               src="https://ik.imagekit.io/2xkwa8s1i/bank-logo/HDFC-logo.png?tr=w-96">
           </div>
           <div class="tw-flex tw-flex-col tw-text-start tw-leading-tight">
-            <p class="tw-text-xs tw-font-medium tw-text-black">Flat</p>
             <div class="tw-flex tw-items-center tw-gap-1">
-              <p class="tw-text-lg tw-font-bold tw-text-[#129C80]">11% OFF</p>
+              <p class="tw-text-lg tw-font-bold tw-text-[#129C80]" style="margin-bottom: 5px;">FLAT 11% OFF</p>
             </div>
             <p class="tw-text-xs tw-text-black">Save up to ₹1,850 with HDFC Bank</p>
           </div>
@@ -143,9 +165,8 @@
               src="https://ik.imagekit.io/2xkwa8s1i/bank-logo/AUSmall-logo.png?tr=w-96">
           </div>
           <div class="tw-flex tw-flex-col tw-text-start tw-leading-tight">
-            <p class="tw-text-xs tw-font-medium tw-text-black">Flat</p>
             <div class="tw-flex tw-items-center tw-gap-1">
-              <p class="tw-text-lg tw-font-bold tw-text-[#129C80]">11% OFF</p>
+              <p class="tw-text-lg tw-font-bold tw-text-[#129C80]" style="margin-bottom: 5px;">FLAT 11% OFF</p>
             </div>
             <p class="tw-text-xs tw-text-black">Valid for IDFC & AU Small Finance Bank</p>
           </div>
@@ -167,7 +188,7 @@
 			<div class="" style="background-color: wheat; display: flex; overflow: hidden;  border-radius: 20px;" > 
 				<img alt="why-wakefit" loading="lazy" width="120" height="125" src="{% static 'images/why-module.png' %}" style="color: transparent; display: flex; align-self: center;">
 				<div class="" style=" display: flex; background-color: white; align-items: center;  gap: 20px;
-  padding: 10px 20px;">
+  padding: 10px 20px; padding-bottom: 0px;">
 				<button class="items-center justify-center gap-y-1.5 rounded-sm min-w-0" style="border: none;
   background: none;
   padding: 0;
@@ -256,13 +277,29 @@
   text-align: center;
 }
 
-.image-box {
+
+
+@media screen and (min-width:764px) {
+    .image-box {
   position: relative;
       /* similar to dotted border in screenshot */
   border-radius: 10px;
   overflow: hidden;
-  height: 180px;                 /* makes all cards uniform */
+  height: 180px;  
+  width: 200px;           /* makes all cards uniform */
 }
+  }
+
+
+@media screen and (max-width:764px) {
+    .image-box {
+  position: relative;
+      /* similar to dotted border in screenshot */
+  border-radius: 10px;
+  overflow: hidden;
+  height: 140px;               /* makes all cards uniform */
+}
+  }
 
 .image-box img {
   width: 100%;
@@ -465,13 +502,13 @@
 						</div>
 					</div>
 					<div class="col-lg-5 ps-lg-5">
-						<h2 class="section-title mb-4">Craft Your Dream Home, One Piece at a Time</h2>
-						<p>Discover timeless furniture designed for everyday comfort and lasting style. From statement sofas to space-saving storage, find everything you need to bring your home vision to life.</p>
+						<h2 class="section-title mb-4">Designs That Define Your Space.</h2>
+						<p>Discover furniture that blends function with beauty.From sleek storage to statement seating — crafted for comfort, built to last, and designed to elevate every room.</p>
 
 						<ul class="list-unstyled custom-list my-4">
-							<li>Premium craftsmanship in every design</li>
+							<li>Premium craftsmanship & timeless quality</li>
 							<li>Collections for every room and every style</li>
-							<li>Customizable pieces to fit your space perfectly</li>
+							<li>Custom sizes & finishes to suit your space</li>
 							<li>Hassle-free delivery and easy returns</li>
 						</ul>
 						<!--<p><a href="" class="btn">Browse Collections</a></p>-->
@@ -560,6 +597,9 @@
 													<p>&ldquo;{{testimonial.content}}&rdquo;</p>
 												</blockquote>
 												<div class="author-info">
+													<div class="author-pic">
+														<img src="{% static 'images/person-1.png' %}" alt="Maria Jones" class="img-fluid">
+													</div>
 													<h3 class="font-weight-bold">{{testimonial.name}}</h3>
 												</div>
 											</div>

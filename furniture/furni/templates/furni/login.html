@@ -3,196 +3,189 @@
 {% load static %}
 
 <style>
-    /* Container */
-    .login-container {
-        display: flex;
-        height: 100vh;
-    }
+  /* Full-page container with background */
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url("{% static 'images/store-1.jpg' %}") no-repeat center center/cover;
+    position: relative;
+  }
 
-    /* Left side - form */
-    .login-form {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 40px;
-        background: #fff;
+  /* Semi-transparent overlay (optional) */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
 
-        /* Fix overflow */
-        overflow-y: auto;
-        max-height: 100vh;
-    }
+  /* Floating login box */
+  .login-box {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 40px 35px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
 
+  .login-box h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #222;
+  }
 
-    .login-box {
-        max-width: 400px;
-        width: 100%;
-        padding-bottom: 30px;
-        /* some space at bottom */
-    }
+  /* Input fields */
+  .login-box input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+    margin-bottom: 25px;
+    font-size: 15px;
+    outline: none;
+    background: transparent;
+  }
 
+  /* Button */
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #ff5c5c;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
 
-    .login-box h2 {
-        font-size: 28px;
-        font-weight: 600;
-        margin-bottom: 30px;
-        color: #222;
-    }
+  .login-btn:hover {
+    background: #ff3b3b;
+  }
 
-    /* Input fields */
-    .login-box input {
-        width: 100%;
-        border: none;
-        border-bottom: 1px solid #ccc;
-        padding: 10px 0;
-        margin-bottom: 25px;
-        font-size: 15px;
-        outline: none;
-    }
+  /* Signup / Login link */
+  .signup-text {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+  }
 
-    /* Button */
-    .login-btn {
-        width: 100%;
-        padding: 14px;
-        border: none;
-        border-radius: 12px;
-        background: #ff5c5c;
-        color: #fff;
-        font-weight: bold;
-        font-size: 16px;
-        cursor: pointer;
-        transition: 0.3s ease;
-    }
+  .signup-text a {
+    color: #000;
+    font-weight: 500;
+    text-decoration: underline;
+  }
 
-    .login-btn:hover {
-        background: #ff3b3b;
-    }
-
-    /* Signup / Login link */
-    .signup-text {
-        margin-top: 20px;
-        font-size: 14px;
-        color: #333;
-    }
-
-    .signup-text a {
-        color: #000;
-        font-weight: 500;
-        text-decoration: underline;
-    }
-
-    /* Right side - image */
-    .login-image {
-        flex: 1;
-        background: url("{% static 'images/store-1.jpg' %}") no-repeat center center/cover;
-    }
+  /* Error styling */
+  .errorlist {
+    list-style-type: none;
+    padding: 0;
+    margin-top: -15px;
+    margin-bottom: 10px;
+    color: red;
+    font-size: 13px;
+  }
 </style>
 
-
 <div class="login-container">
-    <!-- Left side -->
-    <div class="login-form">
-        <div class="login-box">
+  <div class="overlay"></div>
 
-            {% if page == 'login' %}
-            <h2>Sign in</h2>
-            <form method="post" action="">
-                {% csrf_token %}
-                <input type="text" name="username" placeholder="Email address*" required />
-                <input type="password" name="password" placeholder="Enter your password" required />
-                {% if messages %}
-                {% for message in messages %}
-                <div class="text-danger">{{ message }}</div>
-                {% endfor %}
-                {% endif %}
-                <button type="submit" class="login-btn">Login →</button>
+  <div class="login-box">
+    {% if page == 'login' %}
+    <h2>Sign in</h2>
+    <form method="post" action="">
+      {% csrf_token %}
+      <input type="text" name="username" placeholder="Email address*" required />
+      <input type="password" name="password" placeholder="Enter your password" required />
+      {% if messages %}
+      {% for message in messages %}
+      <div class="text-danger">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+      <button type="submit" class="login-btn">Login →</button>
+    </form>
+    <p class="signup-text">Don’t have an account? <a href="{% url 'registerpage' %}">Sign up</a></p>
 
+    {% else %}
+    <h2>Create your account</h2>
+    <form method="post" action="">
+      {% csrf_token %}
+      <input type="email" name="username" placeholder="Email address*" required />
+      {% if form.username.errors %}
+      <ul class="errorlist">
+        {% for error in form.username.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
 
-            </form>
-            <p class="signup-text">Don’t have an account? <a href="{% url 'registerpage' %}">Sign up</a></p>
+      <input type="text" name="first_name" placeholder="First Name" required />
+      {% if form.first_name.errors %}
+      <ul class="errorlist">
+        {% for error in form.first_name.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
 
-            {% else %}
-            <h2>Create your account</h2>
-            <form method="post" action="">
-                {% csrf_token %}
-                <input type="email" name="username" placeholder="Email address*" required />
-                {% if form.username.errors %}
-                <ul class="errorlist">
-                    {% for error in form.username.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                <input type="text" name="first_name" placeholder="First Name" required />
-                {% if form.first_name.errors %}
-                <ul class="errorlist">
-                    {% for error in form.first_name.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                <input type="text" name="last_name" placeholder="Last Name" required />
-                     {% if form.last_name.errors %}
-        <ul class="errorlist">
-            {% for error in form.last_name.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
+      <input type="text" name="last_name" placeholder="Last Name" required />
+      {% if form.last_name.errors %}
+      <ul class="errorlist">
+        {% for error in form.last_name.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <input type="password" name="password1" placeholder="Enter your password" required />
+      {% if form.password1.errors %}
+      <ul class="errorlist">
+        {% for error in form.password1.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <div id="confirmpassword"></div>
+      <input type="password" name="password2" placeholder="Re-enter your password" required oninput="checkPasswordMatch()" />
+      {% if form.password2.errors %}
+      <ul class="errorlist">
+        {% for error in form.password2.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <button type="submit" class="login-btn" id="createaccount">Create Account →</button>
+    </form>
+    <p class="signup-text">Already a user? <a href="{% url 'loginpage' %}">Login</a></p>
     {% endif %}
-                <input type="password" name="password1" placeholder="Enter your password" required />
-                {% if form.password1.errors %}
-                <ul class="errorlist" style="list-style-type: none;">
-                    {% for error in form.password1.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                <div id="confirmpassword"></div>
-                <input type="password" name="password2" placeholder="Renter your password" required
-                    oninput="checkPasswordMatch()" />
-                {% if form.password2.errors %}
-                <ul class="errorlist">
-                    {% for error in form.password2.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-
-                <button type="submit" class="login-btn" id="createaccount">Create Account →</button>
-
-            </form>
-            <p class="signup-text">Already a user? <a href="{% url 'loginpage' %}">Login</a></p>
-            {% endif %}
-
-        </div>
-    </div>
-
-    <!-- Right side image -->
-    <div class="login-image"></div>
+  </div>
 </div>
 
 <script>
-    function checkPasswordMatch() {
-        const password = document.getElementsByName("password1")[0].value;
-        const password2 = document.getElementsByName("password2")[0].value;
-        const element = document.getElementById("confirmpassword");
-        const submitbutton = document.getElementById("createaccount")
+  function checkPasswordMatch() {
+    const password = document.getElementsByName("password1")[0].value;
+    const password2 = document.getElementsByName("password2")[0].value;
+    const element = document.getElementById("confirmpassword");
+    const submitbutton = document.getElementById("createaccount");
 
-        const innerelement = document.createElement("p");
-        innerelement.textContent = "Passwords do not match";
-        innerelement.style.fontSize = "smaller";
-        innerelement.style.color = "red";
-
-        if (password == password2) {
-            element.innerHTML = "";
-            submitbutton.disabled = false;
-
-        } else {
-            element.innerHTML = "";
-            element.appendChild(innerelement);
-            submitbutton.disabled = true;
-        }
+    if (password === password2) {
+      element.innerHTML = "";
+      submitbutton.disabled = false;
+    } else {
+      element.innerHTML = "<p style='color:red; font-size:13px;'>Passwords do not match</p>";
+      submitbutton.disabled = true;
     }
+  }
 </script>
 
 {% endblock content %}

@@ -37,6 +37,51 @@
       }
     }
   </script>
+  <style>
+    @media screen and (max-width:764px) {
+    .desktop-navbar-links {
+      display: none !important;
+    }
+  }
+   .bottom-bar-mobile {
+  background-color: #E5D9D9;
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 10%;
+  display: flex;
+  justify-content: space-evenly;
+  
+}
+
+/* Style the links inside the navigation bar */
+.bottom-bar-mobile a {
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.bottom-bar-mobile a:hover {
+  background-color: #ddd;
+  color: black;
+}
+  @media screen and (min-width:764px) {
+    .mobile-navbar-links {
+      display: none !important;
+    }
+    #mobileSearch {
+      display: none !important;
+    }
+    .bottom-bar-mobile {
+      display: none !important;
+    }
+  }
+
+  </style>
     </head>
     
     <body>
@@ -58,25 +103,73 @@
     .top-banner-text {
       font-size:xx-small;
     }
+  }
+  .module-logo {
+    height: 140px;
+    width: 140px;
+  }
+  @media screen and (max-width:764px) {
+    .module-logo {
+      height: 30px;
+      width: 100px;
+    }
+    .navbar-brand {
+      margin-right: auto;
+    }
+    .navbar-toggler {
+      padding-left: 0px;
+    }
+  }
+ 
+
+/* Add a color to the active/current link */
+
+  
 </style>
-  <div class="top-banner">
+<!--
+ <div class="top-banner">
     <p class="top-banner-text" style="text-align: center; color: black;">Currently servicing only in <span style="color: red;">Thrissur, Ernakulam and Alapuzha,</span> Coming soon to all of Kerala</h2>
   </div>
+-->
 		<!-- Start Header/Navigation -->
+    
 <nav class="navbar navbar-expand-md navbar-dark py-1" style="background-color: #E5D9D9;">
 
   <div class="container">
 
     <!-- Logo -->
-    <a class="navbar-brand" href="{% url 'home' %}">
-      <img src="{% static 'images\module-logo.png' %}" alt="Logo" class="img-logo" style="height: 140px; width: 140px;">
-    </a>
-
     <!-- Toggler -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="d-flex flex-column flex-md-row align-items-md-center w-100 py-1">
+    <a class="navbar-brand" href="{% url 'home' %}">
+    <picture>
+      <source media="(max-width:764px)" srcset="{% static 'images/mini-logo.png' %}">
+      
+      <img src="{% static 'images/module-logo.png' %}" alt="Logo" class="module-logo">
+
+      </picture>
+          </a>
+    
+            <div class="d-flex align-items-center gap-3 ms-md-3 my-2 my-md-0 py-1 mobile-navbar-links">
+ 
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearch" aria-controls="mobileSearch" aria-expanded="false" aria-label="Toggle navigation" style="padding: 0;">
+      <span class="fa fa-search text-dark"></span>
+    </button>
+  <!-- Wishlist Icon -->
+  <a class="fa fa-heart fs-5 text-dark" href="{% url 'wishlist' %}" style="text-decoration: none;"></a>
+
+  <!-- Cart Icon -->
+
+
+  <button class="fa fa-shopping-cart fs-5 text-dark" 
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" style="background-color: transparent; border: none;">
+    </button>
+  <!-- User Dropdown or Login Icon -->
+  
+</div>
+    
+    <div class="d-flex flex-column flex-md-row align-items-md-center w-100 py-1 desktop-navbar-links">
       <div class="flex-grow-1 my-2 my-md-0 px-md-3">
           <div class="position-relative">
             <form action="{% url 'search' %}" method="get">
@@ -125,6 +218,26 @@
 </div>
 
     </div>
+
+    <div class="collapse navbar-collapse" id="mobileSearch">
+
+      <!-- First row -->
+       <hr style="border: none; border-top: 2px dashed #555; margin: 10px 0;">
+      <!-- Search (mobile only) -->
+       <div class="flex-grow-1 my-2 my-md-0 px-md-3">
+          <div class="position-relative">
+            <form action="{% url 'search' %}" method="get">
+            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Hinted search text" required value="{{search_word}}">
+            <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
+              <button type="submit" style="border: none; background-color: transparent;">
+              <i class="fas fa-search"></i>
+              </button>
+            </span>
+            </form>
+          </div>
+        </div>
+
+    </div>
     <!-- Collapse (first row + categories for mobile) -->
     <div class="collapse navbar-collapse" id="mainNavbar">
 
@@ -135,6 +248,7 @@
       {% for room in rooms %}
 <li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.slug %}active{% endif %}" href="{% url 'rooms' room_type=room.slug %}">{{room.name}}</a></li>
       {% endfor %}
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="modal" data-bs-target="#trackOrderModal" style=" background-color: aqua; font-weight: bold;">📦 Track Order</a></li>
       </ul>
 
     </div>
@@ -149,7 +263,6 @@
     <ul class="nav nav-pills justify-content-center">
       {% for room in rooms %}
      <li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.slug %}active{% endif %}" href="{% url 'rooms' room_type=room.slug %}">{{room.name}}</a></li>
-
     {% endfor %}
     </ul>
   </div>

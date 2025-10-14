@@ -39,7 +39,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-md-4">
+        <!--<div class="col-md-4">
             <a href="" class="text-decoration-none text-dark">
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
@@ -48,13 +48,23 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div>-->
         <div class="col-md-4">
             <a href="{% url 'contactus' %}" class="text-decoration-none text-dark">
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <h5 class="card-title">Contact Us</h5>
                         <p class="card-text small text-muted">Get in touch with us</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'logoutpage' %}" class="text-decoration-none text-dark">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Sign Out</h5>
+                        <p class="card-text small text-muted">Thank you for visiting module</p>
                     </div>
                 </div>
             </a>
@@ -80,8 +90,11 @@
         <a href="{% url 'edit_account' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
             Login &amp; Security <span>&gt;</span>
         </a>
-        <a href="" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <!--<a href="" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
            My Reviews and Ratings <span>&gt;</span>
+        </a>-->
+        <a href="{% url 'logoutpage' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+           Sign Out <span>&gt;</span>
         </a>
         <!-- Add other links like Prime, Wallet, Contact Us here -->
     </div>

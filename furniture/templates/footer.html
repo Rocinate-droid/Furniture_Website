@@ -15,7 +15,7 @@
                 </p>
 
                 <div class="mt-3 store-buttons">
-                    <a href="#" class="btn me-2">Book Store Visit</a>
+                    <!--<a href="#" class="btn me-2">Book Store Visit</a>-->
                     <a href="https://maps.app.goo.gl/4RALF3jt4C3Ma1X59" target="_blank" class="btn">Get Direction</a>
                 </div>
             </div>
@@ -67,7 +67,7 @@
 
                     <div class="col-6 col-sm-6 col-md-3">
                         <ul class="list-unstyled">
-                            <li><a href="#">Jobs</a></li>
+                            <li><a href="https://www.linkedin.com/company/module-furnitures/about/">Jobs</a></li>
                             <li>
                                 <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
                             </li>
@@ -137,6 +137,16 @@
       </div>
     </div>
   </div>
+</div>
+ <div class="bottom-bar-mobile">
+  <a href="{% url 'home'  %}" class="active"><i class="fa fa-home" style="color: green"></i></a>
+  <a href="tel:+918129718086"><i class="fa fa-phone" style="color: green"></i></a>
+  <a href="https://wa.me/918129718086?text=I'm%20interested%20in%20buying%20some%20furniture"><i class="fab fa-whatsapp" aria-hidden="true" style="font-size: 23px; color: green"></i></a>
+  {% if user.is_authenticated %}
+  <a href="{% url 'profile' %}"><i class="fa fa-user" aria-hidden="true" style="color: green;"></i></a>
+  {% else %}
+  <a href="{% url 'loginpage' %}"><i class="fa fa-sign-in-alt" aria-hidden="true" style="color: green;"></i></a>
+  {% endif %}
 </div>
 
 <!-- Scripts -->

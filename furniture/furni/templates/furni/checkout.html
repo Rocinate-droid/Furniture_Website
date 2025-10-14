@@ -1,6 +1,9 @@
 {% extends 'main.html' %}
 {% load humanize %}
 {% block content %}
+{% load static %}
+<script src="https://unpkg.com/@lottiefiles/lottie-player@1.5.7/dist/lottie-player.js"></script>
+
 
 <style>
 	input[type=number]::-webkit-inner-spin-button,
@@ -8,8 +11,33 @@
 		-webkit-appearance: none;
 		margin: 0;
 	}
+	
+	#payment-loader {
+		
+		 position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+	}
 </style>
  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+ <div id="payment-loader">
+ <lottie-player 
+    src="{% static 'images/payment2.json' %}"
+    background="transparent"
+    speed="1"
+    style="width: 300px; height: 300px;"
+    loop
+    autoplay
+	>
+</lottie-player>
+</div>
 <!-- Start Hero Section -->
 <div class="hero">
 	<div class="container">
@@ -26,6 +54,7 @@
 	</div>
 </div>
 <!-- End Hero Section -->
+
 
 <div class="untree_co-section">
 	<!-- template.html -->
@@ -345,47 +374,40 @@
 								</table>
 
 
-								<div class="border p-3 mb-3">
-									<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse"
-											href="#collapsebank" role="button" aria-expanded="false"
-											aria-controls="collapsebank">Direct Bank Transfer</a></h3>
 
-									<div class="collapse" id="collapsebank">
-										<div class="py-2">
-											<p class="mb-0">Make your payment directly into our bank account. Please use
-												your Order ID as the payment reference. Your order won’t be shipped
-												until the funds have cleared in our account.</p>
-										</div>
-									</div>
-								</div>
+								
+
 
 								<div class="border p-3 mb-3">
-									<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse"
-											href="#collapsecheque" role="button" aria-expanded="false"
-											aria-controls="collapsecheque">Cheque Payment</a></h3>
+									<h3 class="h6 mb-0"><a class="d-block" style="text-decoration: none; color: red;">Free shipping above ₹49,999</a></h3>
+								</div>
+								<div class="border p-3 mb-3">
+									<h3 class="h6 mb-0"><a class="d-block"
+											
+											 style="text-decoration: none;">Payment Method</a></h3>
 
-									<div class="collapse" id="collapsecheque">
+									
 										<div class="py-2">
-											<p class="mb-0">Make your payment directly into our bank account. Please use
-												your Order ID as the payment reference. Your order won’t be shipped
-												until the funds have cleared in our account.</p>
-										</div>
+											<div class="border p-3 mb-3">
+									
+										<div class="py-2" style="display: flex; flex-wrap: wrap;
+    align-content: center;">
+
+											<input type="radio" checked>
+											<label style="font-weight: bold; margin-left: 10px;">RazorPay	</label>
+										<span style="margin-left: auto;">
+													<img src="{% static 'images/rupay.jpg' %}" alt="RuPay" height="32">
+													<img src="{% static 'images/visa.jpg' %}" alt="Visa" height="32">
+                    <img src="{% static 'images/mastercard.jpg' %}" alt="MasterCard" height="32">
+                    <img src="{% static 'images/upi1.jpg' %}" alt="UPI" height="32">
+                    <img src="{% static 'images/wallet.jpg' %}" alt="Wallet" height="32">
+											</span>
+									</div>
+								</div>
 									</div>
 								</div>
 
-								<div class="border p-3 mb-5">
-									<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse"
-											href="#collapsepaypal" role="button" aria-expanded="false"
-											aria-controls="collapsepaypal">Paypal</a></h3>
-
-									<div class="collapse" id="collapsepaypal">
-										<div class="py-2">
-											<p class="mb-0">Make your payment directly into our bank account. Please use
-												your Order ID as the payment reference. Your order won’t be shipped
-												until the funds have cleared in our account.</p>
-										</div>
-									</div>
-								</div>
+								
 
 
 
@@ -437,46 +459,34 @@
 								</table>
 
 								<div class="border p-3 mb-3">
-									<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse"
-											href="#collapsebank" role="button" aria-expanded="false"
-											aria-controls="collapsebank">Direct Bank Transfer</a></h3>
-
-									<div class="collapse" id="collapsebank">
-										<div class="py-2">
-											<p class="mb-0">Make your payment directly into our bank account. Please use
-												your Order ID as the payment reference. Your order won’t be shipped
-												until the funds have cleared in our account.</p>
-										</div>
-									</div>
+									<h3 class="h6 mb-0"><a class="d-block" style="text-decoration: none; color: red;">Free shipping above ₹49,999</a></h3>
 								</div>
-
 								<div class="border p-3 mb-3">
-									<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse"
-											href="#collapsecheque" role="button" aria-expanded="false"
-											aria-controls="collapsecheque">Cheque Payment</a></h3>
+									<h3 class="h6 mb-0"><a class="d-block"
+											
+											 style="text-decoration: none;">Payment Method</a></h3>
 
-									<div class="collapse" id="collapsecheque">
+									
 										<div class="py-2">
-											<p class="mb-0">Make your payment directly into our bank account. Please use
-												your Order ID as the payment reference. Your order won’t be shipped
-												until the funds have cleared in our account.</p>
-										</div>
+											<div class="border p-3 mb-3">
+									
+										<div class="py-2" style="display: flex; flex-wrap: wrap;
+    align-content: center;">
+
+											<input type="radio" checked>
+											<label style="font-weight: bold; margin-left: 10px;">RazorPay	</label>
+										<span style="margin-left: auto;">
+													<img src="{% static 'images/rupay.jpg' %}" alt="RuPay" height="32">
+													<img src="{% static 'images/visa.jpg' %}" alt="Visa" height="32">
+                    <img src="{% static 'images/mastercard.jpg' %}" alt="MasterCard" height="32">
+                    <img src="{% static 'images/upi1.jpg' %}" alt="UPI" height="32">
+                    <img src="{% static 'images/wallet.jpg' %}" alt="Wallet" height="32">
+											</span>
+									</div>
+								</div>
 									</div>
 								</div>
 
-								<div class="border p-3 mb-5">
-									<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse"
-											href="#collapsepaypal" role="button" aria-expanded="false"
-											aria-controls="collapsepaypal">Paypal</a></h3>
-
-									<div class="collapse" id="collapsepaypal">
-										<div class="py-2">
-											<p class="mb-0">Make your payment directly into our bank account. Please use
-												your Order ID as the payment reference. Your order won’t be shipped
-												until the funds have cleared in our account.</p>
-										</div>
-									</div>
-								</div>
 
 								<div class="form-group">
 									<button class="btn btn-black btn-lg py-3 btn-block" type="submit">Place
@@ -517,14 +527,17 @@ document.addEventListener('DOMContentLoaded', function (){
 	const product = "{{product.id}}";
 	const qty = "{{quantity}}";
 	const total_product_cost = "{{total_product_cost}}"
+	const cartcreated = "{{cartcreated.id}}"
 	let url = "";
+	const loader = document.getElementById("payment-loader");
 	const form =  document.getElementById("checkout-form");
 	if (page == "cart_checkout") {
-		url = `/createorder/?page=${page}` 
+		url = `/createorder/?page=${page}&cartcreated=${cartcreated}` 
 	} else if (page == "buy_checkout") {
 		url = `/createorder/?page=${page}&product=${product}&quantity=${qty}&total_product_cost=${total_product_cost}`
 	}
 	form.addEventListener('submit', function (event) {
+		
 		event.preventDefault();
 		const formData = new FormData(form);
 		fetch(url, {
@@ -544,10 +557,20 @@ document.addEventListener('DOMContentLoaded', function (){
       name: "Module Furnitures", 
       order_id: data.razorpay_order_id, 
       callback_url: data.callback_url,
-	  order_no: data.orderno
+	  order_no: data.orderno,
+	  prefill : {
+		name : data.name,
+		email : data.email,
+		contact: data.phone
+	  }
     }
 	var rzp1 = new Razorpay(options);
-	rzp1.open()
+	loader.style.display = "flex";
+	setTimeout(() => {
+		loader.style.display = "none";
+		rzp1.open();
+	}, 2000)
+	
 
 		}
 		

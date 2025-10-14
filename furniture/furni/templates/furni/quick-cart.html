@@ -89,8 +89,11 @@
         <span>₹{{ grand_total|intcomma }}</span>
       </div>
       <p class="text-success small">You will save ₹{{ discount|intcomma }} on this order</p>
-      <p class="text-success small">Shipping will be calculated on checkout page</p>
-
+      {% if grand_total >= 49999 %}
+      <p class="text-success small">You have unlocked free shipping</p>
+      {% elif grand_total < 49999  %}
+      <p class="text-success small">Shop for {{49999|sub:grand_total}} more to unlock free shipping</p>
+      {% endif %}
       <!-- ✅ Checkout Button -->
       <button class="btn btn-dark w-100 mt-2"
               onclick="window.location='{% url 'checkout' %}'">

@@ -47,7 +47,7 @@
               }
               break;
             } else {
-              if ((today.getDate() + 7) > (getDaysInMonth(today.getFullYear(), today.getMonth()))) {
+              /*if ((today.getDate() + 7) > (getDaysInMonth(today.getFullYear(), today.getMonth()))) {
                 let month = today.getMonth();
                 const newDate = (today.getDate() + 7) - (getDaysInMonth(today.getFullYear(), today.getMonth() + 1));
                 today.setDate(newDate);
@@ -57,7 +57,9 @@
               } else {
                 result.innerText = `FREE delivery by ${days[today.getDay() + 7]}, ${istDate.getDate() + 7} ${months[today.getMonth()]} `;
                 result2.innerText = `Deliver to ${location[index].Block},${location[index].District} ${pincode} `;
-              }
+              }*/
+             result.innerText = `We don't ship to this pincode currently`;
+             result2.innerText = ``;
               break;
             }
           }
