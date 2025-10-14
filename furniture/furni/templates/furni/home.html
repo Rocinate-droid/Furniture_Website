@@ -378,6 +378,7 @@
 
 
 <style>
+	
 	.new-launch {
 		display: grid;
 		grid-template-columns:repeat(4, 1fr);
@@ -598,7 +599,7 @@
 												</blockquote>
 												<div class="author-info">
 													<div class="author-pic">
-														<img src="{% static 'images/person-1.png' %}" alt="Maria Jones" class="img-fluid">
+														<img src="{{testimonial.img.url}}" alt="Maria Jones" class="img-fluid">
 													</div>
 													<h3 class="font-weight-bold">{{testimonial.name}}</h3>
 												</div>

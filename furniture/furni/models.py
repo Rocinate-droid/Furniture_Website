@@ -136,6 +136,7 @@ class CartItem(models.Model):
 class Testimonial(models.Model):
     name = models.CharField(max_length=200)
     content = models.TextField(max_length=500)
+    img = models.ImageField(upload_to='testimonials/')
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
