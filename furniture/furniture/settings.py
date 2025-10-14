@@ -22,7 +22,9 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'modulefurnitures.com', 'www.modulefurnitures.com'
+]
 
 
 # Application definition
@@ -129,10 +131,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 RAZOR_KEY_ID = env('RAZOR_KEY_ID')
 RAZOR_KEY_SECRET = env('RAZOR_KEY_SECRET')
