@@ -557,8 +557,10 @@ document.addEventListener('DOMContentLoaded', function (){
       name: "Module Furnitures", 
       order_id: data.razorpay_order_id, 
       callback_url: data.callback_url,
-	  newcartcreated: data.cartcreated,
-	  order_no: data.orderno,
+	  notes: {
+		newcartcreated: data.cartcreated,
+		order_no: data.orderno
+      },
 	  prefill : {
 		name : data.name,
 		email : data.email,
