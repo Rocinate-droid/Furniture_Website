@@ -622,7 +622,7 @@ def checkout(request):
     else:
         shipping_cost = 999
         grand_total += shipping_cost 
-    context = {'total_cost': total_cost, 'cart_items': cart_items, 'shipping_cost': shipping_cost, 'page' : page, 'grand_total': grand_total}
+    context = {'total_cost': total_cost, 'cart_items': cart_items, 'shipping_cost': shipping_cost, 'page' : page, 'grand_total': grand_total, 'cartcreated' : cartcreated}
     return render(request, 'furni/checkout.html', context)
 
 @csrf_exempt
