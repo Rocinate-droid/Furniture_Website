@@ -588,21 +588,31 @@ def create_order(request):
             order.save()
             callback_url = "/paymenthandler/"
             if page == "cart_checkout":
-                context = {'razorpay_order_id':razorpay_order_id, 'razorpay_merchant_key':settings.RAZOR_KEY_ID, 'razorpay_amount':(order.total_order_value * 100), 'currency':"INR", 'callback_url':callback_url,'orderno' : orderno, 'cartcreated':cartcreated}
-            else:
-                context = {'razorpay_order_id':razorpay_order_id, 'razorpay_merchant_key':settings.RAZOR_KEY_ID, 'razorpay_amount':(order.total_order_value * 100), 'currency':"INR", 'callback_url':callback_url,'orderno' : orderno}
-
-            return JsonResponse( {
-                "razorpay_order_id":razorpay_order_id,
-                "razorpay_merchant_key":settings.RAZOR_KEY_ID,
-                "razorpay_amount":(order.total_order_value * 100),
-                "currency":"INR", 
-                'callback_url':callback_url,
-                'orderno' : orderno,
-                'name' : name,
-                'phone' : phone,
-                'email' : email,
-            })
+                return JsonResponse( {
+                    "razorpay_order_id":razorpay_order_id,
+                    "razorpay_merchant_key":settings.RAZOR_KEY_ID,
+                    "razorpay_amount":(order.total_order_value * 100),
+                    "currency":"INR", 
+                    'callback_url':callback_url,
+                    'orderno' : orderno,
+                    'name' : name,
+                    'cartcreated' :cartcreated.id,
+                    'phone' : phone,
+                    'email' : email,
+                })
+            elif page == "buy_checkout":
+                return JsonResponse( {
+                    "razorpay_order_id":razorpay_order_id,
+                    "razorpay_merchant_key":settings.RAZOR_KEY_ID,
+                    "razorpay_amount":(order.total_order_value * 100),
+                    "currency":"INR", 
+                    'callback_url':callback_url,
+                    'orderno' : orderno,
+                    'cartcreated': "",
+                    'name' : name,
+                    'phone' : phone,
+                    'email' : email,
+                })
 
 def checkout(request):
     page = "cart_checkout"
@@ -622,22 +632,24 @@ def checkout(request):
     else:
         shipping_cost = 999
         grand_total += shipping_cost 
-    context = {'total_cost': total_cost, 'cart_items': cart_items, 'shipping_cost': shipping_cost, 'page' : page, 'grand_total': grand_total}
+    context = {'total_cost': total_cost, 'cart_items': cart_items, 'shipping_cost': shipping_cost, 'page' : page, 'grand_total': grand_total, 'cartcreated' : cartcreated}
     return render(request, 'furni/checkout.html', context)
 
 @csrf_exempt
 def paymenthandler(request):
     # only accept POST request.
+    cartcreated = None
+    passedCart = None
+    if 'newcartcreated' in request.POST:
+        cartcreated = request.POST.get('notes[newcartcreated]', '')
+        passedCart = Cart.objects.get(id=cartcreated)
     if request.method == "POST":
         try:
             # get the required parameters from post request.
             payment_id = request.POST.get('razorpay_payment_id', '')
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature = request.POST.get('razorpay_signature', '')
-            if 'cartcreated' in request.POST:
-                cartcreated = request.POST.get('cartcreated','')
             order = Orders.objects.get(razor_order_id=razorpay_order_id)
-            print(order)
             order_no = order.order_no
             raz_amount = order.total_order_value
             params_dict = {
@@ -645,7 +657,6 @@ def paymenthandler(request):
                 'razorpay_payment_id': payment_id,
                 'razorpay_signature': signature
             }
-
             # verify the payment signature.
             result = razorpay_client.utility.verify_payment_signature(
                 params_dict)
@@ -656,31 +667,33 @@ def paymenthandler(request):
                     # capture the payemt
                     razorpay_client.payment.capture(payment_id, amount)
                     order.payment_status = "Success"
-                    if cartcreated:
-                        CartItem.objects.filter(cart=cartcreated).delete()
+                    if cartcreated and passedCart:
+                        CartItem.objects.filter(cart=passedCart).delete()
                     order.save()
                     # render success page on successful caputre of payment
                     return render(request, 'furni/thankyou.html', {"orderno": order_no})
-                except:
+                except Exception as e:
+                    print("Payment capture failed:", str(e))
                     order.payment_status = "Failed"
-                    if cartcreated:
-                        CartItem.objects.filter(cart=cartcreated).delete()
+                    if cartcreated and passedCart:
+                        CartItem.objects.filter(cart=passedCart).delete()
                     order.save()
                     # if there is an error while capturing payment.
                     return render(request, 'furni/failure.html')
             else:
                 order.payment_status = "Failed"
-                if cartcreated:
-                        CartItem.objects.filter(cart=cartcreated).delete()
+                if cartcreated and passedCart:
+                        CartItem.objects.filter(cart=passedCart).delete()
                 order.save()
                 # if signature verification fails.
                 return render(request, 'furni/failure.html')
-        except:
+        except Exception as e:
+            print("Payment capture failed:", str(e))
             # if we don't find the required parameters in POST data
-            return HttpResponseBadRequest()
+            return render(request, 'furni/failure.html')
     else:
        # if other than POST request is made.
-        return HttpResponseBadRequest()
+        return render(request, 'furni/failure.html')
 
 
 def buynow(request, product_id, qty):
