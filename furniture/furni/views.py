@@ -634,8 +634,7 @@ def paymenthandler(request):
             payment_id = request.POST.get('razorpay_payment_id', '')
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature = request.POST.get('razorpay_signature', '')
-            if 'cartcreated' in request.POST:
-                cartcreated = request.POST.get('cartcreated','')
+            
             order = Orders.objects.get(razor_order_id=razorpay_order_id)
             print(order)
             order_no = order.order_no
@@ -659,9 +658,7 @@ def paymenthandler(request):
                     razorpay_client.payment.capture(payment_id, amount)
                     print("check3")
                     order.payment_status = "Success"
-                    if cartcreated:
-                        CartItem.objects.filter(cart=cartcreated).delete()
-                    order.save()
+                    
                     print("check4")
                     # render success page on successful caputre of payment
                     return render(request, 'furni/thankyou.html', {"orderno": order_no})
