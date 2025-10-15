@@ -587,18 +587,32 @@ def create_order(request):
             order.payment_status = "Pending"
             order.save()
             callback_url = "/paymenthandler/"
-            return JsonResponse( {
-                "razorpay_order_id":razorpay_order_id,
-                "razorpay_merchant_key":settings.RAZOR_KEY_ID,
-                "razorpay_amount":(order.total_order_value * 100),
-                "currency":"INR", 
-                'callback_url':callback_url,
-                'orderno' : orderno,
-                'name' : name,
-                'cartcreated' :cartcreated.id,
-                'phone' : phone,
-                'email' : email,
-            })
+            if page == "cart_checkout":
+                return JsonResponse( {
+                    "razorpay_order_id":razorpay_order_id,
+                    "razorpay_merchant_key":settings.RAZOR_KEY_ID,
+                    "razorpay_amount":(order.total_order_value * 100),
+                    "currency":"INR", 
+                    'callback_url':callback_url,
+                    'orderno' : orderno,
+                    'name' : name,
+                    'cartcreated' :cartcreated.id,
+                    'phone' : phone,
+                    'email' : email,
+                })
+            elif page == "buy_checkout":
+                return JsonResponse( {
+                    "razorpay_order_id":razorpay_order_id,
+                    "razorpay_merchant_key":settings.RAZOR_KEY_ID,
+                    "razorpay_amount":(order.total_order_value * 100),
+                    "currency":"INR", 
+                    'callback_url':callback_url,
+                    'orderno' : orderno,
+                    'cartcreated': "",
+                    'name' : name,
+                    'phone' : phone,
+                    'email' : email,
+                })
 
 def checkout(request):
     page = "cart_checkout"
