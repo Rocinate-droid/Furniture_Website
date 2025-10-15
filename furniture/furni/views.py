@@ -660,6 +660,8 @@ def paymenthandler(request):
                     print("check3")
                     order.payment_status = "Success"
                     if cartcreated:
+                        print("check31")
+                        print(CartItem.objects.filter(cart=cartcreated))
                         CartItem.objects.filter(cart=cartcreated).delete()
                     order.save()
                     print("check4")
@@ -669,6 +671,8 @@ def paymenthandler(request):
                     order.payment_status = "Failed"
                     print("check5")
                     if cartcreated:
+                        print("check32")
+                        print(CartItem.objects.filter(cart=cartcreated))
                         CartItem.objects.filter(cart=cartcreated).delete()
                     order.save()
                     print("check6")
@@ -678,6 +682,8 @@ def paymenthandler(request):
                 order.payment_status = "Failed"
                 print("check7")
                 if cartcreated:
+                        print("check33")
+                        print(CartItem.objects.filter(cart=cartcreated))
                         CartItem.objects.filter(cart=cartcreated).delete()
                 order.save()
                 print("check8")
