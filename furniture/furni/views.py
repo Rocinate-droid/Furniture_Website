@@ -631,6 +631,8 @@ def paymenthandler(request):
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature = request.POST.get('razorpay_signature', '')
             order = Orders.objects.get(razor_order_id=razorpay_order_id)
+            print(request.POST.get('newcartcreated', ''))
+            print("howdy")
             if 'newcartcreated' in request.POST:
                 print("howdy")
                 print(request.POST.get('newcartcreated', ''))
