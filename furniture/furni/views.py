@@ -645,10 +645,11 @@ def paymenthandler(request):
                 'razorpay_payment_id': payment_id,
                 'razorpay_signature': signature
             }
-
+            print(params_dict)
             # verify the payment signature.
             result = razorpay_client.utility.verify_payment_signature(
                 params_dict)
+            print("check1")
             if result is not None:
                 amount =  int(raz_amount * 100) # Rs. 200
                 try:
