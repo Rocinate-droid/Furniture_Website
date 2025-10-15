@@ -633,6 +633,7 @@ def paymenthandler(request):
             order = Orders.objects.get(razor_order_id=razorpay_order_id)
             if 'cartcreated' in request.POST:
                 cartcreated = request.POST.get('cartcreated','')
+                passedCart = Cart.objects.get(id=cartcreated)
             print(order)
             order_no = order.order_no
             raz_amount = order.total_order_value
@@ -657,8 +658,8 @@ def paymenthandler(request):
                     order.payment_status = "Success"
                     if cartcreated:
                         print("check31")
-                        print(CartItem.objects.filter(cart=cartcreated))
-                        CartItem.objects.filter(cart=cartcreated).delete()
+                        print(CartItem.objects.filter(cart=passedCart))
+                        CartItem.objects.filter(cart=passedCart).delete()
                     order.save()
                     print("check4")
                     # render success page on successful caputre of payment
@@ -669,7 +670,7 @@ def paymenthandler(request):
                     if cartcreated:
                         print("check32")
                         print(CartItem.objects.filter(cart=cartcreated))
-                        CartItem.objects.filter(cart=cartcreated).delete()
+                        CartItem.objects.filter(cart=passedCart).delete()
                     order.save()
                     print("check6")
                     # if there is an error while capturing payment.
@@ -680,7 +681,7 @@ def paymenthandler(request):
                 if cartcreated:
                         print("check33")
                         print(CartItem.objects.filter(cart=cartcreated))
-                        CartItem.objects.filter(cart=cartcreated).delete()
+                        CartItem.objects.filter(cart=passedCart).delete()
                 order.save()
                 print("check8")
                 # if signature verification fails.
