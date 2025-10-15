@@ -638,15 +638,11 @@ def checkout(request):
 @csrf_exempt
 def paymenthandler(request):
     # only accept POST request.
-    print("howdy")
     cartcreated = None
     passedCart = None
     if 'newcartcreated' in request.POST:
-        print("howdy")
-        print(request.POST.get('newcartcreated', ''))
         cartcreated = request.POST.get('notes[newcartcreated]', '')
         passedCart = Cart.objects.get(id=cartcreated)
-        print(passedCart)
     if request.method == "POST":
         try:
             # get the required parameters from post request.
@@ -654,8 +650,6 @@ def paymenthandler(request):
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature = request.POST.get('razorpay_signature', '')
             order = Orders.objects.get(razor_order_id=razorpay_order_id)
-            print(request.POST.get('newcartcreated', '')) 
-            print(order)
             order_no = order.order_no
             raz_amount = order.total_order_value
             params_dict = {
@@ -663,56 +657,42 @@ def paymenthandler(request):
                 'razorpay_payment_id': payment_id,
                 'razorpay_signature': signature
             }
-            print(params_dict)
             # verify the payment signature.
             result = razorpay_client.utility.verify_payment_signature(
                 params_dict)
-            print("check1")
             if result is not None:
                 amount =  int(raz_amount * 100) # Rs. 200
-                print("check2")
                 try:
 
                     # capture the payemt
                     razorpay_client.payment.capture(payment_id, amount)
-                    print("check3")
                     order.payment_status = "Success"
                     if cartcreated and passedCart:
-                        print("21")
                         CartItem.objects.filter(cart=passedCart).delete()
                     order.save()
-                    print("check4")
                     # render success page on successful caputre of payment
                     return render(request, 'furni/thankyou.html', {"orderno": order_no})
                 except Exception as e:
                     print("Payment capture failed:", str(e))
                     order.payment_status = "Failed"
-                    print("check5")
                     if cartcreated and passedCart:
-                        print("22")
                         CartItem.objects.filter(cart=passedCart).delete()
                     order.save()
-                    print("check6")
                     # if there is an error while capturing payment.
                     return render(request, 'furni/failure.html')
             else:
                 order.payment_status = "Failed"
-                print("check7")
                 if cartcreated and passedCart:
-                        print("23")
                         CartItem.objects.filter(cart=passedCart).delete()
                 order.save()
-                print("check8")
                 # if signature verification fails.
                 return render(request, 'furni/failure.html')
         except Exception as e:
             print("Payment capture failed:", str(e))
             # if we don't find the required parameters in POST data
-            print("check9")
             return render(request, 'furni/failure.html')
     else:
        # if other than POST request is made.
-        print("check10")
         return render(request, 'furni/failure.html')
 
 
