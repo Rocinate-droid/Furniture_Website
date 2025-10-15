@@ -652,36 +652,45 @@ def paymenthandler(request):
             print("check1")
             if result is not None:
                 amount =  int(raz_amount * 100) # Rs. 200
+                print("check2")
                 try:
 
                     # capture the payemt
                     razorpay_client.payment.capture(payment_id, amount)
+                    print("check3")
                     order.payment_status = "Success"
                     if cartcreated:
                         CartItem.objects.filter(cart=cartcreated).delete()
                     order.save()
+                    print("check4")
                     # render success page on successful caputre of payment
                     return render(request, 'furni/thankyou.html', {"orderno": order_no})
                 except:
                     order.payment_status = "Failed"
+                    print("check5")
                     if cartcreated:
                         CartItem.objects.filter(cart=cartcreated).delete()
                     order.save()
+                    print("check6")
                     # if there is an error while capturing payment.
                     return render(request, 'furni/failure.html')
             else:
                 order.payment_status = "Failed"
+                print("check7")
                 if cartcreated:
                         CartItem.objects.filter(cart=cartcreated).delete()
                 order.save()
+                print("check8")
                 # if signature verification fails.
                 return render(request, 'furni/failure.html')
         except:
             # if we don't find the required parameters in POST data
-            return HttpResponseBadRequest()
+            print("check9")
+            return render(request, 'furni/failure.html')
     else:
        # if other than POST request is made.
-        return HttpResponseBadRequest()
+        print("check10")
+        return render(request, 'furni/failure.html')
 
 
 def buynow(request, product_id, qty):
