@@ -12,6 +12,20 @@
   <meta name="description" content="" />
   <meta name="keywords" content="bootstrap, bootstrap4" />
   <meta name="robots" content="noindex, nofollow">
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Premium Furniture for Modern Living | Module Furnitures" />
+  <meta property="og:description"
+    content="Discover customizable furniture designed for style, comfort, and functionality. Perfect for any space with hassle free delivery" />
+  <meta property="og:url" content="https://modulefurnitures.com/" />
+  <meta property="og:site_name" content="Module Furnitures" />
+  <meta property="article:publisher" content="" />
+  <meta property="article:modified_time" content="{{ modified_time }}" />
+  <meta property="og:image" content="https://modulefurnitures.com/static/images/meta-image.webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/webp" />
+
 
 		<!-- Bootstrap CSS -->
 		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
@@ -19,7 +33,7 @@
 		<link href="{% static 'css/tiny-slider.css' %}" rel="stylesheet">
 		<link href="{% static 'css/style.css' %}" rel="stylesheet">
 		<title>Module Furnitures</title>
-		<link rel="icon" type="image/png" href="{% static 'images\module-logo.png' %}">
+		<link rel="icon" type="image/png" href="{% static 'images/module-logo.png' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     
 <script src="https://cdn.tailwindcss.com"></script>
@@ -80,6 +94,55 @@
     
     <body>
 <style>
+  @media screen and (max-width:767px) {
+    .breadcrumbs-mobile-only {
+      display:flex;
+    }
+    .breadcrumbs-desktop-only {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width:767px) {
+    .breadcrumbs-mobile-only {
+      display:none;
+    }
+    .breadcrumbs-desktop-only {
+      display: flex;
+    }
+  }
+  ul.breadcrumb {
+    margin-bottom: 20px;
+  list-style: none;
+  background-color: transparent;
+}
+
+/* Display list items side by side */
+ul.breadcrumb li {
+  display: inline;
+  font-size: px;
+}
+
+/* Add a slash symbol (/) before/behind each list item */
+ul.breadcrumb li+li:before {
+  padding: 8px;
+  color: black;
+  content: "/\00a0";
+}
+
+/* Add a color to all links inside the list */
+ul.breadcrumb li a {
+  color: #0275d8;
+  text-decoration: none;
+}
+
+ 
+
+/* Add a color on mouse-over */
+ul.breadcrumb li a:hover {
+  color: #01447e;
+  text-decoration: underline;
+}
   .top-banner{
     height: 22px;
   }
@@ -116,7 +179,64 @@
   }
  
 
+   button.btn.btn-sm.btn-light {
+    background-color: #E5D9D9;
+    color: black;
+}
+a.nav-link {
+  color: black;
+  text-decoration: none;
+}
+.navbar-dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.55)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
 /* Add a color to the active/current link */
+.cart-items-body {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .cart-image {
+    max-width: 70px;
+    height: 70px;
+    display: flex;
+  }
+  .cart-item {
+    align-self: flex-start;
+  }
+  .cart-item-delete {
+    align-self: flex-start;
+    margin-left: auto;
+  }
+  .cart-price-details {
+    display: flex;
+    flex: auto;
+  }
+ .offcanvas-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 🟩 Hide scrollbar but keep scroll functionality */
+#quick-cart-list {
+  overflow-y: auto;
+  max-height: calc(100vh - 500px);  /* keep as before */
+  padding-right: 6px;
+
+  /* Hide scrollbar */
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE & Edge */
+}
+
+#quick-cart-list::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari */
+}
+
+
+
+
 
   
 </style>
@@ -261,20 +381,7 @@
     </ul>
   </div>
 </div>
-<style>
-  button.btn.btn-sm.btn-light {
-    background-color: #E5D9D9;
-    color: black;
-}
-a.nav-link {
-  color: black;
-  text-decoration: none;
-}
-.navbar-dark .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.55)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-}
 
-</style>
 <div class="modal fade" id="trackOrderModal" tabindex="-1" aria-labelledby="trackOrderLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -299,6 +406,15 @@ a.nav-link {
     </div>
   </div>
 </div>
+
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+  <div id="quick-cart-page">
+  {% include "furni/quick-cart.html" with cart_items=cart_items %}
+</div>
+</div>
+
 <script>
   function productSearch() {
       const searchform = document.getElementById("product-search");
@@ -329,66 +445,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-</script>
-
-<style>
-
-  .cart-items-body {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .cart-image {
-    max-width: 70px;
-    height: 70px;
-    display: flex;
-  }
-  .cart-item {
-    align-self: flex-start;
-  }
-  .cart-item-delete {
-    align-self: flex-start;
-    margin-left: auto;
-  }
-  .cart-price-details {
-    display: flex;
-    flex: auto;
-  }
- .offcanvas-body {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* 🟩 Hide scrollbar but keep scroll functionality */
-#quick-cart-list {
-  overflow-y: auto;
-  max-height: calc(100vh - 500px);  /* keep as before */
-  padding-right: 6px;
-
-  /* Hide scrollbar */
-  scrollbar-width: none;       /* Firefox */
-  -ms-overflow-style: none;    /* IE & Edge */
-}
-
-#quick-cart-list::-webkit-scrollbar {
-  display: none;               /* Chrome, Safari */
-}
-
-
-
-
-
-
-</style>
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
-  <div id="quick-cart-page">
-  {% include "furni/quick-cart.html" with cart_items=cart_items %}
-</div>
-</div>
-
-<script>
   function updateQuantity(button, change, item_id) {
     const input = button.parentElement.querySelector('input');
     let current = parseInt(input.value, 10);

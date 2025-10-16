@@ -2,26 +2,20 @@
 {% load humanize %}
 {% block content %}
 <!-- Category Tabs -->
-<div class="bg-light py-2 border-bottom">
-  <div class="container d-flex justify-content-between">
-    <div>
-      
-    </div>
-    <!--
-    <div>
-      <a href="#" class="mx-2 text-dark text-decoration-none">1 Seater Sofa</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">2 Seater Sofa</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">3 Seater Sofa</a>
-      <a href="#" class="mx-2 text-dark text-decoration-none">Sofa Set</a>
-    </div>
-  -->
-  </div>
-</div>
+ 
+
 
   {% if products %}
 <!-- Filters & Sort -->
 <div class="container py-4">
+  <div class="breadcrumbs">
+  <ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{{request.path}}">{{present_room}}</a></li>
+</ul>
+</div>
   <div class="d-flex justify-content-between align-items-center mb-4">
+    
     
     <!-- Filter Icon -->
     <button class="btn btn-outline-dark btn-sm d-flex align-items-center" 

@@ -4,9 +4,17 @@
 {% load static %}
 {% load dict_extras %}
 <div class="container py-5" id="product-part">
+  
   <div class="row">
     <!-- Product Images (Sticky Left) -->
     <div class="col-md-6">
+      <div class="breadcrumbs-mobile-only">
+  <ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{% url 'rooms' room_type=product.room_or_Product_Type.slug  %}">{{product.room_or_Product_Type.name}}</a></li>
+  <li><a href="{{request.path}}">{{product.name}}</a></li>
+</ul>
+</div>
       <div class="sticky-top" style="top: 100px;"> <!-- adjust top offset as needed -->
         <img id="mainImage" src="{{product.img.url}}" class="img-fluid mb-3" alt="Main Image">
         <div class="d-flex">
@@ -20,6 +28,13 @@
 
     <!-- Product Details (Scrollable Right) -->
     <div class="col-md-6">
+        <div class="breadcrumbs-desktop-only">
+  <ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{% url 'rooms' room_type=product.room_or_Product_Type.slug  %}">{{product.room_or_Product_Type.name}}</a></li>
+  <li><a href="{{request.path}}">{{product.name}}</a></li>
+</ul>
+</div>
       <h4>{{product.name}}</h4>
       <p class="mb-1">
         <strong>₹{{product.discounted_price | intcomma}}</strong>

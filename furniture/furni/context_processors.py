@@ -1,11 +1,13 @@
 import uuid
+from django.utils.timezone import now
 from .models import Room
 from .models import Cart, CartItem
 
 
 def room_types(request):
     rooms = Room.objects.all()
-    return {'rooms': rooms}
+    modified_time = now().isoformat()
+    return {'rooms': rooms, 'modified_time':modified_time}
 
 def view_cart_common(request):
     user_id = request.session.get('user_id')

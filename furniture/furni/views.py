@@ -112,6 +112,13 @@ def shipping_delivery(request):
 def privacy_policy(request):
     return render(request, "furni/privacy-policy.html")
 
+def blogs(request):
+    return render(request, "furni/blogs.html")
+
+
+def indiv_blogs(request):
+    return render(request, "furni/indiv_blogs.html")
+
 def contact(request):
     form = contactForm(request.POST or None)
     if form.is_valid():
@@ -136,6 +143,7 @@ def contact(request):
 
 def category(request, cat_name):
     category = Categorie.objects.get(slug=cat_name)
+    present_room = category.name
     products = Product.objects.filter(category__name=category.name)
     price = request.GET.get('price')
     sort  = request.GET.get('sort')
@@ -153,11 +161,12 @@ def category(request, cat_name):
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         html = render_to_string("furni/product_list.html", {'products': products})
         return HttpResponse(html)
-    context = {'category': category, 'products': products}
+    context = {'category': category, 'products': products, "present_room" : present_room}
     return render(request, "furni/category.html", context)
 
 def rooms(request,room_type):
     room = Room.objects.get(slug=room_type)
+    present_room = room.name
     products = Product.objects.filter(room_or_Product_Type=room.id)
     price = request.GET.get('price')
     sort  = request.GET.get('sort')
@@ -175,7 +184,7 @@ def rooms(request,room_type):
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         html = render_to_string("furni/product_list.html", {'products': products})
         return HttpResponse(html)
-    context = {'products': products, 'current_room' : room_type}
+    context = {'products': products, 'current_room' : room_type, "present_room" : present_room}
     return render(request, "furni/category.html", context)
 
 def product_search(request):
