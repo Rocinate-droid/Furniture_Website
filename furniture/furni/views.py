@@ -39,6 +39,25 @@ razorpay_client = razorpay.Client(
     auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
 def home(request):
+    form = contactForm(request.POST or None)
+    if form.is_valid():
+        contact = form.save()
+        '''
+        send_mail(
+            'You were contacted by ' + contact.firstname + " " + contact.lastname,
+            'Their phone number is ' + contact.phone + " and email is " + contact.email + "and has left you a message " + contact.message,
+            'settings.EMAIL_HOST_USER',        # From
+            ['sreejithcs895@gmail.com'],        # To
+            fail_silently=False,
+            )
+        send_mail(
+            "Thank you for contacting module furnitures, we'll get back to you shortly",
+            "Thank you for contacting module furnitures, we'll get back to you shortly",
+            'settings.EMAIL_HOST_USER',        # From
+            [contact.email],        # To
+            fail_silently=False,
+            )
+            '''
     if not request.user.is_authenticated:
         if 'user_id' not in request.session:
             request.session['user_id'] = int(uuid.uuid4())
@@ -77,9 +96,9 @@ def home(request):
     if request.user.is_authenticated:
         wishlistcreated, created = Wishlist.objects.get_or_create(customer=request.user)
         wish_items = WishlistItem.objects.filter(wishlist=wishlistcreated).values_list('product_id', flat=True)
-        context = {'categories' : categories, 'testimonials' : testimonials, 'products': products, 'wish_items':list(wish_items), 'cart_items': cart_items}
+        context = {'categories' : categories, 'testimonials' : testimonials, 'products': products, 'wish_items':list(wish_items), 'cart_items': cart_items, 'form':form}
     else:
-        context = {'categories' : categories, 'testimonials' : testimonials, 'products': products, 'cart_items': cart_items}
+        context = {'categories' : categories, 'testimonials' : testimonials, 'products': products, 'cart_items': cart_items,'form':form}
     return render(request, "furni/home.html", context)
 
 def shop(request):
@@ -112,10 +131,18 @@ def shipping_delivery(request):
 def privacy_policy(request):
     return render(request, "furni/privacy-policy.html")
 
+def blogs(request):
+    return render(request, "furni/blogs.html")
+
+
+def indiv_blogs(request):
+    return render(request, "furni/indiv_blogs.html")
+
 def contact(request):
     form = contactForm(request.POST or None)
     if form.is_valid():
         contact = form.save()
+        '''
         send_mail(
             'You were contacted by ' + contact.firstname + " " + contact.lastname,
             'Their phone number is ' + contact.phone + " and email is " + contact.email + "and has left you a message " + contact.message,
@@ -130,12 +157,15 @@ def contact(request):
             [contact.email],        # To
             fail_silently=False,
             )
+            '''
         return redirect('contactus')
     context = {'form': form }
     return render(request, "furni/contact.html", context)
 
 def category(request, cat_name):
     category = Categorie.objects.get(slug=cat_name)
+    present_room = category.name
+
     products = Product.objects.filter(category__name=category.name)
     price = request.GET.get('price')
     sort  = request.GET.get('sort')
@@ -153,11 +183,12 @@ def category(request, cat_name):
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         html = render_to_string("furni/product_list.html", {'products': products})
         return HttpResponse(html)
-    context = {'category': category, 'products': products}
+    context = {'category': category, 'products': products, "present_room" : present_room}
     return render(request, "furni/category.html", context)
 
 def rooms(request,room_type):
     room = Room.objects.get(slug=room_type)
+    present_room = room.name
     products = Product.objects.filter(room_or_Product_Type=room.id)
     price = request.GET.get('price')
     sort  = request.GET.get('sort')
@@ -175,7 +206,7 @@ def rooms(request,room_type):
     if request.headers.get("x-requested-with") == "XMLHttpRequest":
         html = render_to_string("furni/product_list.html", {'products': products})
         return HttpResponse(html)
-    context = {'products': products, 'current_room' : room_type}
+    context = {'products': products, 'current_room' : room_type, "present_room" : present_room}
     return render(request, "furni/category.html", context)
 
 def product_search(request):
@@ -713,7 +744,7 @@ def buynow(request, product_id, qty):
         'shipping': shipping, 'page': page}
     return render(request, 'furni/checkout.html', context)
 
-@login_required
+
 def profile(request):
     context = {"user": request.user}
     return render(request, 'furni/profile.html', context)

@@ -1,8 +1,15 @@
 {% extends 'main.html' %}
+{% block title %}Your Wishlist | Module Furnitures{% endblock %}
 {% block content %}
 {% load humanize %}
 
 <div class="container py-5">
+  <div class="breadcrumbs">
+  <ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{{request.path}}">Your Wishlist</a></li>
+</ul>
+</div>
   <div class="row">
     <!-- LEFT: CART ITEMS -->
     <div class="col-lg-8">

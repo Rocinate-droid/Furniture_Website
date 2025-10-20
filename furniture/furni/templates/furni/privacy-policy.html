@@ -1,8 +1,15 @@
 {% extends 'main.html' %}
+{% block title %}Privacy Policy | Module Furnitures{% endblock %}
 {% block content %}
 {% load static %}
 <section class="py-5 bg-light" style="margin-top: 10px;">
   <div class="container">
+     <div class="breadcrumbs">
+  <ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{{request.path}}">Privacy Policy</a></li>
+</ul>
+</div>
     <h2 class="mb-4 text-primary fw-bold text-center">Privacy Policy</h2>
 
     <!-- INTRODUCTION -->

@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% block title %}Contact Us | Module Furnitures{% endblock %}
 {% block content %}
 {% load static %}
 <!-- Start Hero Section -->
@@ -24,13 +25,18 @@
 <!-- Start Contact Form -->
 <div class="untree_co-section" style="margin-top: 140px; padding: 0;">
   <div class="container">
-
+    
     <div class="block">
+      
       <div class="row justify-content-center">
-
-
+        
         <div class="col-md-8 col-lg-8 pb-4">
-
+<div class="breadcrumbs">
+  <ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{{request.path}}">Contact Us</a></li>
+</ul>
+</div>
 
           <div class="row mb-5">
             <div class="col-lg-4">
@@ -127,7 +133,7 @@
               <textarea class="form-control" id="message" cols="30" rows="5" name="message" required>{{form.message.value|default:''}}</textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary-hover-outline">Send Message</button>
+            <button type="submit" onclick="getBack()" class="btn btn-primary-hover-outline">Send Message</button>
           </form>
 
 

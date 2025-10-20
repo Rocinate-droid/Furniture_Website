@@ -1,85 +1,57 @@
 {% load static %}
 {% load humanize %}
 {% load mathfilters %}
-<!doctype html>
-<html lang="en"">
-  <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="author" content="Untree.co">
-  <link rel="shortcut icon" href="favicon.png">
-
-  <meta name="description" content="" />
-  <meta name="keywords" content="bootstrap, bootstrap4" />
-  <meta name="robots" content="noindex, nofollow">
-
-		<!-- Bootstrap CSS -->
-		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-		<link href="{% static 'css/tiny-slider.css' %}" rel="stylesheet">
-		<link href="{% static 'css/style.css' %}" rel="stylesheet">
-		<title>Module Furnitures</title>
-		<link rel="icon" type="image/png" href="{% static 'images\module-logo.png' %}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-<script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      prefix: 'tw-',
-      corePlugins: {
-        preflight: false,
-      }
-    }
-  </script>
-  <style>
-    @media screen and (max-width:764px) {
-    .desktop-navbar-links {
-      display: none !important;
-    }
-  }
-   .bottom-bar-mobile {
-  background-color: #E5D9D9;
-  overflow: hidden;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 10%;
-  display: flex;
-  justify-content: space-evenly;
-  
-}
-
-/* Style the links inside the navigation bar */
-.bottom-bar-mobile a {
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-/* Change the color of links on hover */
-.bottom-bar-mobile a:hover {
-  background-color: #ddd;
-  color: black;
-}
-  @media screen and (min-width:764px) {
-    .mobile-navbar-links {
-      display: none !important;
-    }
-    #mobileSearch {
-      display: none !important;
-    }
-    .bottom-bar-mobile {
-      display: none !important;
-    }
-  }
-
-  </style>
-    </head>
-    
-    <body>
 <style>
+  @media screen and (max-width:767px) {
+    .breadcrumbs-mobile-only {
+      display:flex;
+    }
+    .breadcrumbs-desktop-only {
+      display: none;
+    }
+    
+  }
+
+  @media screen and (min-width:767px) {
+    .breadcrumbs-mobile-only {
+      display:none;
+    }
+    .breadcrumbs-desktop-only {
+      display: flex;
+    }
+  }
+  ul.breadcrumb {
+    margin-bottom: 20px;
+  list-style: none;
+  background-color: transparent;
+}
+
+/* Display list items side by side */
+ul.breadcrumb li {
+  display: inline;
+  font-size: px;
+}
+
+/* Add a slash symbol (/) before/behind each list item */
+ul.breadcrumb li+li:before {
+  padding: 8px;
+  color: black;
+  content: "/\00a0";
+}
+
+/* Add a color to all links inside the list */
+ul.breadcrumb li a {
+  color: #0275d8;
+  text-decoration: none;
+}
+
+ 
+
+/* Add a color on mouse-over */
+ul.breadcrumb li a:hover {
+  color: #01447e;
+  text-decoration: underline;
+}
   .top-banner{
     height: 22px;
   }
@@ -116,7 +88,64 @@
   }
  
 
+   button.btn.btn-sm.btn-light {
+    background-color: #E5D9D9;
+    color: black;
+}
+a.nav-link {
+  color: black;
+  text-decoration: none;
+}
+.navbar-dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.55)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
 /* Add a color to the active/current link */
+.cart-items-body {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .cart-image {
+    max-width: 70px;
+    height: 70px;
+    display: flex;
+  }
+  .cart-item {
+    align-self: flex-start;
+  }
+  .cart-item-delete {
+    align-self: flex-start;
+    margin-left: auto;
+  }
+  .cart-price-details {
+    display: flex;
+    flex: auto;
+  }
+ .offcanvas-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 🟩 Hide scrollbar but keep scroll functionality */
+#quick-cart-list {
+  overflow-y: auto;
+  max-height: calc(100vh - 500px);  /* keep as before */
+  padding-right: 6px;
+
+  /* Hide scrollbar */
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE & Edge */
+}
+
+#quick-cart-list::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari */
+}
+
+
+
+
 
   
 </style>
@@ -167,7 +196,7 @@
       <div class="flex-grow-1 my-2 my-md-0 px-md-3">
           <div class="position-relative">
             <form action="{% url 'search' %}" method="get">
-            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Hinted search text" required value="{{search_word}}">
+            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Dining Table" required value="{{search_word}}">
             <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
               <button type="submit" style="border: none; background-color: transparent;">
               <i class="fas fa-search"></i>
@@ -178,7 +207,6 @@
         </div>
         <div class="d-flex align-items-center gap-3 ms-md-3 my-2 my-md-0 py-1">
   <!-- Track Order Button -->
-  <a class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#trackOrderModal">Track Order</a>
 
   <!-- Wishlist Icon -->
   <a class="fa fa-heart fs-5 text-dark" href="{% url 'wishlist' %}" style="text-decoration: none;"></a>
@@ -207,7 +235,7 @@
     </ul>
   </div>
   {% else %}
-  <a class="fa fa-sign-in-alt fs-5 text-dark" href="{% url 'loginpage' %}" style="text-decoration: none;"></a>
+  <a class="fa fa-sign-in-alt fs-5 text-dark" href="{% url 'profile' %}" style="text-decoration: none;"></a>
   {% endif %}
 </div>
 
@@ -221,7 +249,7 @@
        <div class="flex-grow-1 my-2 my-md-0 px-md-3">
           <div class="position-relative">
             <form action="{% url 'search' %}" method="get">
-            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Hinted search text" required value="{{search_word}}">
+            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Dining Table" required value="{{search_word}}">
             <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
               <button type="submit" style="border: none; background-color: transparent;">
               <i class="fas fa-search"></i>
@@ -242,7 +270,7 @@
       {% for room in rooms %}
 <li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.slug %}active{% endif %}" href="{% url 'rooms' room_type=room.slug %}">{{room.name}}</a></li>
       {% endfor %}
-      <li class="nav-item"><a class="nav-link" data-bs-toggle="modal" data-bs-target="#trackOrderModal" style=" background-color: aqua; font-weight: bold;">📦 Track Order</a></li>
+      
       </ul>
 
     </div>
@@ -261,20 +289,7 @@
     </ul>
   </div>
 </div>
-<style>
-  button.btn.btn-sm.btn-light {
-    background-color: #E5D9D9;
-    color: black;
-}
-a.nav-link {
-  color: black;
-  text-decoration: none;
-}
-.navbar-dark .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.55)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-}
 
-</style>
 <div class="modal fade" id="trackOrderModal" tabindex="-1" aria-labelledby="trackOrderLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -299,6 +314,15 @@ a.nav-link {
     </div>
   </div>
 </div>
+
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+  <div id="quick-cart-page">
+  {% include "furni/quick-cart.html" with cart_items=cart_items %}
+</div>
+</div>
+
 <script>
   function productSearch() {
       const searchform = document.getElementById("product-search");
@@ -329,66 +353,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-</script>
-
-<style>
-
-  .cart-items-body {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .cart-image {
-    max-width: 70px;
-    height: 70px;
-    display: flex;
-  }
-  .cart-item {
-    align-self: flex-start;
-  }
-  .cart-item-delete {
-    align-self: flex-start;
-    margin-left: auto;
-  }
-  .cart-price-details {
-    display: flex;
-    flex: auto;
-  }
- .offcanvas-body {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* 🟩 Hide scrollbar but keep scroll functionality */
-#quick-cart-list {
-  overflow-y: auto;
-  max-height: calc(100vh - 500px);  /* keep as before */
-  padding-right: 6px;
-
-  /* Hide scrollbar */
-  scrollbar-width: none;       /* Firefox */
-  -ms-overflow-style: none;    /* IE & Edge */
-}
-
-#quick-cart-list::-webkit-scrollbar {
-  display: none;               /* Chrome, Safari */
-}
-
-
-
-
-
-
-</style>
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
-  <div id="quick-cart-page">
-  {% include "furni/quick-cart.html" with cart_items=cart_items %}
-</div>
-</div>
-
-<script>
   function updateQuantity(button, change, item_id) {
     const input = button.parentElement.querySelector('input');
     let current = parseInt(input.value, 10);
