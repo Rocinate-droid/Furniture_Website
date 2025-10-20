@@ -1,8 +1,41 @@
 {% extends 'main.html' %}
 {% load humanize %}
+{% block title %}{{product.name}} | Module Furnitures{% endblock %}
 {% block content %}
 {% load static %}
 {% load dict_extras %}
+<style>
+  .share-button {
+    margin-left: 115px; 
+    font-size: medium; 
+    color: royalblue;
+    text-decoration: none;
+  }
+  .vip-share-modal-body-social-icons {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 5px;
+    justify-content: center;
+  }
+  @media screen and (max-width:1200px) {
+	.share-button {
+		margin-left: 30px;
+	}
+
+        }
+  @media screen and (max-width:1200px) {
+	.share-button {
+		margin-left: 5px;
+	}
+
+        }
+  @media screen and (max-width:420px) {
+	.vip-share-modal-body-social-icons {
+    gap: 5px;
+  }
+
+        }
+</style>
 <div class="container py-5" id="product-part">
   
   <div class="row">
@@ -11,7 +44,7 @@
       <div class="breadcrumbs-mobile-only">
   <ul class="breadcrumb">
   <li><a href="{% url 'home' %}">Home</a></li>
-  <li><a href="{% url 'rooms' room_type=product.room_or_Product_Type.slug  %}">{{product.room_or_Product_Type.name}}</a></li>
+  <li><a href="{% url 'category' cat_name=product.category.slug  %}">{{product.category}}</a></li>
   <li><a href="{{request.path}}">{{product.name}}</a></li>
 </ul>
 </div>
@@ -25,17 +58,17 @@
         </div>
       </div>
     </div>
-
     <!-- Product Details (Scrollable Right) -->
     <div class="col-md-6">
         <div class="breadcrumbs-desktop-only">
   <ul class="breadcrumb">
   <li><a href="{% url 'home' %}">Home</a></li>
-  <li><a href="{% url 'rooms' room_type=product.room_or_Product_Type.slug  %}">{{product.room_or_Product_Type.name}}</a></li>
+  <li><a href="{% url 'category' cat_name=product.category.slug  %}">{{product.category}}</a></li>
   <li><a href="{{request.path}}">{{product.name}}</a></li>
 </ul>
 </div>
-      <h4>{{product.name}}</h4>
+      <h4>{{product.name}} <a data-bs-toggle="modal" data-bs-target="#shareModal" class="share-button"><img src="{% static 'images/share2.png' %}" style="height: 20px; width: 20px;"> Share</a></h4>
+      
       <p class="mb-1">
         <strong>₹{{product.discounted_price | intcomma}}</strong>
         <span class="price-original">₹{{product.original_price | intcomma}}</span>
@@ -56,6 +89,10 @@
           <tr>
             <td><strong>Assembly</strong></td>
             <td>{{product.assembly}}</td>
+          </tr>
+          <tr>
+            <td><strong>EMI</strong></td>
+            <td>No Cost EMI available for Axis Bank and HDFC Bank</td>
           </tr>
           <tr>
             <td><strong>Customization</strong></td>
@@ -127,44 +164,210 @@
           details</small><br>
         <small class="text-muted" id="text-para2"></small>
       </div>
-
+      
+      <section class="py-5" id="faqs">
+        <div class="container" style="padding-left: 0px;">
+          <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq1">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                  Product Details
+                </button>
+              </h2>
+              <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Bring timeless elegance into your living space with our Wooden 1-Seater Sofa. Crafted from premium solid
+                  wood and designed for comfort, it’s the perfect spot for a morning coffee, quiet reading, or cozy
+                  conversations. The natural wood tones and soft upholstery blend seamlessly with any décor, from classic to
+                  contemporary.
+                </div>
+              </div>
+            </div>
+      
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapse2">
+                  Specifications
+                </button>
+              </h2>
+              <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  <div class="product-specs" style="display: flex; justify-content:flex-start; gap: 60px;">
+                    <ul style="list-style-type: none; padding-left: 0px;">
+                      <li style="font-weight: bold;">Brand</li>
+                      <li>Module Furnitures</li>
+                      <li style="font-weight: bold;">Collections</li>
+                      <li>Bingo Collections</li>
+                      <li style="font-weight: bold;">Dimensions (In Inches)</li>
+                      <li>H 30 x W 70 x D 32</li>
+                      <li style="font-weight: bold;">Seating Height</li>
+                      <li>H 30 x W 70 x D 32</li>
+                      <li style="font-weight: bold;">Weight</li>
+                      <li>30 Kg</li>
+                    </ul>
+                    <ul style="list-style-type: none;">
+                      <li style="font-weight: bold;">Assembly</li>
+                      <li>Carpentary Assembly</li>
+                      <li style="font-weight: bold;">Dimensions (In centimeters)</li>
+                      <li>H 76 x W 178 x D 81</li>
+                      <li style="font-weight: bold;">Primary Material</li>
+                      <li>Fabric</li>
+                      <li style="font-weight: bold;">Room Type</li>
+                      <li>Living Room</li>
+                      <li style="font-weight: bold;">Warranty</li>
+                      <li>{{product.warranty}} Year</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapse3">
+                  Returns
+                </button>
+              </h2>
+              <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  <div class="ansr" id="qstns3" style="">
+                    <div class="innr-hd">TIME FRAME FOR RETURNS</div>
+                    <p>You can return any unmodified item within 7 Days of delivery.</p>
+      
+                    <div class="innr-hd">WHAT'S ELIGIBLE FOR RETURN?</div>
+                    <div class="sub-hd"><span class="count">1.</span>Damaged products</div>
+                    <p>
+                      If the item delivered to you is in a damaged condition. In the case of minor damage
+                      (like chip-off/scratch/peel-off, torn stitches on upholstery or carpets) customers can
+                      choose not to return the item and instead request a carpenter service from module to fix the damage by
+                      simply contacting us.
+                    </p>
+      
+                    <div class="sub-hd"><span class="count">2.</span>Manufacturing Defect</div>
+                    <p>
+                      If the item delivered to you is defective. A defect is the unfortunate result of a flaw in
+                      manufacturing,
+                      which hinders the product’s intended use (e.g. imbalance, wooden joints opening, etc). Please note that
+                      natural characteristics of the material used, like appearance or texture (especially for solid wood
+                      products) are not defects.
+                    </p>
+      
+                    <div class="sub-hd"><span class="count">4.</span>Incomplete product</div>
+                    <p>If the product delivered to you is incomplete or has components missing.</p>
+      
+                    <div class="sub-hd"><span class="count">5.</span>Unsatisfied /Incorrect Product</div>
+                    <p>If the product delivered to you is incorrect or you are unsatisfied with the product.</p>
+                    <p>For more information please read our <a href="{% url 'purchase_returns' %}">return and cancellation
+                        policy here.</a></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq4">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapse4">
+                  Warranty
+                </button>
+              </h2>
+              <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  We provide {{product.warranty}} year warranty for all our products that come under solid wood, engineered
+                  wood and leather
+                  products
+                </div>
+              </div>
+            </div>
+      
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq5">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapse5">
+                  Product Care & Maintenance
+                </button>
+              </h2>
+              <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  <div class="panel-body">
+                    <div _ngcontent-serverapp-c192="" class="accordian-body-wrap">
+                      <div _ngcontent-serverapp-c192="" class="accordian-body-scroll vip-scrollbar">
+                        <div _ngcontent-serverapp-c192="" class="accordian-body-int-scroll-wrap font-medium text-md">
+                          <p><strong>Material Care Instruction:</strong></p>
+                          <ul>
+                            <li>Avoid or limit direct exposure to sunlight.</li>
+                            <li>Dust regularly with a dry soft cloth.</li>
+                            <li>Do not leave spills unattended.</li>
+                          </ul>
+      
+                          <p><strong>Product Care &amp; Maintenance:</strong></p>
+                          <ul>
+                            <li>Clean your furniture regularly to keep them looking new.</li>
+                            <li>Use a soft microfibre cloth for cleaning the surface to avoid scratching.</li>
+                            <li>Clean the edge and corners of the wardrobe with a cotton swab moistened with water. Keep a dry
+                              cloth along with you to dry the area just after applying water.</li>
+                            <li>Never use an abrasive sponge as it may result in scratches on the surface.</li>
+                            <li>Prevent moisture to remain on your surfaces. Wipe it dry immediately to avoid damage.</li>
+                            <li>For sticky dirt, it is better to use a mild household cleaning agent.</li>
+                            <li>Do not stand on shelves or place heavy objects as this may cause them to break.</li>
+                            <li>Do not close or open the wardrobe doors with force to avoid breaking and damage.</li>
+                            <li>Sharp objects can cut right through the surface of the wood, leaving behind unsightly
+                              scratches and gouges.</li>
+                          </ul>
+                          <p>&nbsp;</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+      
+      
+      
+          </div>
+        </div>
+      </section>
+      
       <!-- ===== Customer Reviews Section ===== -->
       <div class="mt-5">
         <h4>Customer Reviews</h4>
         <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
-  <!-- Review text -->
-  <div>
-    {% if reviews.count == 0 %}
-      <span>No reviews yet. Be the first to review!</span>
-    {% else %}
-    {% if overall_rating == 5 %}<span class="text-warning fs-4">
-            ★★★★★
-            {% elif overall_rating == 4 %}
-            ★★★★
-            {% elif overall_rating == 3 %}
-            ★★★
-            {% elif overall_rating == 2 %}
-            ★★
-            {% elif overall_rating == 1 %}
-            ★
+          <!-- Review text -->
+          <div>
+            {% if reviews.count == 0 %}
+            <span>No reviews yet. Be the first to review!</span>
+            {% else %}
+            {% if overall_rating == 5 %}<span class="text-warning fs-4">
+              ★★★★★
+              {% elif overall_rating == 4 %}
+              ★★★★
+              {% elif overall_rating == 3 %}
+              ★★★
+              {% elif overall_rating == 2 %}
+              ★★
+              {% elif overall_rating == 1 %}
+              ★
+              {% endif %}
+            </span>
+            <span>Based on {{ reviews.count }} review{{ reviews.count|pluralize }}</span>
             {% endif %}
-          </span>
-      <span>Based on {{ reviews.count }} review{{ reviews.count|pluralize }}</span>
-    {% endif %}
-  </div>
-
-  <!-- Review button -->
-  <div class="mt-2 mt-sm-0">
-    <button class="btn btn-outline-dark btn-sm review-btn"
-            data-bs-toggle="modal" data-bs-target="#reviewModal">
-      Write a review
-    </button>
-  </div>
-</div>
-
-
-
-        
+          </div>
+      
+          <!-- Review button -->
+          <div class="mt-2 mt-sm-0">
+            <button class="btn btn-outline-dark btn-sm review-btn" data-bs-toggle="modal" data-bs-target="#reviewModal">
+              Write a review
+            </button>
+          </div>
+        </div>
+      
+      
+      
+      
         {% if reviews.count != 0 %}
         <!-- Ratings Breakdown -->
         <div>
@@ -209,7 +412,7 @@
             <small>{{ review_dict.one_star|percentage:reviews.count }}% ({{review_dict.one_star}})</small>
           </div>
         </div>
-
+      
         <!-- Sort Dropdown -->
         <div class="mb-3">
           <select class="form-select form-select-sm" id="sort_order" style="max-width:200px;" onchange="">
@@ -219,256 +422,332 @@
           </select>
         </div>
         {% endif %}
-
+      
         <!-- Reviews Loop -->
-         <div id="review-cards">
-         {% include "furni/review-cards.html" with reviews=reviews %}
+        <div id="review-cards">
+          {% include "furni/review-cards.html" with reviews=reviews %}
         </div>
       </div>
-
-    </div>
-
-  </div>
-</div>
-
-<!-- Track Order Modal -->
-<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="reviewModal">Drop a review</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      
       </div>
-      <div class="modal-body">
-        <div class="review-container">
-          <form method="POST" enctype="multipart/form-data" id="review-form">
-            {% csrf_token %}
-            {% if not user.is_authenticated %}
-            <label>Name</label>
-            <input type="text" class="reviewmodalpop" name="name" id="name" value="{{ form.name.value|default:'' }}">
-            {% endif %}
-            <div class="product-info">
-              <img src="{{product.img.url}}" alt="Product Image" style="width: 80px; height: 80px;">
-              <strong>How was the item?</strong>
+      
+      </div>
+      </div>
+      
+      <!-- Track Order Modal -->
+      <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="reviewModal">Drop a review</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
-            <div class="stars">
-              {% if form.instance.rating == 5 %}
-              <span class="star selected" data-value="1">&#9733;</span>
-              <span class="star selected" data-value="2">&#9733;</span>
-              <span class="star selected" data-value="3">&#9733;</span>
-              <span class="star selected" data-value="4">&#9733;</span>
-              <span class="star selected" data-value="5">&#9733;</span>
-              {% elif form.instance.rating == 4 %}
-              <span class="star selected" data-value="1">&#9733;</span>
-              <span class="star selected" data-value="2">&#9733;</span>
-              <span class="star selected" data-value="3">&#9733;</span>
-              <span class="star selected" data-value="4">&#9733;</span>
-              <span class="star " data-value="5">&#9733;</span>
-              {% elif form.instance.rating == 3 %}
-              <span class="star selected" data-value="1">&#9733;</span>
-              <span class="star selected" data-value="2">&#9733;</span>
-              <span class="star selected" data-value="3">&#9733;</span>
-              <span class="star " data-value="4">&#9733;</span>
-              <span class="star " data-value="5">&#9733;</span>
-              {% elif form.instance.rating == 2 %}
-              <span class="star selected" data-value="1">&#9733;</span>
-              <span class="star selected" data-value="2">&#9733;</span>
-              <span class="star" data-value="3">&#9733;</span>
-              <span class="star " data-value="4">&#9733;</span>
-              <span class="star " data-value="5">&#9733;</span>
-              {% elif form.instance.rating == 1 %}
-              <span class="star selected" data-value="1">&#9733;</span>
-              <span class="star" data-value="2">&#9733;</span>
-              <span class="star" data-value="3">&#9733;</span>
-              <span class="star " data-value="4">&#9733;</span>
-              <span class="star " data-value="5">&#9733;</span>
-              {% elif form.instance.rating == 0 %}
-              <span class="star selected" data-value="1">&#9733;</span>
-              <span class="star" data-value="2">&#9733;</span>
-              <span class="star" data-value="3">&#9733;</span>
-              <span class="star " data-value="4">&#9733;</span>
-              <span class="star " data-value="5">&#9733;</span>
-              {% else %}
-              <span class="star" data-value="1">&#9733;</span>
-              <span class="star" data-value="2">&#9733;</span>
-              <span class="star" data-value="3">&#9733;</span>
-              <span class="star " data-value="4">&#9733;</span>
-              <span class="star " data-value="5">&#9733;</span>
-              {% endif %}
+            <div class="modal-body">
+              <div class="review-container">
+                <form method="POST" enctype="multipart/form-data" id="review-form">
+                  {% csrf_token %}
+                  {% if not user.is_authenticated %}
+                  <label>Name</label>
+                  <input type="text" class="reviewmodalpop" name="name" id="name" value="{{ form.name.value|default:'' }}">
+                  {% endif %}
+                  <div class="product-info">
+                    <img src="{{product.img.url}}" alt="Product Image" style="width: 80px; height: 80px;">
+                    <strong>How was the item?</strong>
+                  </div>
+      
+                  <div class="stars">
+                    {% if form.instance.rating == 5 %}
+                    <span class="star selected" data-value="1">&#9733;</span>
+                    <span class="star selected" data-value="2">&#9733;</span>
+                    <span class="star selected" data-value="3">&#9733;</span>
+                    <span class="star selected" data-value="4">&#9733;</span>
+                    <span class="star selected" data-value="5">&#9733;</span>
+                    {% elif form.instance.rating == 4 %}
+                    <span class="star selected" data-value="1">&#9733;</span>
+                    <span class="star selected" data-value="2">&#9733;</span>
+                    <span class="star selected" data-value="3">&#9733;</span>
+                    <span class="star selected" data-value="4">&#9733;</span>
+                    <span class="star " data-value="5">&#9733;</span>
+                    {% elif form.instance.rating == 3 %}
+                    <span class="star selected" data-value="1">&#9733;</span>
+                    <span class="star selected" data-value="2">&#9733;</span>
+                    <span class="star selected" data-value="3">&#9733;</span>
+                    <span class="star " data-value="4">&#9733;</span>
+                    <span class="star " data-value="5">&#9733;</span>
+                    {% elif form.instance.rating == 2 %}
+                    <span class="star selected" data-value="1">&#9733;</span>
+                    <span class="star selected" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star " data-value="4">&#9733;</span>
+                    <span class="star " data-value="5">&#9733;</span>
+                    {% elif form.instance.rating == 1 %}
+                    <span class="star selected" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star " data-value="4">&#9733;</span>
+                    <span class="star " data-value="5">&#9733;</span>
+                    {% elif form.instance.rating == 0 %}
+                    <span class="star selected" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star " data-value="4">&#9733;</span>
+                    <span class="star " data-value="5">&#9733;</span>
+                    {% else %}
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star " data-value="4">&#9733;</span>
+                    <span class="star " data-value="5">&#9733;</span>
+                    {% endif %}
+                  </div>
+      
+                  <!-- Hidden input to store the rating -->
+                  <input type="hidden" name="rating" id="rating" value="{{ form.rating.value|default:'' }}" required>
+      
+                  <textarea class="reviewmodalpop" name="review" rows="4"
+                    placeholder="What should other customers know?">{{form.review.value|default:''}}</textarea>
+      
+                  <label class="upload-area">
+                    <input type="file" name="img" id="img" accept="image/png, image/jpeg">
+                    <div>Share a photo</div>
+                  </label>
+                  <img id="preview" src="{% if form.instance.img %}{{ form.instance.img.url }}{% else %}#{% endif %}"
+                    alt="Image Preview"
+                    style="width: 80px; height: 80px; {% if not form.instance.img %}display: none;{% endif %}"><br>
+      
+                  <input type="text" class="reviewmodalpop" name="title" placeholder="Review Title" required
+                    value="{{ form.title.value|default:'' }}">
+      
+                  <button type="submit" class="submit-btn btn btn-outline-secondary w-100">Submit</button>
+                </form>
+              </div>
             </div>
-
-            <!-- Hidden input to store the rating -->
-            <input type="hidden" name="rating" id="rating" value="{{ form.rating.value|default:'' }}" required>
-
-            <textarea class="reviewmodalpop" name="review" rows="4"
-              placeholder="What should other customers know?">{{form.review.value|default:''}}</textarea>
-
-            <label class="upload-area">
-              <input type="file" name="img" id="img" accept="image/png, image/jpeg">
-              <div>Share a photo</div>
-            </label>
-            <img id="preview" src="{% if form.instance.img %}{{ form.instance.img.url }}{% else %}#{% endif %}"
-              alt="Image Preview"
-              style="width: 80px; height: 80px; {% if not form.instance.img %}display: none;{% endif %}"><br>
-
-            <input type="text" class="reviewmodalpop" name="title" placeholder="Review Title" required
-              value="{{ form.title.value|default:'' }}">
-
-            <button type="submit" class="submit-btn btn btn-outline-secondary w-100">Submit</button>
-          </form>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+      
+      <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="trackOrderLabel">Share With Your Family And Friends</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="display: flex; justify-content: space-between;">
+              <input id="copy-link" type="text" disabled value="{{request.build_absolute_uri}}"
+                style="margin-left: 0px; width: -webkit-fill-available;">
+              <button onclick="copyText()" style="border: none; color: #ff6600; border:solid black;">Copy</button>
+      
+            </div>
+            <div _ngcontent-serverapp-c175="" class="vip-share-modal-body-social-icons">
+              <div _ngcontent-serverapp-c175="" class="vip-share-modal-body-media cursor-pointer ng-star-inserted">
+                <a href="https://wa.me/?text={{request.build_absolute_uri}}"><div _ngcontent-serverapp-c175="" class="vip-share-via-whatsapp"><img _ngcontent-serverapp-c175=""
+                    src="https://ii1.pepperfry.com/assets/w23-vip-share-whatsapp.svg" alt="Share Via whatsapp"
+                    title="Share Via whatsapp" width="46" height="46"></div></a>
+              </div>
+              <div _ngcontent-serverapp-c175="" class="vip-share-modal-body-media cursor-pointer ng-star-inserted">
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{request.build_absolute_uri}}"><div _ngcontent-serverapp-c175="" class="vip-share-via-facebook"><img _ngcontent-serverapp-c175=""
+                    src="https://ii1.pepperfry.com/assets/w23-vip-share-facebook.svg" alt="Share Via facebook"
+                    title="Share Via facebook" width="46" height="46"></div></a>
+              </div>
+              <div _ngcontent-serverapp-c175="" class="vip-share-modal-body-media cursor-pointer ng-star-inserted">
+                <a href="fb-messenger://share/?link={{request.build_absolute_uri}}">
+                <div _ngcontent-serverapp-c175="" class="vip-share-via-messenger"><img _ngcontent-serverapp-c175=""
+                    src="https://ii1.pepperfry.com/assets/w23-vip-share-messenger.svg" alt="Share Via messenger"
+                    title="Share Via messenger" width="46" height="46"></div></a>
+                  
+              </div>
+              <div _ngcontent-serverapp-c175="" class="vip-share-modal-body-media cursor-pointer ng-star-inserted">
+                <a href="https://t.me/share/url?url={{request.build_absolute_uri}}">
+                <div _ngcontent-serverapp-c175="" class="vip-share-via-telegram"><img _ngcontent-serverapp-c175=""
+                    src="https://ii1.pepperfry.com/assets/w23-vip-share-telegram.svg" alt="Share Via telegram"
+                    title="Share Via telegram" width="46" height="46"></div></a>
+                  
+              </div>
+              
+              <div _ngcontent-serverapp-c175="" class="vip-share-modal-body-media cursor-pointer ng-star-inserted">
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{request.build_absolute_uri}}"><div _ngcontent-serverapp-c175="" class="vip-share-via-linkedIn"><img _ngcontent-serverapp-c175=""
+                    src="https://ii1.pepperfry.com/assets/w23-vip-share-linkedin.svg" alt="Share Via linkedIn"
+                    title="Share Via linkedIn" width="46" height="46"></div></a>
+                  
+              </div>
+             
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <style>
+        @media screen and (max-width: 576px) {
+          .changebutton {
+            width: 100% !important;
+          }
+        }
+      
+        .border-orange {
+          border: 1px solid #ff6600;
+          border-radius: 6px;
+        }
+      
+      
+        .review-container {
+          max-width: 500px;
+          margin: 0 auto;
+          background: #fff;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+      
+        .product-info {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          margin-bottom: 15px;
+        }
+      
+        .product-info img {
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+        }
+      
+        .stars {
+          display: flex;
+          gap: 5px;
+          margin-bottom: 15px;
+          font-size: 1.5rem;
+          cursor: pointer;
+          justify-content: center;
+        }
+      
+        .star {
+          color: lightgray;
+          transition: color 0.2s;
+        }
+      
+        .star.hover,
+        .star.selected {
+          color: gold;
+        }
+      
+        .reviewmodalpop {
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 15px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-family: inherit;
+          font-size: 1rem;
+        }
+      
+        .upload-area {
+          border: 2px dashed #ccc;
+          border-radius: 4px;
+          text-align: center;
+          padding: 20px;
+          color: #777;
+          margin-bottom: 15px;
+          cursor: pointer;
+        }
+      
+        .upload-area input {
+          display: none;
+        }
+      
+        .review-btn {
+          min-width: 150px;
+          /* keeps good size on large screens */
+        }
+      
+        @media (max-width: 576px) {
+          .review-btn {
+            width: 100%;
+            /* full width under text on small screens */
+            min-width: auto;
+          }
+        }
+      
+        .jdgm-rev__pic-link {
+          margin: 8px 5px 3px 0;
+          padding: 0;
+          display: inline-block;
+          height: 120px;
+          width: auto;
+          cursor: pointer;
+          overflow: hidden;
+        }
+      
+        .jdgm-rev__pics {
+          font-size: 0;
+          white-space: nowrap;
+          height: auto;
+          overflow: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+      
+        .jdgm-rev__pic-img {
+          display: block;
+          width: auto;
+          max-height: 100%;
+          margin: 0;
+          padding: 0;
+          position: relative;
+          top: 50%;
+          transform: translateY(-50%);
+          -webkit-transform: translateY(-50%);
+          border-radius: 4px;
+        }
+      </style>
+      <script>
+        function copyText() {
+    // Get the text from the input field
+    var text = document.getElementById("copy-link").value;
 
-<style>
-  @media screen and (max-width: 576px) {
-  .changebutton {
-    width: 100%!important;
-  }
+    // Async function to copy the text
+    const copyContent = async () => {
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+    }
+
+    // Call the async function
+    copyContent();
 }
-  .border-orange {
-    border: 1px solid #ff6600;
-    border-radius: 6px;
-  }
 
-
-  .review-container {
-    max-width: 500px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .product-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-  }
-
-  .product-info img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-  }
-
-  .stars {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 15px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    justify-content: center;
-  }
-
-  .star {
-    color: lightgray;
-    transition: color 0.2s;
-  }
-
-  .star.hover,
-  .star.selected {
-    color: gold;
-  }
-
-  .reviewmodalpop {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 1rem;
-  }
-
-  .upload-area {
-    border: 2px dashed #ccc;
-    border-radius: 4px;
-    text-align: center;
-    padding: 20px;
-    color: #777;
-    margin-bottom: 15px;
-    cursor: pointer;
-  }
-
-  .upload-area input {
-    display: none;
-  }
-
-  .review-btn {
-  min-width: 150px; /* keeps good size on large screens */
-}
-
-@media (max-width: 576px) {
-  .review-btn {
-    width: 100%;  /* full width under text on small screens */
-    min-width: auto;
-  }
-}
-.jdgm-rev__pic-link {
-    margin: 8px 5px 3px 0;
-    padding: 0;
-    display: inline-block;
-    height: 120px;
-    width: auto;
-    cursor: pointer;
-    overflow: hidden;
-}
-.jdgm-rev__pics {
-    font-size: 0;
-    white-space: nowrap;
-    height: auto;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-}
-.jdgm-rev__pic-img {
-    display: block;
-    width: auto;
-    max-height: 100%;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-    -webkit-transform: translateY(-50%);
-    border-radius: 4px;
-}
-</style>
-<script>
-  function addToCart(productId) {
-    const qty = document.getElementById("qtyInput").getAttribute("value")
-    const url = `/add/${productId}/${qty}/`
-    fetch(url, {
-      headers: { "X-Requested-With": "XMLHttpRequest",
-      "X-Template-Type": "quick-cart"
-      }
-    })
-      .then(response => response.text())
-      .then(html => {
-        document.getElementById("quick-cart-page").innerHTML = html;
-      })
-  }
-  function reviewSort() {
-    const base = window.location.pathname;
-    const sort_order = document.getElementById("sort_order").value;
-    const params = new URLSearchParams();
-    params.append("sort_order",sort_order);
-    const review_url = base + "?" + params.toString();
-    fetch(review_url, {
-      headers: { "X-Requested-With": "XMLHttpRequest",
-      }
-    })
-      .then(response => response.text())
-      .then(html => {
-        document.getElementById("review-cards").innerHTML = html;
-      })
-  }
-    document.getElementById("sort_order").addEventListener("change", reviewSort)
-</script>
-
-{% endblock content %}
+        function addToCart(productId) {
+          const qty = document.getElementById("qtyInput").getAttribute("value")
+          const url = `/add/${productId}/${qty}/`
+          fetch(url, {
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "X-Template-Type": "quick-cart"
+            }
+          })
+            .then(response => response.text())
+            .then(html => {
+              document.getElementById("quick-cart-page").innerHTML = html;
+            })
+        }
+        function reviewSort() {
+          const base = window.location.pathname;
+          const sort_order = document.getElementById("sort_order").value;
+          const params = new URLSearchParams();
+          params.append("sort_order", sort_order);
+          const review_url = base + "?" + params.toString();
+          fetch(review_url, {
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+            }
+          })
+            .then(response => response.text())
+            .then(html => {
+              document.getElementById("review-cards").innerHTML = html;
+            })
+        }
+        document.getElementById("sort_order").addEventListener("change", reviewSort)
+      </script>
+      
+      {% endblock content %}

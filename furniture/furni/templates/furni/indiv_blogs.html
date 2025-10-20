@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% block title %}Blogs| Module Furnitures{% endblock %}
 {% block content %}
 {% load static %}
 
@@ -126,9 +127,17 @@
 </style>
 
 <div class="blog-parent">
-
+    
     <div class="indiv-blogs">
+        
        <div class="blog-body">
+        <div class="breadcrumbs">
+  <ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{% url 'blogs' %}">Blogs</a></li>
+  <li><a href="{% url 'blogs' %}">Blog Heading</a></li>
+</ul>
+</div>
     <a class="blog-category" style="text-decoration: none;">Living Room</a>
     <h1 class="blog-heading">Choosing the Best Fabric for Your Sofa in India</h1>
     
@@ -140,10 +149,10 @@
     </div>
 
     <div class="blog-image">
-        <img src="{% static 'images/blog-image.avif' %}" class="post-image" alt="Post Image">
+        <img src="{% static 'images/post-2.jpg' %}" class="post-image" alt="Post Image">
     </div>
 
-    <p>Your <b><u><a href="https://ahdfurniture.com/sofa/">sofa</a></u></b> is more than just a piece of furniture ...</p>
+    <p>Your <b><u>sofa</u></b> is more than just a piece of furniture ...</p>
 
     <h3>Key Takeaways</h3>
     <ul>

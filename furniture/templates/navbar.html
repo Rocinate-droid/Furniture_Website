@@ -1,98 +1,6 @@
 {% load static %}
 {% load humanize %}
 {% load mathfilters %}
-<!doctype html>
-<html lang="en"">
-  <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="author" content="Untree.co">
-  <link rel="shortcut icon" href="favicon.png">
-
-  <meta name="description" content="" />
-  <meta name="keywords" content="bootstrap, bootstrap4" />
-  <meta name="robots" content="noindex, nofollow">
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Premium Furniture for Modern Living | Module Furnitures" />
-  <meta property="og:description"
-    content="Discover customizable furniture designed for style, comfort, and functionality. Perfect for any space with hassle free delivery" />
-  <meta property="og:url" content="https://modulefurnitures.com/" />
-  <meta property="og:site_name" content="Module Furnitures" />
-  <meta property="article:publisher" content="" />
-  <meta property="article:modified_time" content="{{ modified_time }}" />
-  <meta property="og:image" content="https://modulefurnitures.com/static/images/meta-image.webp" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:type" content="image/webp" />
-
-
-		<!-- Bootstrap CSS -->
-		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-		<link href="{% static 'css/tiny-slider.css' %}" rel="stylesheet">
-		<link href="{% static 'css/style.css' %}" rel="stylesheet">
-		<title>Module Furnitures</title>
-		<link rel="icon" type="image/png" href="{% static 'images/module-logo.png' %}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-<script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      prefix: 'tw-',
-      corePlugins: {
-        preflight: false,
-      }
-    }
-  </script>
-  <style>
-    @media screen and (max-width:764px) {
-    .desktop-navbar-links {
-      display: none !important;
-    }
-  }
-   .bottom-bar-mobile {
-  background-color: #E5D9D9;
-  overflow: hidden;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 10%;
-  display: flex;
-  justify-content: space-evenly;
-  
-}
-
-/* Style the links inside the navigation bar */
-.bottom-bar-mobile a {
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-/* Change the color of links on hover */
-.bottom-bar-mobile a:hover {
-  background-color: #ddd;
-  color: black;
-}
-  @media screen and (min-width:764px) {
-    .mobile-navbar-links {
-      display: none !important;
-    }
-    #mobileSearch {
-      display: none !important;
-    }
-    .bottom-bar-mobile {
-      display: none !important;
-    }
-  }
-
-  </style>
-    </head>
-    
-    <body>
 <style>
   @media screen and (max-width:767px) {
     .breadcrumbs-mobile-only {
@@ -101,6 +9,7 @@
     .breadcrumbs-desktop-only {
       display: none;
     }
+    
   }
 
   @media screen and (min-width:767px) {
@@ -287,7 +196,7 @@ a.nav-link {
       <div class="flex-grow-1 my-2 my-md-0 px-md-3">
           <div class="position-relative">
             <form action="{% url 'search' %}" method="get">
-            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Hinted search text" required value="{{search_word}}">
+            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Dining Table" required value="{{search_word}}">
             <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
               <button type="submit" style="border: none; background-color: transparent;">
               <i class="fas fa-search"></i>
@@ -298,7 +207,6 @@ a.nav-link {
         </div>
         <div class="d-flex align-items-center gap-3 ms-md-3 my-2 my-md-0 py-1">
   <!-- Track Order Button -->
-  <a class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#trackOrderModal">Track Order</a>
 
   <!-- Wishlist Icon -->
   <a class="fa fa-heart fs-5 text-dark" href="{% url 'wishlist' %}" style="text-decoration: none;"></a>
@@ -327,7 +235,7 @@ a.nav-link {
     </ul>
   </div>
   {% else %}
-  <a class="fa fa-sign-in-alt fs-5 text-dark" href="{% url 'loginpage' %}" style="text-decoration: none;"></a>
+  <a class="fa fa-sign-in-alt fs-5 text-dark" href="{% url 'profile' %}" style="text-decoration: none;"></a>
   {% endif %}
 </div>
 
@@ -341,7 +249,7 @@ a.nav-link {
        <div class="flex-grow-1 my-2 my-md-0 px-md-3">
           <div class="position-relative">
             <form action="{% url 'search' %}" method="get">
-            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Hinted search text" required value="{{search_word}}">
+            <input id="product-search-input" name="search_word" type="text" class="form-control rounded-pill ps-4 pe-5" placeholder="Dining Table" required value="{{search_word}}">
             <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
               <button type="submit" style="border: none; background-color: transparent;">
               <i class="fas fa-search"></i>
@@ -362,7 +270,7 @@ a.nav-link {
       {% for room in rooms %}
 <li class="nav-item"><a class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.slug %}active{% endif %}" href="{% url 'rooms' room_type=room.slug %}">{{room.name}}</a></li>
       {% endfor %}
-      <li class="nav-item"><a class="nav-link" data-bs-toggle="modal" data-bs-target="#trackOrderModal" style=" background-color: aqua; font-weight: bold;">📦 Track Order</a></li>
+      
       </ul>
 
     </div>

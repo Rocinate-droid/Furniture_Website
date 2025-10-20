@@ -1,5 +1,6 @@
  {% load humanize %}
  {% for product in products %}
+ 
 	<div class="launch-card"><div class="card border-0 shadow-sm h-100">
     <div class="position-relative">
       <a href="{% url 'product' cat_id=product.category.slug prod_id=product.slug %}">

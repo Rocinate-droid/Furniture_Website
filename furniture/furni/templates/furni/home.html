@@ -22,6 +22,13 @@
 		padding-top: 0px;
 		height: 80px;
 	}
+  
+  button.scroll-btn.left.scroll-hide-mobile {
+        display: none;
+  }
+  button.scroll-btn.right.scroll-hide-mobile {
+    display: none;
+  }
   }
 	@media (max-width: 904px) {
     .hide-on-mobile {
@@ -52,6 +59,7 @@
 </style>
 		<!-- Start Hero Section -->
 <!-- Start Hero Section -->
+
 <div id="heroCarousel" class="carousel slide carousel-fade position-relative" 
      data-bs-ride="carousel" data-bs-interval="2500" style=" overflow: hidden;">
 
@@ -355,6 +363,46 @@
 
 </style>
   </div>
+
+<style>
+  .customer-choice {
+    display: flex;
+    align-content: center;
+    justify-content: space-around;
+    background-color: #FDEEC6;
+  }
+  .choice-image {
+    width: 100px; 
+    height: 100px;
+  }
+  .choice-text {
+    text-align: center;
+  }
+</style>
+
+<div class="customer-choice">
+  <div class="choices">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+  <img src="{% static 'images/years.png' %}" class="choice-image" alt="Happy Customers">
+  <p>25 Years Of Experiance</p>
+</div>
+
+  </div>
+  <div class="choices">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+  <img src="{% static 'images/happy-cust.png' %}" class="choice-image" alt="Happy Customers">
+  <p">200,000 + Happy Customers</p>
+</div>
+</div>
+   <div class="choices">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+  <img src="{% static 'images/best-price.png' %}" class="choice-image" alt="Happy Customers">
+  <p>Best Price In Market</p>
+</div>
+
+  </div>
+  </div>
+
 <div class="categories-section">
   <h2 class="section-title">Shop By Categories</h2>
 
@@ -378,65 +426,97 @@
 
 
 <style>
-	
-	.new-launch {
-		display: grid;
-		grid-template-columns:repeat(4, 1fr);
-		grid-template-rows:repeat(1, 1fr);
-		gap: 10px;
-		overflow-x: auto;
-		padding: 40px 20px;
-		/*grid-auto-rows: minmax(100px, auto);*/
-		background-color: #FDEEC6;
-	}
-	.scroll-products {
-		display: grid;
-  height: auto;
-  grid-gap: 0 20px; /* row gap: 0, column gap: 20px */
-  grid-auto-flow: column; /* place grid items in columns */
-  grid-auto-columns:auto ; /* default size for the columns in the grid */
-  overflow-x: scroll;
-  grid-column: 1 / 6;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-  padding: 50px;
-    padding-bottom: 0px;
-    padding-top: 0px;
+.new-launch {
+  background-color: #FDEEC6;
+  padding: 40px 20px;
 }
 
-	.scroll-products::-webkit-scrollbar {
-		scroll-behavior:smooth;
+.launch-title {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.scroll-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.scroll-products {
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 0 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 40px;
+  scroll-behavior: smooth;
+}
+
+.scroll-products::-webkit-scrollbar {
   display: none;
-
-
 }
-	.prod-card {
-		padding: 5px;
-		width: 180px;         
-	}
-	.launch-title {
-		grid-column: 1 / 6;
-		font-size: 2rem;
-		margin-bottom: 30px;
-		font-weight: 600;
-		text-align: center;
-	}
-	.launch-card {
 
-		padding: 5px;
-		width: 238px;         
-	}
+.launch-card {
+  width: 238px;
+  padding: 5px;
+  flex: 0 0 auto;
+}
+
+/* Scroll Buttons */
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s;
+  z-index: 10;
+  opacity: 0.8;
+}
+
+.scroll-btn:hover {
+  opacity: 1;
+  background: #f7f7f7;
+}
+
+.scroll-btn.left {
+  left: 10px;
+}
+
+.scroll-btn.right {
+  right: 10px;
+}
 </style>
+
 
 <!--New Launches-->
 <div class="new-launch">
-	<div class="launch-title">New Launches</div>
-	<div class="scroll-products">
-    {% include "furni/new_launches.html" with products=products wish_items=wish_items %}
-   
+  <div class="launch-title">New Launches</div>
 
-	</div>
+  <div class="scroll-wrapper">
+    <button class="scroll-btn left scroll-hide-mobile" onclick="scrollProducts(-1)">&#10094;</button>
+
+    <div class="scroll-products" id="scrollProducts">
+      {% include "furni/new_launches.html" with products=products wish_items=wish_items %}
+    </div>
+
+    <button class="scroll-btn right scroll-hide-mobile" onclick="scrollProducts(1)">&#10095;</button>
+  </div>
 </div>
+
+
 
 
 		<!-- 
@@ -491,8 +571,7 @@
 		-->
 		 
 		
-		<!-- Start We Help Section -->
-		<div class="we-help-section" style="padding-bottom: 2rem;">
+		<!--<div class="we-help-section" style="padding-bottom: 2rem;">
 			<div class="container">
 				<div class="row justify-content-between">
 					<div class="col-lg-7 mb-5 mb-lg-0">
@@ -512,12 +591,11 @@
 							<li>Custom sizes & finishes to suit your space</li>
 							<li>Hassle-free delivery and easy returns</li>
 						</ul>
-						<!--<p><a href="" class="btn">Browse Collections</a></p>-->
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- End We Help Section -->
+		-->
 
 
 
@@ -620,7 +698,7 @@
 <section class="py-5" id="detailed-description">
   <div class="container">
     <h2 style="font-weight: bold;">The Best Furniture Stores In Kochi With Exceptional Shopping Experience And Diverse Collections</h2>
-    <p>A visit to a furniture store can be an enchanting experience. From the moment you step inside, the aroma of wood and the sight of exquisitely crafted furniture captivate your senses. This is precisely what awaits you at AHD Furniture's stores in Kochi. Our store showcases a vast selection of furniture arranged in mock room setups, helping you visualise how each piece would enhance your home. What distinguishes our store from other furniture shops in Kochi is our approachable and expert staff. Our team is always ready to address any questions or concerns, ensuring you find the perfect piece. The opportunity to see, touch, and test furniture in person before purchasing is a key highlight of our shopping experience. If you're seeking elegant and functional furniture designs, visit the premier furniture shops in Kochi at AHD Furniture. We are confident our collection will elevate your home and surpass your expectations in remarkable ways.</p>
+    <p>A visit to a furniture store can be an enchanting experience. From the moment you step inside, the aroma of wood and the sight of exquisitely crafted furniture captivate your senses. This is precisely what awaits you at Module Furniture's stores in Kochi. Our store showcases a vast selection of furniture arranged in mock room setups, helping you visualise how each piece would enhance your home. What distinguishes our store from other furniture shops in Kochi is our approachable and expert staff. Our team is always ready to address any questions or concerns, ensuring you find the perfect piece. The opportunity to see, touch, and test furniture in person before purchasing is a key highlight of our shopping experience. If you're seeking elegant and functional furniture designs, visit the premier furniture shops in Kochi at Module Furniture. We are confident our collection will elevate your home and surpass your expectations in remarkable ways.</p>
   </div>
 </section>
 
@@ -770,7 +848,7 @@
         <div id="collapse9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
           <div class="accordion-body">
             Yes! Once your order is shipped, you’ll receive a tracking link via
-            email or SMS.
+            email and SMS or you can go to profile section where you can track the order using the order no and your email.
           </div>
         </div>
       </div>
@@ -795,11 +873,11 @@
 
 					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
 						<div class="post-entry">
-							<a href="#" class="post-thumbnail"><img src="images/post-1.jpg" alt="Image" class="img-fluid"></a>
+							<a href="{% url 'indiv_blogs' %}" class="post-thumbnail"><img src="{% static 'images/post-1.jpg' %}" alt="Image" class="img-fluid"></a>
 							<div class="post-content-entry">
-								<h3><a href="#">First Time Home Owner Ideas</a></h3>
+								<h3><a href="{% url 'indiv_blogs' %}">First Time Home Owner Ideas</a></h3>
 								<div class="meta">
-									<span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 19, 2021</a></span>
+									<span>by <a href="{% url 'indiv_blogs' %}">Kristin Watson</a></span> <span>on <a href="{% url 'indiv_blogs' %}">Dec 19, 2021</a></span>
 								</div>
 							</div>
 						</div>
@@ -807,11 +885,11 @@
 
 					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
 						<div class="post-entry">
-							<a href="#" class="post-thumbnail"><img src="images/post-2.jpg" alt="Image" class="img-fluid"></a>
+							<a href="{% url 'indiv_blogs' %}" class="post-thumbnail"><img src="{% static 'images/post-2.jpg' %}" alt="Image" class="img-fluid"></a>
 							<div class="post-content-entry">
-								<h3><a href="#">How To Keep Your Furniture Clean</a></h3>
+								<h3><a href="{% url 'indiv_blogs' %}">How To Keep Your Furniture Clean</a></h3>
 								<div class="meta">
-									<span>by <a href="#">Robert Fox</a></span> <span>on <a href="#">Dec 15, 2021</a></span>
+									<span>by <a href="{% url 'indiv_blogs' %}">Robert Fox</a></span> <span>on <a href="{% url 'indiv_blogs' %}">Dec 15, 2021</a></span>
 								</div>
 							</div>
 						</div>
@@ -819,11 +897,11 @@
 
 					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
 						<div class="post-entry">
-							<a href="#" class="post-thumbnail"><img src="images/post-3.jpg" alt="Image" class="img-fluid"></a>
+							<a href="{% url 'indiv_blogs' %}" class="post-thumbnail"><img src="{% static 'images/post-3.jpg' %}" alt="Image" class="img-fluid"></a>
 							<div class="post-content-entry">
-								<h3><a href="#">Small Space Furniture Apartment Ideas</a></h3>
+								<h3><a href="{% url 'indiv_blogs' %}">Small Space Furniture Apartment Ideas</a></h3>
 								<div class="meta">
-									<span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 12, 2021</a></span>
+									<span>by <a href="{% url 'indiv_blogs' %}">Kristin Watson</a></span> <span>on <a href="{% url 'indiv_blogs' %}">Dec 12, 2021</a></span>
 								</div>
 							</div>
 						</div>
@@ -832,8 +910,99 @@
 				</div>
 			</div>
 </div>
+
+
+<style>
+  #offer-loader {
+    display: none;
+		position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 10, 10, 0.8);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .offer-body {
+    display: flex;
+    height: 500px;
+    width: 900px;
+  }
+
+  #offer-image {
+    height: 500px;
+    width: 500px;
+    align-self: center;
+
+  }
+
+  .offer-form {
+    background-color: rgb(224, 212, 204);
+    padding: 40px;
+  }
+  .close-modal {
+    display: flex;
+    justify-self: flex-end;
+    padding-top: 0px;
+  }
+  
+  @media screen and (max-width:764px){
+	#offer-image {
+		display: none;
+	}
+  .offer-body {
+    width: 300px;
+  }
+  .offer-form {
+    padding: 10px;
+  }
+}
+  
+  
+</style>
+
+
+<div id="offer-loader" class="offer-loader">
+    <div class="offer-body">
+<div class="offer-image">
+  <img id="offer-image" src="{% static 'images/offer-slider.webp' %}">
+</div>
+
+<div class="offer-form">
+  <button class="fa fa-times close-modal" id="close-modal" style="background-color: transparent; border: none;"></button>
+  
+  <h4 style="font-weight: bold; text-align: center; padding-bottom: 5px;">Reach out to us</h4>
+  <p>Get early access to our new offers and explore the diffrent collections of module furnitures</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+                  <label class="text-black" for="firstname">Name</label>
+                  <input type="text" class="form-control" id="firstname" name="firstname" required
+                    value="{{ form.firstname.value|default:'' }}">
+                </div>
+   <div class="form-group">
+              <label class="text-black" for="phno">Phone Number</label>
+              <input type="tel" class="form-control" id="phno" name="phone" required value="{{ form.phone.value|default:'' }}">
+            </div>
+
+            <div class="form-group">
+              <label class="text-black" for="email">Email address</label>
+              <input type="email" class="form-control" id="email" name="email" required
+                value="{{ form.email.value|default:'' }}">
+            </div>
+    <button type="submit" onclick="getBack()" class="btn btn-primary-hover-outline" style="margin-top: 20px;">Send Message</button>
+              </div>
+  </form>
+</div>
+</div>
+
 		
 <script>
+
+  
   const carouselInner = document.getElementById('carouselInner');
   const slides = carouselInner.children;
   let currentIndex = 0;
@@ -854,7 +1023,17 @@
 
   // Initialize first slide
   showSlide(currentIndex);
-
+function scrollProducts(direction) {
+  const container = document.getElementById("scrollProducts");
+  const scrollAmount = 300; // adjust this for scroll distance per click
+  container.scrollBy({
+    left: direction * scrollAmount,
+    behavior: 'smooth'
+  });
+}
   
 </script>
+
+
+
 {% endblock content %}

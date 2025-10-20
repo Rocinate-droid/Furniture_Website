@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% block title %}About Us | Module Furnitures{% endblock %}
 {% block content %}
 {% load static %}
 <!-- Start Hero Section -->
@@ -19,7 +20,14 @@
 <!-- End Hero Section -->
 
 <section class="py-5 bg-light">
+  
   <div class="container">
+    <div class="breadcrumbs">
+  <ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">Home</a></li>
+  <li><a href="{{request.path}}">About Us</a></li>
+</ul>
+</div>
     <h2 class="mb-4 text-primary fw-bold">Our Story</h2>
     <p class="text-muted">
       Every home has a story — and at <strong>Module Furniture</strong>, we help you tell yours beautifully.  

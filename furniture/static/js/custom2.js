@@ -1,4 +1,21 @@
 
+
+const overlay = document.getElementById("offer-loader");
+  const closeOverlay = document.getElementById("close-modal");
+  closeOverlay.addEventListener('click', (event) => {
+    overlay.style.display = 'none';
+  })
+  overlay.addEventListener('click', (event) => {
+    if (event.target === overlay) {
+      overlay.style.display = 'none';
+    }
+  })
+  document.addEventListener("DOMContentLoaded", function () {
+    if (!sessionStorage.getItem("overlay_displayed")) {
+      overlay.style.display = 'flex';
+      sessionStorage.setItem("overlay_displayed", "true");
+    }
+  })
   var input = document.getElementById("pincodeInput");
   // Execute a function when the user presses a key on the keyboard
   input.addEventListener("keypress", function (event) {
