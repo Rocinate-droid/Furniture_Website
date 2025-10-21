@@ -748,6 +748,13 @@
             })
         }
         document.getElementById("sort_order").addEventListener("change", reviewSort)
+
+          const thumbnails = document.querySelectorAll(".thumbnail-img");
+          function changeImage(el) {
+    thumbnails.forEach(img => img.classList.remove("active"));
+    el.classList.add("active");
+    mainImage.src = el.src;
+  }
       </script>
       
       {% endblock content %}
