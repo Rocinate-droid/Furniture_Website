@@ -110,6 +110,9 @@ def shop(request):
 def services(request):
     return render(request, "furni/services.html")
 
+def sitemap(request):
+    return render(request, "furni/sitemap.xml")
+
 def about(request):
     return render(request, "furni/about.html")
 

@@ -30,6 +30,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'jazzmin',
     'mathfilters',
+    'django.contrib.sitemaps',
+     'django.contrib.sites',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -39,6 +41,8 @@ INSTALLED_APPS = [
     "furni.apps.FurniConfig",
     'django.contrib.humanize'
 ]
+
+SITE_ID = 1 
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
