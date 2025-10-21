@@ -372,36 +372,21 @@
     background-color: #FDEEC6;
   }
   .choice-image {
-    width: 100px; 
-    height: 100px;
+    width: 120px; 
+    height: 120px;
   }
   .choice-text {
     text-align: center;
   }
+  @media screen and (max-width:764px){
+	.choice-image {
+		width: 90px; 
+    height: 90px;
+	}
+}
 </style>
 
-<div class="customer-choice">
-  <div class="choices">
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-  <img src="{% static 'images/years.png' %}" class="choice-image" alt="Happy Customers">
-  <p>25 Years Of Experiance</p>
-</div>
 
-  </div>
-  <div class="choices">
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-  <img src="{% static 'images/happy-cust.png' %}" class="choice-image" alt="Happy Customers">
-  <p">200,000 + Happy Customers</p>
-</div>
-</div>
-   <div class="choices">
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-  <img src="{% static 'images/best-price.png' %}" class="choice-image" alt="Happy Customers">
-  <p>Best Price In Market</p>
-</div>
-
-  </div>
-  </div>
 
 <div class="categories-section">
   <h2 class="section-title">Shop By Categories</h2>
@@ -694,6 +679,32 @@
 				</div>
 			</div>
 		</div>
+
+<div class="customer-choice">
+  <div class="choices">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+  <img src="{% static 'images/experiance.png' %}" class="choice-image" alt="Happy Customers">
+</div>
+
+  </div>
+  <div class="choices">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+  <img src="{% static 'images/customers.png' %}" class="choice-image" alt="Happy Customers">
+</div>
+</div>
+   <div class="choices">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+  <img src="{% static 'images/warranty.png' %}" class="choice-image" alt="Happy Customers">
+</div>
+
+  </div>
+  <div class="choices">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+  <img src="{% static 'images/market.png' %}" class="choice-image" alt="Happy Customers">
+</div>
+
+  </div>
+  </div>
 
 <section class="py-5" id="detailed-description">
   <div class="container">

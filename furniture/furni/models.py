@@ -1,4 +1,5 @@
 import uuid
+from django.urls import reverse
 import django_filters
 from django.db import models
 from django.contrib.auth.models import User
@@ -22,6 +23,8 @@ class Categorie(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'cat_name': self.slug})
     def __str__(self):
         return self.name
 
@@ -34,6 +37,8 @@ class Room(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+    def get_absolute_url(self):
+        return reverse('rooms', kwargs={'room_type': self.slug})
     def __str__(self):
         return self.name
     
@@ -66,6 +71,8 @@ class Product(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+    def get_absolute_url(self):
+        return reverse('product', kwargs={'cat_id': self.category.slug, 'prod_id':self.slug})
     def __str__(self):
         return self.name
     

@@ -1,5 +1,14 @@
 from django.urls import path
 from . import views
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import StaticViewSitemap, RoomPostSitemap, CategoriePostSitemap, ProductPostSitemap
+
+sitemaps = {
+    "static": StaticViewSitemap,
+    "rooms": RoomPostSitemap,
+    "products": ProductPostSitemap,
+    "categories": CategoriePostSitemap
+}
 
 urlpatterns = [
     path('', views.home, name = "home"),
@@ -11,6 +20,19 @@ urlpatterns = [
     path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
     path('privacy_policy', views.privacy_policy, name = 'privacy_policy'),
     path('contact', views.contact, name = 'contactus'),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="sitemap-index",
+    ),
+    path(
+    "sitemap-<section>.xml",
+    sitemap,
+    {"sitemaps": sitemaps},
+    name="sitemap-section",  # ✅ Optional: individual sitemaps
+    ),
+    path('sitemap', views.sitemap, name = 'sitemap'),
     path('services', views.services, name = 'services'),
     path('blogs', views.blogs, name = 'blogs'),
     path('indivblogs', views.indiv_blogs, name = 'indiv_blogs'),
