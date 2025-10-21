@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1 
+MAINTENANCE_MODE = True
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

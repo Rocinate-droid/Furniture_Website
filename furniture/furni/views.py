@@ -38,6 +38,20 @@ from django.dispatch import receiver
 razorpay_client = razorpay.Client(
     auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
+
+def robots_txt(request):
+    """
+    Serve robots.txt dynamically.
+    Blocks everything if MAINTENANCE_MODE is True.
+    """
+    if getattr(settings, 'MAINTENANCE_MODE', False):
+        content = "User-agent: *\nDisallow: /"
+    else:
+        content = "User-agent: *\nDisallow:"
+    
+    return HttpResponse(content, content_type="text/plain")
+
+
 def home(request):
     form = contactForm(request.POST or None)
     if form.is_valid():
