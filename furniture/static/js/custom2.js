@@ -95,7 +95,7 @@ const overlay = document.getElementById("offer-loader");
     return new Date(year, month, 0).getDate();
   }
   const mainImage = document.getElementById("mainImage");
-  const thumbnails = document.querySelectorAll(".thumbnail-img");
+
   const qtyInput = document.getElementById("qtyInput");
   const url = document.getElementById("addtocart");
   const url2 = document.getElementById("buynow");
@@ -105,11 +105,7 @@ const overlay = document.getElementById("offer-loader");
   const pricePerUnit = parseInt(document.getElementById("totalPrice").textContent.replace(",", ""));
   const productId = "{{ product.id }}";
 
-  function changeImage(el) {
-    thumbnails.forEach(img => img.classList.remove("active"));
-    el.classList.add("active");
-    mainImage.src = el.src;
-  }
+  
 
   function adjustQty(val, productId) {
     let qty = parseInt(qtyInput.value);
