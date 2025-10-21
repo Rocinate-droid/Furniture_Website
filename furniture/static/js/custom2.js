@@ -1,5 +1,4 @@
 
-
 const overlay = document.getElementById("offer-loader");
   const closeOverlay = document.getElementById("close-modal");
   closeOverlay.addEventListener('click', (event) => {
