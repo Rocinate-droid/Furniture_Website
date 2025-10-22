@@ -60,6 +60,9 @@
 		<!-- Start Hero Section -->
 <!-- Start Hero Section -->
 
+
+
+
 <div id="heroCarousel" class="carousel slide carousel-fade position-relative" 
      data-bs-ride="carousel" data-bs-interval="2500" style=" overflow: hidden;">
 
@@ -369,7 +372,7 @@
     display: flex;
     align-content: center;
     justify-content: space-around;
-    background-color: #FDEEC6;
+    background-color: #d4cfc0;
   }
   .choice-image {
     width: 120px; 
@@ -633,6 +636,20 @@
 		</div> */
 		End Popular Product -->
 
+<div class="about-us">
+<div class="left-about">
+<h4>Evrything you need at one place</h4>
+<h4 style="font-weight: bold;">About Module Furnitures</h4>
+<p>Module Furnitures is a designer furniture gallery rooted in India<br> with operations across the world. Along with the exclusive Modular<br> furniture, we supply exquisite interior décor items from the best<br> brands in the world.</p>
+<p style="padding-top:10px"><a href="{% url 'aboutus' %}" class="btn">Read More</a></p>
+</div>
+<div class="right-about">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/lNn0uMcwfGw?autoplay=1&mute=1&loop=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+</div>
+
+
+
 		<!-- Start Testimonial Slider -->
 		<div class="testimonial-section">
 			<div class="container">
@@ -680,7 +697,7 @@
 			</div>
 		</div>
 
-<div class="customer-choice">
+    <div class="customer-choice">
   <div class="choices">
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
   <img src="{% static 'images/experiance.png' %}" class="choice-image" alt="Happy Customers">
@@ -705,6 +722,29 @@
 
   </div>
   </div>
+
+
+<style>
+.about-us {
+  display: flex;
+  align-content: center;
+  padding: 50px;
+  justify-content: space-around;
+  gap: 0px;
+  
+  padding-left: 50px;
+}
+.left-about {
+  display: flex;
+  color: black;
+  flex-direction: column;
+}
+.right-about {
+  padding-right: 0px;
+  
+}
+</style>
+
 
 <section class="py-5" id="detailed-description">
   <div class="container">
