@@ -5,7 +5,7 @@ from django.urls import reverse
 import razorpay
 import traceback
 from django.conf import settings
-from .models import Categorie, Room
+from .models import Categorie, Room, RoomProductType, SubProductType
 from .models import Testimonial, Review
 from .models import Product
 from .models import Cart,CartItem, Wishlist, WishlistItem
@@ -178,6 +178,55 @@ def contact(request):
         return redirect('contactus')
     context = {'form': form }
     return render(request, "furni/contact.html", context)
+
+def subroom(request, room_type,product_type):
+    room = Room.objects.get(slug=room_type)
+    present_room = room.name
+    product_type = RoomProductType.objects.get(slug=product_type)
+    products = Product.objects.filter(room_or_Product_Type__name=room.name,Product_Type__name=product_type.name)
+    price = request.GET.get('price')
+    sort  = request.GET.get('sort')
+    if sort:
+        if sort == "low_to_high":
+            products = products.order_by('discounted_price')
+        elif sort == "high_to_low":
+            products = products.order_by('-discounted_price')
+    if price:
+            min_price, max_price = map(int, price.split("-"))
+            products = products.filter(Q(discounted_price__gte=min_price) & Q(discounted_price__lte=max_price))
+    for p in products:
+        p.savings = p.original_price - p.discounted_price
+        p.savings_percentage = int((p.savings / p.original_price) * 100)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string("furni/product_list.html", {'products': products})
+        return HttpResponse(html)
+    context = {'category': category, 'products': products, "present_room" : present_room}
+    return render(request, "furni/category.html", context)
+
+def subproduct(request, product,product_type):
+    RoomProduct = RoomProductType.objects.get(slug=product)
+    present_room = RoomProduct.name
+    sub_product = SubProductType.objects.get(slug=product_type)
+    products = Product.objects.filter(Product_Type__name=RoomProduct.name,Sub_Product__name=sub_product.name)
+    price = request.GET.get('price')
+    sort  = request.GET.get('sort')
+    if sort:
+        if sort == "low_to_high":
+            products = products.order_by('discounted_price')
+        elif sort == "high_to_low":
+            products = products.order_by('-discounted_price')
+    if price:
+            min_price, max_price = map(int, price.split("-"))
+            products = products.filter(Q(discounted_price__gte=min_price) & Q(discounted_price__lte=max_price))
+    for p in products:
+        p.savings = p.original_price - p.discounted_price
+        p.savings_percentage = int((p.savings / p.original_price) * 100)
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string("furni/product_list.html", {'products': products})
+        return HttpResponse(html)
+    context = {'category': category, 'products': products, "present_room" : present_room}
+    return render(request, "furni/category.html", context)
+
 
 def category(request, cat_name):
     category = Categorie.objects.get(slug=cat_name)

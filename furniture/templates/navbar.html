@@ -280,51 +280,34 @@ a.nav-link {
 
 <hr style="border: none; border-top: 2px dashed #555; margin: 0px 0;">
 <!-- Categories (desktop only) -->
-<div class="d-none d-md-block py-1" style="background-color: #E5D9D9;">
+<div class=" d-none d-md-block py-1"  style="background-color: #E5D9D9;"" >
   <div class="container">
     <div class="room-nav-wrapper position-relative">
-      <ul class="nav nav-pills justify-content-center room-nav" id="room-nav">
-  {% for room in rooms %}
-    <li class="nav-item position-static">
-      <a data-room="{{ room.slug }}" class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.slug %}active{% endif %}"
-         href="{% url 'rooms' room_type=room.slug %}">
-        {{ room.name }}
+    <ul class="nav nav-pills justify-content-center" id="room-nav">
+      {% for room in rooms %}
+     <li class="nav-item">
+      <a data-room="{{ room.slug }}" class="nav-link {% if request.resolver_match.kwargs.room_type|default:0 == room.slug %}active{% endif %}" href="{% url 'rooms' room_type=room.slug %}">{{room.name}}
       </a>
-
-      <div class="room-dropdown">
-        <div class="main-product-list">
-          <ul class="main-prod-list"></ul>
-        </div>
-        <div class="sub-product-list">
-          <ul class="sub-prod-list"></ul>
-        </div>
-        <div class="main-product-image">
-          <img src="{% static 'images/store-3.jpg' %}" alt="Room image">
-        </div>
-        <div class="popular-categories">
-          <ul id="popular-cats">
-            <p>Explore Popular Categories</p>
-            <li><a href="">Queen Size Beds</a></li>
-            <li><a href="">King Size Beds</a></li>
-            <li><a href="">Coffee Tables</li></a>
-            <li><a href="">Dining Sets</li></a>
-            <li><a href="">Recliners</li></a>
-            <li><a href="">Sofa Cum Beds</li></a>
-          </ul>
-        </div>
-      </div>
+      <div class="nav-dropdown">
+<div class="dropdown-list">
+  
+  <ul class="dropdown-ul">
+    <p class="product-heading"></p>
+  </ul>
+</div>
+</div>
     </li>
-  {% endfor %}
-</ul>
+    
+    {% endfor %}
 
-    </div>
+    </ul>
+        
+</div>
   </div>
 </div>
 
-
 <script>
-
-document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () {
   const roomSubItems = {
     "living-room": {
       Sofas: ["1 Seater Sofa", "2 Seater Sofa", "3 Seater Sofa", "Sofa Sets", "L Shape Sofas"],
@@ -344,162 +327,191 @@ document.addEventListener("DOMContentLoaded", function () {
       "Dressing Tables": ["Dressing Tables"],
       "Bed Side Tables": ["Bed Side Tables"],
       Mattresses: ["King Size Mattress", "Queen Size Mattress"]
+    },
+    "home-office": {
+      "Office Chairs": ["High Back", "Mid Back", "Low Back", "Visitor Chairs"],
+      "Office Storage": ["Steel Locker", "Office Alimarah", "Steel Cabinet"],
+      "Office Tables": ["Computer Tables", "Study Tables", "Laptop Tables"],
+      "Gaming Chairs": ["Gaming Chairs"]
+    },
+    "plastic-chairs": {
+      "Plastic Chairs": ["Plastic Chairs With Arms", "Plastic Chairs Without Arms"]
     }
   };
 
   const navLinks = document.querySelectorAll("#room-nav .nav-link");
 
   navLinks.forEach(link => {
+    const navItem = link.closest(".nav-item");
+    const dropdown = navItem.querySelector(".nav-dropdown");
+    const list = dropdown.querySelector(".dropdown-list");
+
+    // Combined mouseenter handler
     link.addEventListener("mouseenter", () => {
       const roomSlug = link.dataset.room;
-      if (!roomSlug || !roomSubItems[roomSlug]) return;
+      const roomData = roomSubItems[roomSlug];
 
-      const navItem = link.closest(".nav-item");
-      const dropdown = navItem.querySelector(".room-dropdown");
-      const mainListEl = dropdown.querySelector(".main-prod-list");
-      const subListEl = dropdown.querySelector(".sub-prod-list");
+      // Populate dropdown content
+      list.innerHTML = "";
+      for (const [category, subproducts] of Object.entries(roomData)) {
+        const column = document.createElement("div");
+        column.classList.add("dropdown-column");
 
+        const headinglink = document.createElement("a");
+        headinglink.setAttribute("href", `/shop/room/${roomSlug}/${category.toLowerCase().replace(/\s/g,'-')}/`)
+        headinglink.style.textDecoration = "none";
+        const heading = document.createElement("p");
+        heading.textContent = category;
+        heading.style.fontWeight = "bold";
+        headinglink.appendChild(heading);
+        column.appendChild(headinglink);
 
-      // Render main categories
-      const mainCategories = Object.keys(roomSubItems[roomSlug]);
-      mainListEl.innerHTML = mainCategories
-        .map(cat => `<li><a href="#" data-category="${cat}">${cat}</a></li>`)
-        .join("");
+        const ul = document.createElement("ul");
+        subproducts.forEach(subproduct => {
+          const headinglink2 = document.createElement("a");
+          headinglink2.setAttribute("href", `/shop/product/${category.toLowerCase().replace(/\s/g,'-')}/${subproduct.toLowerCase().replace(/\s/g,'-')}`);
+          headinglink2.style.textDecoration = "none";
+          headinglink2.textContent = subproduct;
+          const li = document.createElement("li");
+          li.appendChild(headinglink2);
+          ul.appendChild(li);
+        });
+        column.appendChild(ul);
+        list.appendChild(column);
+      }
 
-      // Clear subcategories initially
-      if (mainCategories.length > 0) {
-    const firstCategory = mainCategories[0];
-    const firstItems = roomSubItems[roomSlug][firstCategory] || [];
+      // Show dropdown to measure size
+      dropdown.style.display = "block";
 
-    subListEl.innerHTML = firstItems
-      .map(item => `<li><a href="#">${item}</a></li>`)
-      .join("");
-  } else {
-    subListEl.innerHTML = "";
-  }
+      // Positioning & sizing logic
+      const rect = navItem.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
 
-      // Add delegated event listener for subcategories
-      mainListEl.onmouseover = function (e) {
-        const target = e.target.closest("a");
-        if (!target) return;
+      const spaceRight = viewportWidth - rect.left;
+      const spaceLeft = rect.left;
 
-        const category = target.dataset.category;
-        const items = roomSubItems[roomSlug][category] || [];
+      // Use max width as 90% viewport width or available space
+      const maxWidth = Math.min(viewportWidth * 0.9, spaceRight + spaceLeft);
 
-        subListEl.innerHTML = items
-          .map(item => `<li><a href="#">${item}</a></li>`)
-          .join("");
-      };
+      dropdown.style.maxWidth = maxWidth + "px";
+      dropdown.style.left = "0";
+      dropdown.style.transform = "none";
+
+      const dropdownRight = rect.left + dropdown.offsetWidth;
+
+      if (dropdownRight > viewportWidth) {
+        const overflowAmount = dropdownRight - viewportWidth;
+        dropdown.style.left = `calc(0px - ${overflowAmount}px)`;
+      }
+    });
+
+    // Hide dropdown on mouse leave
+    navItem.addEventListener("mouseleave", () => {
+      dropdown.style.display = "none";
+      dropdown.style.left = "0";
+      dropdown.style.transform = "none";
+      dropdown.style.maxWidth = "";
+      list.innerHTML = ""; // clear content if you want
     });
   });
 });
+
 </script>
 
-
-
-
-
 <style>
+  .dropdown-column a:hover {
+  color: #007BFF; /* example: change text color on hover */
+  cursor: pointer; /* if you want it clickable */
+  text-decoration: underline; /* optional */
+  /* add any other styles you want */
+}
+
+/* Make sure the nav container is positioned */
 .room-nav-wrapper {
+  position: relative; /* dropdown will position relative to this */
+}
+
+/* Position the dropdown absolutely under the nav */
+.nav-item {
   position: relative;
 }
 
-.nav-item {
-  position: static;
-}
-
-/* Dropdown styles */
-.room-dropdown {
-  display: none; /* fallback for old browsers */
+.nav-dropdown {
   position: absolute;
   top: 100%;
-  left: 50%;
-  width: 1200px;
-  max-width: 100vw;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  z-index: 1000;
-  padding: 0px;
-  transform: translateX(-50%);
-  display: flex;
+  left: 0;
+  background: white;
+  padding: 10px 15px;
   box-sizing: border-box;
-
-  /* Smooth fade */
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  opacity: 0;
-  visibility: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  display: none;
+  z-index: 10;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+
+
+
 
 /* Show dropdown on hover */
-.nav-item:hover > .room-dropdown {
-  display: flex;
-  opacity: 1;
-  visibility: visible;
+.nav-item:hover .nav-dropdown {
+  display: block;
 }
 
-.main-product-list,
-.sub-product-list,
-.popular-categories {
-  flex: 1;
-  min-width: 0;
-  padding: 20px;
+/* Flex container for columns */
+.dropdown-list {
+  display: flex;
+  justify-content: flex-start; /* align left inside dropdown */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  width: max-content; /* size to content */
   box-sizing: border-box;
 }
 
-.main-product-list a,
-.sub-product-list  a,
-#popular-cats a {
-  text-decoration: none;
+
+
+/* Each column takes equal space */
+.dropdown-column {
+  flex: 0 0 auto; /* no grow/shrink */
+  min-width: 150px; /* optional minimum width */
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
-.main-product-list a:hover,
-.sub-product-list a:hover,
-#popular-cats a:hover {
-  color: blue;
+.nav-dropdown {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 4px;
 }
 
-.sub-product-list {
-  background-color: #E5D9D9;
+
+
+/* Heading styles */
+.dropdown-column h4 {
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-.popular-categories {
-  background-color: #dbf3ff96;
-}
-
-.room-dropdown img {
-  width: 400px;
-  height: 400px;
-  object-fit: cover;
-}
-
-.room-dropdown ul {
+/* List styles */
+.dropdown-column ul {
   list-style: none;
   padding-left: 0;
-  margin: 0;
 }
 
-.room-dropdown {
-  /* your existing settings */
-  pointer-events: auto; /* ensure the dropdown stays interactive */
+.dropdown-column ul li {
+  margin-bottom: 6px;
+  cursor: pointer;
+  white-space: nowrap; /* prevent subproduct names from breaking */
 }
 
-.nav-item {
-  position: relative; /* so dropdown positioning is relative */
-}
-
-/* Increase the height of the hover zone a tiny bit */
-.nav-item:hover > .room-dropdown {
-  visibility: visible;
-  opacity: 1;
-  transition-delay: 0s; /* no delay on show */
-}
-
-.nav-item .room-dropdown {
-  margin-top: 5px; /* ensure slight overlap with nav item to avoid gap */
-}
 
 
 </style>
+
+
+
+
 
 <div class="modal fade" id="trackOrderModal" tabindex="-1" aria-labelledby="trackOrderLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">

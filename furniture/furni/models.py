@@ -42,6 +42,36 @@ class Room(models.Model):
     def __str__(self):
         return self.name
     
+class RoomProductType(models.Model):
+    name = models.CharField(max_length=200)
+    Room_Type = models.ForeignKey(Room, on_delete=models.CASCADE)
+    slug = models.SlugField(default="", null=False, blank=True, unique=True)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+    def get_absolute_url(self):
+        return reverse('rooms', kwargs={'product_type': self.slug})
+    def __str__(self):
+        return self.name
+    
+class SubProductType(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(default="", null=False, blank=True, unique=True)
+    Product_Type = models.ForeignKey(RoomProductType, on_delete=models.CASCADE)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+    def get_absolute_url(self):
+        return reverse('rooms', kwargs={'product_type': self.slug})
+    def __str__(self):
+        return self.name
+    
 class Product(models.Model):
     assembly_choices = [
         ("Not Required", "Not Required"),
@@ -51,11 +81,14 @@ class Product(models.Model):
         ("Available", "Available"),
         ("Not Available", "Not Available")
     ]
-    category = models.ForeignKey(Categorie, on_delete=models.CASCADE)
-    slug = models.SlugField(default="", null=False, blank=True, unique=True)
-    room_or_Product_Type = models.ForeignKey(Room, on_delete=models.CASCADE)
-    serial_no = models.CharField(max_length=100)
     name = models.CharField(max_length=200)
+    slug = models.SlugField(default="", null=False, blank=True, unique=True)
+    category = models.ForeignKey(Categorie, on_delete=models.CASCADE)
+    room_or_Product_Type = models.ForeignKey(Room, on_delete=models.CASCADE)
+    Product_Type = models.ForeignKey(RoomProductType, on_delete=models.CASCADE)
+    Sub_Product = models.ForeignKey(SubProductType, on_delete=models.CASCADE)
+    serial_no = models.CharField(max_length=100)
+
     discounted_price = models.IntegerField()
     original_price = models.IntegerField()
     color_options = models.CharField(max_length=10)
