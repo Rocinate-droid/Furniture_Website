@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 from . import views
 from django.contrib.sitemaps.views import sitemap
 from .sitemaps import StaticViewSitemap, RoomPostSitemap, CategoriePostSitemap, ProductPostSitemap
@@ -11,6 +11,7 @@ sitemaps = {
 }
 
 urlpatterns = [
+    
     path('', views.home, name = "home"),
     path("robots.txt", views.robots_txt, name="robots_txt"),
     path('shop', views.shop, name = "shop"),
@@ -31,7 +32,7 @@ urlpatterns = [
     "sitemap-<section>.xml",
     sitemap,
     {"sitemaps": sitemaps},
-    name="sitemap-section",  # ✅ Optional: individual sitemaps
+    name="sitemap-section",
     ),
     path('sitemap', views.sitemap, name = 'sitemap'),
     path('services', views.services, name = 'services'),
@@ -39,7 +40,9 @@ urlpatterns = [
     path('indivblogs', views.indiv_blogs, name = 'indiv_blogs'),
     path('shop/search/', views.product_search, name = "search"),
     path('shop/<slug:cat_name>/', views.category, name = "category"),
-     path('shop/room/<slug:room_type>/', views.rooms, name = "rooms"),
+    path('shop/room/<slug:room_type>/', views.rooms, name = "rooms"),
+    path('shop/room/<slug:room_type>/<slug:product_type>/', views.subroom, name = "subroom"),
+    path('shop/product/<slug:product>/<slug:product_type>/', views.subproduct, name = "subproduct"),
     path('leadership', views.leaders, name="leaders"),
     path('carrers',views.carrers, name="carrers"),
     path('register',views.registerpage, name="registerpage"),

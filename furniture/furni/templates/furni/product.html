@@ -214,7 +214,7 @@
                       <li style="font-weight: bold;">Primary Material</li>
                       <li>Fabric</li>
                       <li style="font-weight: bold;">Room Type</li>
-                      <li>Living Room</li>
+                      <li>{{product.room_or_Product_Type}}</li>
                       <li style="font-weight: bold;">Warranty</li>
                       <li>{{product.warranty}} Year</li>
                     </ul>
@@ -749,8 +749,8 @@
         }
         document.getElementById("sort_order").addEventListener("change", reviewSort)
 
-          const thumbnails = document.querySelectorAll(".thumbnail-img");
-          function changeImage(el) {
+        const thumbnails = document.querySelectorAll(".thumbnail-img");
+        function changeImage(el) {
     thumbnails.forEach(img => img.classList.remove("active"));
     el.classList.add("active");
     mainImage.src = el.src;

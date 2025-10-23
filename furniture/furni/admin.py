@@ -4,14 +4,18 @@ from django.contrib import admin
 
 from .models import Categorie, Room
 from .models import Testimonial, Review
-from .models import Product
+from .models import Product, RoomProductType, SubProductType
 from .models import Contact
 from .models import CartItem
 from .models import BillingAddress, ShippingAddress
 from .models import Orders
 from .models import Cart
 from .models import Wishlist
+from.forms import ProductForm
 from .models import OrderItem, Replacement
+
+
+
 
 class orderProducts(admin.TabularInline):
     model = OrderItem
@@ -24,6 +28,7 @@ class CategorieAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug" : ("name",)}
 
 class ProductAdmin(admin.ModelAdmin):
+    form = ProductForm
     prepopulated_fields = {"slug" : ("name",)}
 
 class orderAdmin(admin.ModelAdmin):
@@ -50,6 +55,8 @@ class BillingAddressAdmin(admin.ModelAdmin):
 admin.site.register(Categorie,CategorieAdmin)
 admin.site.register(Testimonial)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(RoomProductType)
+admin.site.register(SubProductType)
 admin.site.register(Contact)
 admin.site.register(CartItem)
 admin.site.register(BillingAddress, BillingAddressAdmin)

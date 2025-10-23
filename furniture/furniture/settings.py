@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'jazzmin',
     'mathfilters',
+    'django_select2',
     'django.contrib.sitemaps',
      'django.contrib.sites',
     "django.contrib.admin",
