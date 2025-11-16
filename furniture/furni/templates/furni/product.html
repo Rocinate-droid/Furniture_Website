@@ -125,7 +125,8 @@
         </div></button>
         
         {% endif %}
-         <button class="btn btn-outline-secondary w-50 changebutton" id="addtocart" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" onclick="addToCart({{product.id}})">Add to Cart</button>
+        <button class="btn btn-outline-secondary w-50 changebutton" id="addtocart" data-product-id="{{ product.id }}" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">Add to Cart</button>
+
            
           <a class="btn btn-orange w-50 changebutton" id="buynow" href="/buy/{{ product.id }}/1/">Buy Now</a>
          
