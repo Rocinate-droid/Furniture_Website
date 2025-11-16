@@ -111,7 +111,7 @@
         <input id="qtyInput" type="text" value="1" class="form-control form-control-sm mx-2 text-center"
           style="width: 50px;">
         <button class="btn btn-outline-secondary btn-sm" onclick="adjustQty(1, {{product.id}})">+</button>
-        <strong class="ms-3">₹<span id="totalPrice">{{product.discounted_price}}</span></strong>
+        <strong class="ms-3">₹<span id="totalPrice">₹{{product.discounted_price | intcomma}}</span></strong>
       </div>
 
       <!-- Actions -->
