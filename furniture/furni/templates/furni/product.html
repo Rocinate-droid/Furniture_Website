@@ -449,7 +449,7 @@
                   {% csrf_token %}
                   {% if not user.is_authenticated %}
                   <label>Name</label>
-                  <input type="text" class="reviewmodalpop" name="name" id="name" value="{{ form.name.value|default:'' }}">
+                  <input type="text" class="reviewmodalpop" name="name" id="name" value="{{ form.name.value|default:'' }}" required>
                   {% endif %}
                   <div class="product-info">
                     <img src="{{product.img.url}}" alt="Product Image" style="width: 80px; height: 80px;">
@@ -970,6 +970,16 @@
         });
     }
 
+    const reviewForm = document.getElementById("review-form");
+    const reviewRatingInput = document.getElementById("rating");
+    if (reviewForm && reviewRatingInput) {
+      reviewForm.addEventListener("submit", function (e) {
+        if (!reviewRatingInput.value || reviewRatingInput.value === "0") {
+          e.preventDefault();
+          alert("Please select a star rating before submitting.");
+        }
+      });
+    }
     // done DOMContentLoaded
   }); // DOM ready
 })(); // IIFE
