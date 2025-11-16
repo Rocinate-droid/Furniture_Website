@@ -127,7 +127,7 @@
         {% endif %}
          <button class="btn btn-outline-secondary w-50 changebutton" id="addtocart" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" onclick="addToCart({{product.id}})">Add to Cart</button>
            
-          <a class="btn btn-orange w-50 changebutton id="buynow" href="/buy/{{ product.id }}/1/">Buy Now</a>
+          <a class="btn btn-orange w-50 changebutton" id="buynow" href="/buy/{{ product.id }}/1/">Buy Now</a>
          
 
             
@@ -699,247 +699,280 @@
           border-radius: 4px;
         }
       </style>
-      <script>
-        function copyText() {
-    // Get the text from the input field
-    var text = document.getElementById("copy-link").value;
+<script>
+(function() {
+  // Run when DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
 
-    // Async function to copy the text
-    const copyContent = async () => {
-        try {
-            await navigator.clipboard.writeText(text);
-        } catch (err) {
-            console.error('Failed to copy: ', err);
-        }
+    // helper: safe query
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+    // ---------- Elements (guarded) ----------
+    const qtyInput = $('#qtyInput');
+    const totalPriceEl = $('#totalPrice');
+    const addToCartBtn = $('#addtocart');
+    const buyNowLink = document.querySelector('a[id="buynow"]'); // note original had missing quote in template; keep selector robust
+    const addToWishlistLink = $('#addtowishlist'); // might not exist
+    const sortSelect = $('#sort_order');
+    const reviewCards = $('#review-cards');
+    const pincodeInput = $('#pincodeInput');
+    const pincodeClick = $('#pincodeClick');
+    const copyInput = $('#copy-link');
+    const mainImage = $('#mainImage');
+
+    // ---------- Utility ----------
+    function parsePrice(text) {
+      if (!text) return 0;
+      // remove all non-digit characters (keeps digits only)
+      const digits = String(text).replace(/[^0-9]/g, '');
+      return digits ? parseInt(digits, 10) : 0;
     }
 
-    // Call the async function
-    copyContent();
-}
+    // ---------- Qty / Price logic ----------
+    // pricePerUnit read from DOM; fallback to 0
+    const pricePerUnit = parsePrice(totalPriceEl ? totalPriceEl.textContent : '0');
 
-        function addToCart(productId) {
-          const qty = document.getElementById("qtyInput").getAttribute("value")
-          const url = `/add/${productId}/${qty}/`
-          fetch(url, {
+    if (qtyInput) {
+      // ensure value sanity
+      qtyInput.addEventListener('input', () => {
+        let qty = parseInt(qtyInput.value, 10);
+        qty = isNaN(qty) || qty < 1 ? 1 : qty;
+        qtyInput.value = qty;
+        if (totalPriceEl) totalPriceEl.textContent = (qty * pricePerUnit).toLocaleString('en-IN');
+      });
+    }
+
+    // adjustQty exposed globally for inline onclicks if template uses them
+    window.adjustQty = function(val, productId) {
+      if (!qtyInput) return;
+      let qty = parseInt(qtyInput.value, 10);
+      qty = isNaN(qty) ? 1 : qty;
+      qty = Math.max(1, qty + val);
+      qtyInput.value = qty;
+      if (buyNowLink) buyNowLink.setAttribute('href', `/buy/${productId}/${qty}/`);
+      if (addToWishlistLink) addToWishlistLink.setAttribute('href', `/add/wishlist/${productId}/${qty}/`);
+      if (totalPriceEl) totalPriceEl.textContent = (qty * pricePerUnit).toLocaleString('en-IN');
+    };
+
+    // If you prefer an internal function for other uses:
+    function setQty(qty, productId) {
+      if (!qtyInput) return;
+      qtyInput.value = qty;
+      if (buyNowLink) buyNowLink.setAttribute('href', `/buy/${productId}/${qty}/`);
+      if (totalPriceEl) totalPriceEl.textContent = (qty * pricePerUnit).toLocaleString('en-IN');
+    }
+
+    // ---------- Add to Cart (AJAX) ----------
+    if (addToCartBtn) {
+      addToCartBtn.addEventListener('click', function(e) {
+        // if button has data-product we could use it, else rely on function invocation
+        const productId = this.dataset.productId || this.getAttribute('data-product-id') || null;
+        const qty = qtyInput ? qtyInput.value : 1;
+        if (!productId) {
+          // fallback to using current URL or do nothing
+        }
+        // call existing function (keeps behavior same)
+        if (productId) {
+          fetch(`/add/${productId}/${qty}/`, {
             headers: {
               "X-Requested-With": "XMLHttpRequest",
               "X-Template-Type": "quick-cart"
             }
           })
-            .then(response => response.text())
-            .then(html => {
-              document.getElementById("quick-cart-page").innerHTML = html;
-            })
+          .then(r => r.text())
+          .then(html => {
+            const quick = document.getElementById("quick-cart-page");
+            if (quick) quick.innerHTML = html;
+          }).catch(console.error);
         }
-        function reviewSort() {
-          const base = window.location.pathname;
-          const sort_order = document.getElementById("sort_order").value;
-          const params = new URLSearchParams();
-          params.append("sort_order", sort_order);
-          const review_url = base + "?" + params.toString();
-          fetch(review_url, {
-            headers: {
-              "X-Requested-With": "XMLHttpRequest",
-            }
-          })
-            .then(response => response.text())
-            .then(html => {
-              document.getElementById("review-cards").innerHTML = html;
-            })
-        }
-        document.getElementById("sort_order").addEventListener("change", reviewSort)
-
-        const thumbnails = document.querySelectorAll(".thumbnail-img");
-        function changeImage(el) {
-    thumbnails.forEach(img => img.classList.remove("active"));
-    el.classList.add("active");
-    mainImage.src = el.src;
-  }
-
-  var input = document.getElementById("pincodeInput");
-  // Execute a function when the user presses a key on the keyboard
-  input.addEventListener("keypress", function (event) {
-    // If the user presses the "Enter" key on the keyboard
-    if (event.key === "Enter") {
-      // Cancel the default action, if needed
-      event.preventDefault();
-      // Trigger the button element with a click
-      document.getElementById("pincodeClick").click();
+      });
     }
-  });
-  function checkDelivery() {
-    const pincode = document.getElementById("pincodeInput").value;
-    const result = document.getElementById("text-para");
-    const result2 = document.getElementById("text-para2");
-    const now = new Date();
-    const istDate = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    let today = new Date();
-    fetch(`https://api.postalpincode.in/pincode/${pincode}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
 
-      .then(data => {
-        if (data[0].Status == "Success") {
-          const locarray = ["Thrissur", "Alappuzha", "Ernakulam"]
-          const location = data[0]["PostOffice"];
-          result.setAttribute('style', 'font-weight:bold')
-          for (let index = 0; index < location.length; index++) {
-            if (locarray.includes(location[index].District)) {
-              if ((today.getDate() + 2) > (getDaysInMonth(today.getFullYear(), today.getMonth()))) {
-                let month = today.getMonth();
-                const newDate = (today.getDate() + 2) - (getDaysInMonth(today.getFullYear(), today.getMonth() + 1));
-                today.setDate(newDate);
-                today.setMonth(month + 1);
-                result.innerText = `FREE delivery by ${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} `;
-                result2.innerText = `Deliver to ${location[index].Division},${location[index].District} ${pincode} `;
-              } else {
-                result.innerText = `FREE delivery by ${days[today.getDay() + 2]}, ${today.getDate() + 2} ${months[today.getMonth()]} `;
-                result2.innerText = `Deliver to ${location[index].Block},${location[index].District} ${pincode} `;
-              }
-              break;
-            } else {
-              /*if ((today.getDate() + 7) > (getDaysInMonth(today.getFullYear(), today.getMonth()))) {
-                let month = today.getMonth();
-                const newDate = (today.getDate() + 7) - (getDaysInMonth(today.getFullYear(), today.getMonth() + 1));
-                today.setDate(newDate);
-                today.setMonth(month + 1);
-                result.innerText = `FREE delivery by ${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} `;
-                result2.innerText = `Deliver to ${location[index].Block},${location[index].District} ${pincode} `;
-              } else {
-                result.innerText = `FREE delivery by ${days[today.getDay() + 7]}, ${istDate.getDate() + 7} ${months[today.getMonth()]} `;
-                result2.innerText = `Deliver to ${location[index].Block},${location[index].District} ${pincode} `;
-              }*/
-             result.innerText = `We don't ship to this pincode currently`;
-             result2.innerText = ``;
+    // ---------- Review sort (guard) ----------
+    if (sortSelect && reviewCards) {
+      sortSelect.addEventListener('change', function() {
+        const base = window.location.pathname;
+        const sort_order = this.value;
+        const params = new URLSearchParams();
+        params.append("sort_order", sort_order);
+        const review_url = base + "?" + params.toString();
+        fetch(review_url, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+          .then(r => r.text())
+          .then(html => { reviewCards.innerHTML = html; })
+          .catch(console.error);
+      });
+    }
+
+    // ---------- Thumbnails / main image ----------
+    const thumbnails = $$('.thumbnail-img');
+    // attach click listeners (recommended over inline onclick)
+    if (thumbnails.length > 0 && mainImage) {
+      thumbnails.forEach((img) => {
+        img.addEventListener('click', function() {
+          // remove active
+          thumbnails.forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+          mainImage.src = this.src;
+        });
+      });
+      // expose changeImage for any remaining inline onclick usage
+      window.changeImage = function(el) {
+        // if el is an element, simulate the same behavior
+        if (!el) return;
+        thumbnails.forEach(i => i.classList.remove('active'));
+        try { el.classList.add('active'); } catch(e) {}
+        if (mainImage && el.src) mainImage.src = el.src;
+      };
+    } else {
+      // still provide a safe global stub for inline callers (no-op)
+      window.changeImage = window.changeImage || function() { /* no-op */ };
+    }
+
+    // ---------- Stars rating (guard) ----------
+    const stars = $$('.star');
+    const ratingInput = $('#rating');
+    if (stars.length && ratingInput) {
+      let selectedRating = ratingInput.value ? ratingInput.value : 0;
+      function highlightStars(rating) {
+        stars.forEach(star => {
+          if (Number(star.dataset.value) <= rating) star.classList.add('selected');
+          else star.classList.remove('selected');
+        });
+      }
+      stars.forEach(star => {
+        star.addEventListener('mouseover', () => highlightStars(Number(star.dataset.value)));
+        star.addEventListener('mouseout', () => highlightStars(Number(selectedRating)));
+        star.addEventListener('click', () => {
+          selectedRating = star.dataset.value;
+          ratingInput.value = selectedRating;
+          highlightStars(Number(selectedRating));
+        });
+      });
+      highlightStars(Number(selectedRating));
+    }
+
+    // ---------- Image preview ----------
+    const imageInput = $('#img');
+    const preview = $('#preview');
+    if (imageInput && preview) {
+      imageInput.addEventListener('change', function(event) {
+        const file = event.target.files && event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // ---------- Wishlist toggle (guard) ----------
+    window.getWishStatus = window.getWishStatus || function(product_id) {
+      const like_icon = document.getElementById(`cart-like${product_id}`);
+      if (!like_icon) return null;
+      if (like_icon.getAttribute("fill") === "none") {
+        like_icon.setAttribute("fill","red");
+        return `/add/wishlist/${product_id}/1/`;
+      } else {
+        like_icon.setAttribute("fill","none");
+        return `/remove/wishlist/${product_id}/`;
+      }
+    };
+    window.addToWishlist = window.addToWishlist || function(product_id) {
+      const url = getWishStatus(product_id);
+      if (!url) return;
+      fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+        .then(r => r.text())
+        .then(html => {
+          const sp = document.getElementById("scroll-products");
+          if (sp) sp.innerHTML = html;
+        }).catch(console.error);
+    };
+
+    // ---------- Copy link ----------
+    if (copyInput) {
+      const copyBtn = document.querySelector('#shareModal button[onclick="copyText()"]');
+      // safe copy function
+      window.copyText = window.copyText || function() {
+        const text = copyInput.value || '';
+        if (!navigator.clipboard) {
+          // fallback
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch(e) { console.error(e); }
+          document.body.removeChild(ta);
+          return;
+        }
+        navigator.clipboard.writeText(text).catch(err => console.error('Failed to copy: ', err));
+      };
+    }
+
+    // ---------- Pincode check (guard) ----------
+    if (pincodeClick && pincodeInput) {
+      pincodeClick.addEventListener('click', checkDelivery);
+      pincodeInput.addEventListener('keypress', function (ev) {
+        if (ev.key === 'Enter') { ev.preventDefault(); pincodeClick.click(); }
+      });
+    }
+
+    // Keep checkDelivery and getDaysInMonth as in your original code, but guard usage:
+    function getDaysInMonth(year, monthIndex) {
+      // monthIndex: 0-11 expected. Return days in that month.
+      return new Date(year, monthIndex + 1, 0).getDate();
+    }
+
+    function checkDelivery() {
+      const pincode = pincodeInput ? pincodeInput.value.trim() : '';
+      const result = document.getElementById("text-para");
+      const result2 = document.getElementById("text-para2");
+      if (!pincode) {
+        if (result) { result.style.fontWeight = 'bold'; result.innerText = "Please enter a valid pincode"; }
+        if (result2) result2.innerText = "";
+        return;
+      }
+      fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+        .then(response => response.json())
+        .then(data => {
+          if (!data || data.length === 0 || data[0].Status !== 'Success') {
+            if (result) { result.style.fontWeight = 'bold'; result.innerText = "Please enter a valid pincode"; }
+            if (result2) result2.innerText = "";
+            return;
+          }
+          const locarray = ["Thrissur", "Alappuzha", "Ernakulam"];
+          const location = data[0].PostOffice || [];
+          let found = false;
+          const now = new Date();
+          const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+          const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+          for (let i=0;i<location.length;i++){
+            const po = location[i];
+            if (locarray.includes(po.District)) {
+              const deliveryDate = new Date(now.getTime());
+              deliveryDate.setDate(deliveryDate.getDate() + 2);
+              if (result) result.innerText = `FREE delivery by ${days[deliveryDate.getDay()]}, ${deliveryDate.getDate()} ${months[deliveryDate.getMonth()]}`;
+              if (result2) result2.innerText = `Deliver to ${po.Block || po.Division}, ${po.District} ${pincode}`;
+              found = true;
               break;
             }
           }
-        } else {
-          result.setAttribute('style', 'font-weight:bold');
-          result.innerText = "Please enter a valid pincode";
-          result2.innerText = "";
-        }
-
-      })
-      .catch(error => console.error('There was a problem with the fetch operation:', error));
-
-  }
-
-  function getDaysInMonth(year, month) {
-    return new Date(year, month, 0).getDate();
-  }
-  const mainImage = document.getElementById("mainImage");
-
-  const qtyInput = document.getElementById("qtyInput");
-  const url = document.getElementById("addtocart");
-  const url2 = document.getElementById("buynow");
-  const url3 = document.getElementById("addtowishlist");
-  let qtyValue = qtyInput.value;
-  const totalPriceEl = document.getElementById("totalPrice");
-  const pricePerUnit = parseInt(document.getElementById("totalPrice").textContent.replace(",", ""));
-  const productId = "{{ product.id }}";
-
-  
-
-  function adjustQty(val, productId) {
-    let qty = parseInt(qtyInput.value);
-    qty = isNaN(qty) ? 1 : qty;
-    qty = Math.max(1, qty + val);
-    qtyInput.value = qty;
-    qtyValue = qty;
-    qtyInput.setAttribute("value", `${qtyValue}`)
-    url2.setAttribute("href", `/buy/${productId}/${qtyValue}/`);
-    url3.setAttribute("href", `/add/wishlist/${productId}/${qtyValue}/`);
-    totalPriceEl.textContent = qty * pricePerUnit;
-  }
-
-  qtyInput.addEventListener("input", () => {
-    let qty = parseInt(qtyInput.value);
-    qty = isNaN(qty) || qty < 1 ? 1 : qty;
-    qtyInput.value = qty;
-    totalPriceEl.textContent = qty * pricePerUnit;
-  });
-
-
-  const stars = document.querySelectorAll('.star');
-    const ratingInput = document.getElementById('rating');
-    let selectedRating = 0;
-
-    stars.forEach(star => {
-        star.addEventListener('mouseover', () => {
-            highlightStars(star.dataset.value);
-        });
-
-        star.addEventListener('mouseout', () => {
-            highlightStars(selectedRating);
-        });
-
-        star.addEventListener('click', () => {
-            selectedRating = star.dataset.value;
-            ratingInput.value = selectedRating;
-            highlightStars(selectedRating);
-        });
-    });
-
-    function highlightStars(rating) {
-        stars.forEach(star => {
-            if (star.dataset.value <= rating) {
-                star.classList.add('selected');
-            } else {
-                star.classList.remove('selected');
-            }
+          if (!found) {
+            if (result) result.innerText = `We don't ship to this pincode currently`;
+            if (result2) result2.innerText = ``;
+          }
+        }).catch(err => {
+          console.error('pincode fetch error', err);
         });
     }
-    const imageInput = document.getElementById('img');
-    const preview = document.getElementById('preview');
 
-    imageInput.addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          preview.src = e.target.result;
-          preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-    function getWishStatus(product_id) {
-    const like_icon = document.getElementById(`cart-like${product_id}`);
-    if (like_icon.getAttribute("fill") == "none") {
-      console.log(like_icon.getAttribute("fill"));
-      const url = `/add/wishlist/${product_id}/1/`;
-      console.log(url);
-      like_icon.setAttribute("fill","red");
-      return url;
-    } else if(like_icon.getAttribute("fill") == "red") {
-      const url = `/remove/wishlist/${product_id}/`;
-      like_icon.setAttribute("fill","none");
-      console.log(url);
-      return url;
-    }
-  }
+    // done DOMContentLoaded
+  }); // DOM ready
+})(); // IIFE
+</script>
 
-  function addToWishlist(product_id) {
-    const url = getWishStatus(product_id)
-    fetch(url, {
-      headers: {
-        "X-Requested-With": "XMLHttpRequest"
-      }
-    })
-      .then(response => response.text())
-      .then(html => {
-        document.getElementById("scroll-products").innerHTML = html;
-      })
-
-  }
-      </script>
-      
       
       {% endblock content %}

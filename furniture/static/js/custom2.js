@@ -95,7 +95,7 @@ const overlay = document.getElementById("offer-loader");
   function getDaysInMonth(year, month) {
     return new Date(year, month, 0).getDate();
   }
-  const mainImage = document.getElementById("mainImage");
+
 
   const qtyInput = document.getElementById("qtyInput");
   const url = document.getElementById("addtocart");
