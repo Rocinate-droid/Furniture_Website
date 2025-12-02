@@ -13,6 +13,7 @@ pipeline{
                 python3 -m pip install django-select2
                 python3 -m pip install django-jazzmin
                 python3 -m pip install django-filter
+                python3 -m pip install razorpay
                 export $(grep -v '^#' .env | xargs)
                 yes | python manage.py makemigrations --merge
                 python3 manage.py makemigrations --noinput
