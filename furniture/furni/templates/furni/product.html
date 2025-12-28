@@ -5,6 +5,15 @@
 {% load static %}
 {% load dict_extras %}
 <style>
+  .image-zoom-container {
+  overflow: hidden;
+}
+
+.zoom-img {
+  transform-origin: center;
+  transition: transform 0.1s ease;
+}
+
   .share-button {
     margin-left: 115px; 
     font-size: medium; 
@@ -49,7 +58,10 @@
 </ul>
 </div>
       <div class="sticky-top" style="top: 100px;"> <!-- adjust top offset as needed -->
-        <img id="mainImage" src="{{product.img.url}}" class="img-fluid mb-3" alt="Main Image">
+        <div class="image-zoom-container pinch-zoom">
+          <img id="mainImage" src="{{product.img.url}}" class="img-fluid mb-3 zoom-img " alt="Main Image">
+        </div>
+
         <div class="d-flex">
           <img src="{{product.img.url}}" class="thumbnail-img active" width="60" onclick="changeImage(this)">
           <img src="{{product.img2.url}}" class="thumbnail-img" width="60" onclick="changeImage(this)">
@@ -983,6 +995,37 @@
     // done DOMContentLoaded
   }); // DOM ready
 })(); // IIFE
+<!-- Pinch Zoom Library -->
+const container = document.querySelector('.image-zoom-container');
+const img = document.querySelector('.zoom-img');
+
+if (!('ontouchstart' in window)) {
+  container.addEventListener('mousemove', (e) => {
+    const rect = container.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    img.style.transformOrigin = `${x}% ${y}%`;
+    img.style.transform = 'scale(2)';
+  });
+
+  container.addEventListener('mouseleave', () => {
+    img.style.transform = 'scale(1)';
+    img.style.transformOrigin = 'center';
+  });
+}
+
+/* 📱 Mobile pinch zoom */
+document.querySelectorAll('.pinch-zoom').forEach(el => {
+  new PinchZoom(el, {
+    maxZoom: 3,
+    minZoom: 1,
+    draggableUnzoomed: false
+  });
+});
+
+
+
 </script>
 
       
