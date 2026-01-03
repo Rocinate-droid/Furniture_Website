@@ -23,6 +23,7 @@ resource "aws_instance" "module_host" {
             /etc/apt/sources.list.d/jenkins.list > /dev/null
             apt update -y
             apt install jenkins -y
+            pat install nginx -y
             EOF
 }
 resource "aws_network_interface" "niw-prod" {
