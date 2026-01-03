@@ -4,6 +4,13 @@ terraform {
             source = "hashicorp/aws"
         }
     }
+    backend "s3" {
+      bucket = "module-furni-bucket"
+      key = "prod/infra/terraform.tfstate"
+      region = "us-east-1"
+      dynamodb_table = "terraform-state-locks"
+      encrypt = true
+    }
 }
 
 provider "aws" {
