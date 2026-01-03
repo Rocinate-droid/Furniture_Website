@@ -1,0 +1,6 @@
+django-environ
+django-mathfilters
+django-select2
+django-jazzmin
+django-filter
+razorpay
