@@ -23,7 +23,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'modulefurnitures.com', 'www.modulefurnitures.com'
+    '100.29.28.74'
 ]
 
 
