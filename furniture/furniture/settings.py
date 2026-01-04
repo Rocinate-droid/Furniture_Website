@@ -20,7 +20,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [
     '100.29.28.74'
@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1 
-MAINTENANCE_MODE = True
+MAINTENANCE_MODE = env('MAINTENANCE_MODE')
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
