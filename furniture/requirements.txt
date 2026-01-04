@@ -5,3 +5,4 @@ django-jazzmin
 django-filter
 razorpay
 pillow
+uvicorn[standard]

@@ -1,0 +1,12 @@
+services:
+  module_app:
+    build: .
+    env_file:
+      - .env
+    expose:
+      - "8000"
+    volumes:
+      - /var/www/myproject/static:/staticfiles
+      - /var/www/myproject/media:/media
+    restart: unless-stopped
+    
