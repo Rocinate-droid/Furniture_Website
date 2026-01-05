@@ -36,3 +36,5 @@ module "ec2" {
   sg-id = module.security-group.sg-id
   subnet_id = module.vpc.subnet-id
 }
+
+
