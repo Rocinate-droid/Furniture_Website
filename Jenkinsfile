@@ -22,6 +22,8 @@ pipeline {
                     sudo rsync -av --delete \
                       --exclude='.git' \
                       --exclude='__pycache__' \
+                      sudo chown www-data:www-data /opt/myproject/db.sqlite3
+                      sudo chmod 664 /opt/myproject/db.sqlite3
                       --exclude='myenv/' \
                       --exclude='.env' \
                       "$WORKSPACE/furniture/" \
