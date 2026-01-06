@@ -22,14 +22,14 @@ pipeline {
                     sudo rsync -av --delete \
                       --exclude='.git' \
                       --exclude='__pycache__' \
-                      sudo chown www-data:www-data /opt/myproject/db.sqlite3
-                      sudo chmod 664 /opt/myproject/db.sqlite3
                       --exclude='myenv/' \
                       --exclude='.env' \
                       "$WORKSPACE/furniture/" \
                       /opt/myproject/
 
                     sudo -u www-data /opt/myproject/myenv/bin/pip install -r /opt/myproject/requirements.txt
+                    sudo chown www-data:www-data /opt/myproject/db.sqlite3
+                    sudo chmod 664 /opt/myproject/db.sqlite3
                     sudo -u www-data /opt/myproject/myenv/bin/python3 /opt/myproject/manage.py migrate --noinput
                     sudo -u www-data /opt/myproject/myenv/bin/python3 /opt/myproject/manage.py collectstatic --noinput
 
