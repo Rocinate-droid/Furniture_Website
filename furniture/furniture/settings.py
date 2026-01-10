@@ -22,7 +22,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '100.29.28.74'
+    '23.21.243.54'
 ]
 
 
