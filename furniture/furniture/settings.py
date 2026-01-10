@@ -26,6 +26,10 @@ ALLOWED_HOSTS = [
     'modulefurnitures.com', 'www.modulefurnitures.com'
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://www.modulefurnitures.com',
+    'https://modulefurnitures.com',
+]
 
 # Application definition
 
