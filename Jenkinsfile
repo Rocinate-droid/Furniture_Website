@@ -37,7 +37,7 @@ pipeline {
         stage('Restart Furniture Service') {
             steps {
                 sh '''
-                   systemctl restart furniture
+                   sudo systemctl restart furniture
                    '''
             }
         }
