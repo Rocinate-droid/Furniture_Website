@@ -4,4 +4,9 @@ django-select2
 django-jazzmin
 django-filter
 razorpay
+<<<<<<< HEAD
 pillow
+=======
+pillow
+uvicorn[standard]
+>>>>>>> main
