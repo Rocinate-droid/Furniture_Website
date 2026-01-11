@@ -8,9 +8,13 @@ pipeline {
                rsync -av --delete \
                --exclude='myenv' \
                --exclude='.env' \
-               --exclude='media' \
+               --exclude='media/' \
+               --exclude='.git/' \
+               --exclude='.gitignore' \
                --exclude='node_modules' \
                --exclude='__pycache__' \
+               --exclude='db.sqlite3' \
+               --exclude='.vscode/' \
                "$WORKSPACE/furniture/" \
                /opt/Module
                '''
