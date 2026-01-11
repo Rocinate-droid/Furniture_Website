@@ -6,3 +6,4 @@ django-filter
 razorpay
 pillow
 uvicorn[standard]
+psycopg2-binary

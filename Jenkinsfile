@@ -33,6 +33,7 @@ pipeline {
             steps {
                 sh '''
                    /opt/Module/myenv/bin/python3 /opt/Module/manage.py migrate --noinput
+                   /opt/Module/myenv/bin/python3 /opt/Module/manage.py loaddata db.json --noinput
                    /opt/Module/myenv/bin/python3 /opt/Module/manage.py collectstatic --noinput
                    '''
             }
