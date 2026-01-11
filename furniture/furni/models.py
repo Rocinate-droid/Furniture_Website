@@ -232,7 +232,7 @@ class Orders(models.Model):
         ("Success","Success")
     ]
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    order_no = models.CharField(max_length=14, default=generate_order_id, unique=True, editable=False)
+    order_no = models.CharField(max_length=50, default=generate_order_id, unique=True, editable=False)
     razor_order_id = models.CharField(max_length=50, editable=False)
     payment_status = models.CharField(max_length=40, choices=status)
     anonymous = models.CharField(max_length=40, null=True, blank=True)
