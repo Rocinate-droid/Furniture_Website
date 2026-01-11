@@ -2,12 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout SCM') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/Rocinate-droid/Furniture_Website.git'
-            }
-        }
         stage('Copy Files') {
             steps {
             sh '''
