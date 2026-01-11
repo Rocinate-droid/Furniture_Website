@@ -26,6 +26,15 @@ pipeline {
                    '''
             }
         }
+        stage('Build Frontend Assets') {
+            steps {
+                sh '''
+                   cd /opt/Module
+                   npm install
+                   npx tailwindcss -i ./static/src/input.css -o ./static/css/main.css --minify
+                   '''
+            }
+        }
         stage('Migrations and Static Collection') {
             steps {
                 sh '''
