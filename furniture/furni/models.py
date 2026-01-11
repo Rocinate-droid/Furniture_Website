@@ -95,6 +95,7 @@ class Product(models.Model):
     img = models.ImageField(upload_to='products/')
     img2 = models.ImageField(upload_to='products/')
     img3 = models.ImageField(upload_to='products/')
+    img4 = models.ImageField(upload_to='products/',null=True, blank=True)
     warranty = models.IntegerField()
     assembly = models.CharField(max_length=50,choices=assembly_choices,default="Not Required")
     customization = models.CharField(max_length=50,choices=customization_choices,default="Available")
