@@ -3,7 +3,20 @@
 {% block title %}{{present_room}} | Module Furnitures{% endblock %}
 {% block content %}
 <!-- Category Tabs -->
+<style>
+  .product-img-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;     /* perfect square */
+  overflow: hidden;
+}
 
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+</style>
 
   {% if products %}
 <!-- Filters & Sort -->

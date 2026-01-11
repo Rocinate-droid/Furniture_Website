@@ -4,7 +4,10 @@
   <div class="card border-0 shadow-sm h-100">
     <div class="position-relative">
       <a href="{% url 'product' cat_id=product.category.slug prod_id=product.slug %}">
-        <img src="{{product.img.url}}" class="card-img-top" alt="Product">
+        <div class="product-img-wrapper">
+          <img src="{{product.img.url}}" class="product-img" alt="Product">
+        </div>
+
       </a>
     </div>
     <div class="card-body">
