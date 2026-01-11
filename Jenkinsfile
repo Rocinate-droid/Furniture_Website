@@ -10,7 +10,7 @@ pipeline {
                --exclude='.env' \
                --exclude='media' \
                --exclude='node_modules' \
-               --exclude='__pycache__'
+               --exclude='__pycache__' \
                "$WORKSPACE/furniture/" \
                /opt/Module
                '''
