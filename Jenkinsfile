@@ -8,6 +8,7 @@ pipeline {
                rsync -av --delete \
                --exclude='myenv' \
                --exclude='.env' \
+               --exclude='media' \
                "$WORKSPACE/furniture/" \
                /opt/Module
                '''
