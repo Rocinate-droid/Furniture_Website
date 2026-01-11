@@ -8,7 +8,6 @@ pipeline {
                rsync -av --delete \
                --exclude='myenv' \
                --exclude='.env' \
-               --exclude='db.json' \
                "$WORKSPACE/furniture/" \
                /opt/Module
                '''
