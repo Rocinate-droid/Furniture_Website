@@ -416,8 +416,10 @@
 <style>
 .new-launch {
   background-color: #FDEEC6;
-  padding: 40px 20px;
+  padding: 40px 20px 20px; /* reduced bottom padding */
 }
+
+
 
 .launch-title {
   font-size: 2rem;
@@ -428,20 +430,27 @@
 
 .scroll-wrapper {
   position: relative;
+  overflow: visible;
   display: flex;
   align-items: center;
 }
 
 .scroll-products {
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: 0 20px;
+  display: flex;
+  gap: 20px;
   overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  overflow-y: hidden;
   padding: 0 40px;
-  scroll-behavior: smooth;
+  align-items: flex-start;
 }
+
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
 
 .scroll-products::-webkit-scrollbar {
   display: none;
@@ -449,9 +458,30 @@
 
 .launch-card {
   width: 238px;
-  padding: 5px;
   flex: 0 0 auto;
 }
+.launch-card img {
+  height: 170px;
+  width: 100%;
+  object-fit: cover;
+}
+.launch-card .card-title {
+  min-height: 42px; /* 2 lines */
+  line-height: 1.2;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.launch-card .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.launch-card .card {
+  height: 360px; /* 👈 uniform height */
+}
+
 
 /* Scroll Buttons */
 .scroll-btn {
