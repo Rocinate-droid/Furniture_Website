@@ -11,7 +11,7 @@ from .models import BillingAddress, ShippingAddress
 from .models import Orders
 from .models import Cart
 from .models import Wishlist
-from.forms import ProductForm
+
 from .models import OrderItem, Replacement
 
 
@@ -28,7 +28,7 @@ class CategorieAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug" : ("name",)}
 
 class ProductAdmin(admin.ModelAdmin):
-    form = ProductForm
+
     prepopulated_fields = {"slug" : ("name",)}
 
 class orderAdmin(admin.ModelAdmin):

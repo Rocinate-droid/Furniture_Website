@@ -1,27 +1,54 @@
-pipeline{
+pipeline {
     agent any
+
     stages {
-        stage ('Configure Nginx'){
+        stage('Checkout SCM') {
             steps {
-                sh 'echo "Step 11"'
-                git branch: 'prod-django', url: 'https://github.com/Rocinate-droid/Furniture_Website.git'
-                sh '''
-                cd /var/lib/jenkins/workspace/Django-Job/furniture
-                . myenv/bin/activate
-                python3 -m pip install django-environ
-                python3 -m pip install django-mathfilters
-                python3 -m pip install django-select2
-                python3 -m pip install django-jazzmin
-                python3 -m pip install django-filter
-                python3 -m pip install razorpay
-                export $(grep -v '^#' .env | xargs)
-                yes | python manage.py makemigrations --merge
-                python3 manage.py makemigrations --noinput
-                python3 manage.py migrate --noinput
-                python3 manage.py collectstatic --noinput
-                sudo systemctl restart myproject
-                '''
+                git branch: 'main',
+                    url: 'https://github.com/Rocinate-droid/Furniture_Website.git'
             }
         }
+        stage('Copy Files') {
+            steps {
+            sh '''
+               rsync -av --delete \
+               --exclude='myenv' \
+               --exclude='.env' \
+               "$WORKSPACE/furniture/" \
+               /opt/Module
+               '''
+            }
+        }
+        stage('Install requirements') {
+            steps {
+                sh '''
+                   /opt/Module/myenv/bin/pip install -r /opt/Module/requirements.txt
+                   '''
+            }
+        }
+        stage('Build Frontend Assets') {
+            steps {
+                sh '''
+                   cd /opt/Module
+                   npm install
+                   npx tailwindcss -i ./static/src/input.css -o ./static/css/main.css --minify
+                   '''
+            }
+        }
+        stage('Migrations and Static Collection') {
+            steps {
+                sh '''
+                   /opt/Module/myenv/bin/python3 /opt/Module/manage.py migrate --noinput
+                   /opt/Module/myenv/bin/python3 /opt/Module/manage.py collectstatic --noinput
+                   '''
+            }
+        }
+        stage('Restart Furniture Service') {
+            steps {
+                sh 'sudo /bin/systemctl restart furniture.service'
+            }
+        }
+    
     }
 }
+
