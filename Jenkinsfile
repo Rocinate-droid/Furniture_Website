@@ -39,8 +39,6 @@ pipeline {
         stage('Migrations and Static Collection') {
             steps {
                 sh '''
-                   /opt/Module/myenv/bin/python3 /opt/Module/manage.py makemigrations --merge
-                   /opt/Module/myenv/bin/python3 /opt/Module/manage.py makemigrations --noinput
                    /opt/Module/myenv/bin/python3 /opt/Module/manage.py migrate --noinput
                    /opt/Module/myenv/bin/python3 /opt/Module/manage.py collectstatic --noinput
                    '''
