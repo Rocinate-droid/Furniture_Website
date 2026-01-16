@@ -1,12 +1,6 @@
 services:
   module_app:
     build: .
-<<<<<<< HEAD
-    ports:
-      - 8000:8000
-    env_file:
-      - .env
-=======
     env_file:
       - .env
     expose:
@@ -16,4 +10,3 @@ services:
       - /var/www/myproject/media:/media
     restart: unless-stopped
     
->>>>>>> main
