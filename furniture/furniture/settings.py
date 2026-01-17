@@ -92,12 +92,8 @@ WSGI_APPLICATION = "furniture.wsgi.application"
 
 DATABASES = {
     "default": {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'module_db',                      # usage: DB_NAME
-        'USER': 'sreejith',                  # usage: DB_USER
-        'PASSWORD': os.environ.get('DB_PASSWORD'),# usage: DB_PASSWORD
-        'HOST': 'localhost',                      # usage: DB_HOST
-        'PORT': '5432',
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
