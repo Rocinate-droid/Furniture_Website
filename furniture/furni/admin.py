@@ -11,7 +11,7 @@ from .models import BillingAddress, ShippingAddress
 from .models import Orders
 from .models import Cart
 from .models import Wishlist
-
+from .models import ProductImageGallery
 from .models import OrderItem, Replacement
 
 
@@ -27,8 +27,12 @@ class RoomAdmin(admin.ModelAdmin):
 class CategorieAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug" : ("name",)}
 
-class ProductAdmin(admin.ModelAdmin):
+class ProductImageInline(admin.TabularInline):
+    model = ProductImageGallery
+    extra = 1
 
+class ProductAdmin(admin.ModelAdmin):
+    inlines = [ProductImageInline]
     prepopulated_fields = {"slug" : ("name",)}
 
 class orderAdmin(admin.ModelAdmin):

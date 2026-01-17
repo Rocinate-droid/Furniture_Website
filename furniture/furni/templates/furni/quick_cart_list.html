@@ -4,7 +4,9 @@
 <li class="d-flex align-items-center mb-3 border-bottom pb-2" >
         <!-- Product Image -->
         <div class="me-3" style="width: 80px; height: 80px; overflow: hidden; border-radius: 8px;">
-          <img src="{{cart_item.product.img.url}}" alt="Product"
+          {% with cart_item.product.images.first as main_image %}
+          <img src="{{ main_image.img.url }}" alt="Product"
+          {% endwith %}
                class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 100%;">
         </div>
 

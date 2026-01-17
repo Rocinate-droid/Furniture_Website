@@ -13,7 +13,7 @@
  <div class="d-flex border-bottom py-3" id="cart_content">
           <div class="me-3">
             <a href="{% url 'product' cat_id=item.product.category.slug prod_id=item.product.slug %}">
-              <img src="{{ item.product.img.url }}" alt="{{ item.product.name }}" style="width:100px; height:auto;" class="rounded">
+              <img src="{{ item.product.images.first.img.url }}" alt="{{ item.product.name }}" style="width:100px; height:auto;" class="rounded">
             </a>
           </div>
 

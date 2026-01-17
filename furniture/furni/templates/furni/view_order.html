@@ -77,7 +77,7 @@
     <div class="card-body row">
       <div class="col-md-2 text-center">
         <a href="{% url 'product' cat_id=item.category.slug prod_id=item.slug  %}">
-          <img src="{{ item.img.url }}" class="img-fluid" alt="{{ item.name }}">
+          <img src="{{ item.images.first.img.url }}" class="img-fluid" alt="{{ item.name }}">
         </a>
       </div>
       <div class="col-md-6">
