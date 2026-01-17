@@ -95,16 +95,20 @@
 </ul>
 </div>
       <div class="sticky-top" style="top: 100px;"> <!-- adjust top offset as needed -->
+      {% with product.images.first as main_image %}
+      {% if main_image %}
         <div class="image-zoom-container pinch-zoom product-image-box">
-          <img id="mainImage" src="{{product.img.url}}" class="zoom-img product-main-img" alt="Main Image">
+          <img id="mainImage"
+              src="{{ main_image.img.url }}"
+              class="zoom-img product-main-img"
+              alt="Main Image">
         </div>
-
-
+      {% endif %}
+      {% endwith %}
         <div class="d-flex">
-          <img src="{{product.img.url}}" class="thumbnail-img active" width="60" onclick="changeImage(this)">
-          <img src="{{product.img2.url}}" class="thumbnail-img" width="60" onclick="changeImage(this)">
-          <img src="{{product.img3.url}}" class="thumbnail-img" width="60" onclick="changeImage(this)">
-          <img src="{{product.img3.url}}" class="thumbnail-img" width="60" onclick="changeImage(this)">
+          {% for image in product.images.all %}
+          <img src="{{image.img.url}}" class="thumbnail-img " width="60" onclick="changeImage(this)">
+          {% endfor %}
         </div>
       </div>
     </div>

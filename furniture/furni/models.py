@@ -95,6 +95,7 @@ class Product(models.Model):
     img = models.ImageField(upload_to='products/')
     img2 = models.ImageField(upload_to='products/')
     img3 = models.ImageField(upload_to='products/')
+    img4 = models.ImageField(upload_to='products/', null=True, blank=True)
     warranty = models.IntegerField()
     assembly = models.CharField(max_length=50,choices=assembly_choices,default="Not Required")
     customization = models.CharField(max_length=50,choices=customization_choices,default="Available")
@@ -109,6 +110,12 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+class ProductImageGallery(models.Model):
+    product = models.ForeignKey(Product,related_name="images", on_delete=models.CASCADE)
+    img = models.ImageField(upload_to='products/')
+    def __str__(self):
+        return f"Image for {self.product.name}"
+
 class Review(models.Model):
     customer = models.ForeignKey(User,on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=15, null=True, blank=True)
