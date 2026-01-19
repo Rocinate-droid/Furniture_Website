@@ -12,6 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -21,14 +22,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'modulefurnitures.com', 'www.modulefurnitures.com'
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://www.modulefurnitures.com',
-    'https://modulefurnitures.com',
-]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -94,8 +88,8 @@ DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'module_db',                      # usage: DB_NAME
-        'USER': 'sreejith',                  # usage: DB_USER
-        'PASSWORD': os.environ.get('DB_PASSWORD'),# usage: DB_PASSWORD
+        'USER': 'postgres',                  # usage: DB_USER
+        'PASSWORD': env('DB_PASSWORD'),# usage: DB_PASSWORD
         'HOST': 'localhost',                      # usage: DB_HOST
         'PORT': '5432',
     }
@@ -144,7 +138,11 @@ USE_TZ = True
 
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static"
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+
 
 RAZOR_KEY_ID = env('RAZOR_KEY_ID')
 RAZOR_KEY_SECRET = env('RAZOR_KEY_SECRET')
@@ -155,7 +153,7 @@ RAZOR_KEY_SECRET = env('RAZOR_KEY_SECRET')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = '/media/' 
-MEDIA_ROOT = BASE_DIR / 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'  
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
