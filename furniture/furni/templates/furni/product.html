@@ -233,10 +233,7 @@
               </h2>
               <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
                 <div class="accordion-body">
-                  Bring timeless elegance into your living space with our Wooden 1-Seater Sofa. Crafted from premium solid
-                  wood and designed for comfort, it’s the perfect spot for a morning coffee, quiet reading, or cozy
-                  conversations. The natural wood tones and soft upholstery blend seamlessly with any décor, from classic to
-                  contemporary.
+                 {{product.description|linebreaksbr}}
                 </div>
               </div>
             </div>
@@ -257,17 +254,15 @@
                       <li style="font-weight: bold;">Collections</li>
                       <li>Bingo Collections</li>
                       <li style="font-weight: bold;">Dimensions (In Inches)</li>
-                      <li>H 30 x W 70 x D 32</li>
-                      <li style="font-weight: bold;">Seating Height</li>
-                      <li>H 30 x W 70 x D 32</li>
+                      <li>H {{height_inch}} x W {{width_inch}} x D {{depth_inch}}</li>
                       <li style="font-weight: bold;">Weight</li>
-                      <li>30 Kg</li>
+                      <li>{{product.weight}} Kg</li>
                     </ul>
                     <ul style="list-style-type: none;">
                       <li style="font-weight: bold;">Assembly</li>
                       <li>Carpentary Assembly</li>
                       <li style="font-weight: bold;">Dimensions (In centimeters)</li>
-                      <li>H 76 x W 178 x D 81</li>
+                      <li>H {{product.dimensions_height_cm}} x W {{product.dimensions_width_cm}} x D {{product.dimensions_depth_cm}}</li>
                       <li style="font-weight: bold;">Primary Material</li>
                       <li>Fabric</li>
                       <li style="font-weight: bold;">Room Type</li>
@@ -508,7 +503,11 @@
                   <input type="text" class="reviewmodalpop" name="name" id="name" value="{{ form.name.value|default:'' }}" required>
                   {% endif %}
                   <div class="product-info">
-                    <img src="{{product.img.url}}" alt="Product Image" style="width: 80px; height: 80px;">
+                    {% with product.images.first as main_image %}
+                    {% if main_image %}
+                    <img src="{{main_image.img.url}}" alt="Product Image" style="width: 80px; height: 80px;">
+                    {% endif %}
+                    {% endwith %}
                     <strong>How was the item?</strong>
                   </div>
       

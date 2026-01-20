@@ -308,6 +308,9 @@ def product(request,cat_id,prod_id):
     product = get_object_or_404(Product,id = selected_product.id,category_id=category.id)
     product.savings = product.original_price - product.discounted_price
     product.savings_percentage = int((product.savings / product.original_price ) * 100)
+    height_inch = round(product.dimensions_height_cm / 2.54)
+    width_inch = round(product.dimensions_width_cm / 2.54)
+    depth_inch = round(product.dimensions_depth_cm / 2.54)
     reviews = Review.objects.filter(product=product)
     sort  = request.GET.get('sort_order')
     
@@ -367,9 +370,9 @@ def product(request,cat_id,prod_id):
         wishlistcreated, created = Wishlist.objects.get_or_create(customer=request.user)
         wish_items = WishlistItem.objects.filter(wishlist=wishlistcreated).values_list('product_id', flat=True)
         
-        context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict, "wish_items":wish_items}
+        context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict, "wish_items":wish_items, 'height_inch':height_inch, 'width_inch':width_inch, 'depth_inch':depth_inch}
     else:
-        context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict}
+        context = {'product': product,'form':form , 'reviews':reviews, 'overall_rating':round(overall_rating), "review_dict":review_dict, 'height_inch':height_inch, 'width_inch':width_inch, 'depth_inch':depth_inch}
     return render(request, "furni/product.html", context)
 
 
