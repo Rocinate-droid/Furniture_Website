@@ -22,8 +22,17 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", "").split(",")
+    if host.strip()
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
 
 # Application definition
 
@@ -87,11 +96,11 @@ WSGI_APPLICATION = "furniture.wsgi.application"
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'module_db',                      # usage: DB_NAME
-        'USER': 'postgres',                  # usage: DB_USER
-        'PASSWORD': env('DB_PASSWORD'),# usage: DB_PASSWORD
-        'HOST': 'localhost',                      # usage: DB_HOST
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME'),                      # usage: DB_NAME
+        'USER': os.environ.get('DB_USER'),                  # usage: DB_USER
+        'PASSWORD': os.environ.get('DB_PASSWORD'),# usage: DB_PASSWORD
+        'HOST': os.environ.get('DB_HOST'),                      # usage: DB_HOST
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
