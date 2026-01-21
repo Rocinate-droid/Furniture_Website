@@ -17,6 +17,9 @@ pipeline {
                --exclude='.vscode/' \
                "$WORKSPACE/furniture/" \
                /opt/Module
+               rsync -av \
+               "$WORKSPACE/furniture/media/" \
+               /opt/Module/media/
                '''
             }
         }
