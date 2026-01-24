@@ -44,7 +44,6 @@ pipeline {
                 sh '''
                    /opt/Module/myenv/bin/python3 /opt/Module/manage.py migrate --noinput
                    /opt/Module/myenv/bin/python3 /opt/Module/manage.py collectstatic --noinput
-                   /opt/Module/myenv/bin/python3 /opt/Module/manage.py dumpdata furni.Product furni.ProductImageGallery --indent 2 --output /opt/Module/products.json
                    /opt/Module/myenv/bin/python3 /opt/Module/manage.py loaddata /opt/Module/products.json
                    '''
             }
