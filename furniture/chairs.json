@@ -1,0 +1,53 @@
+[
+{
+  "model": "furni.product",
+  "pk": null,
+  "fields": {
+    "name": "HB 012",
+    "slug": "hb-012",
+    "category": 12,
+    "room_or_Product_Type": 6,
+    "Product_Type": 11,
+    "Sub_Product": 18,
+    "serial_no": "ABDCJ-548T",
+    "discounted_price": 6200,
+    "original_price": 6700,
+    "description": "A budget-friendly ergonomic office chair with quilted cushioning, adjustable height, and smooth swivel base. Designed for comfort and daily use, it provides reliable back support and a modern look for home offices or workspaces.",
+    "dimensions_height_cm": 121,
+    "dimensions_width_cm": 69,
+    "dimensions_depth_cm": 69,
+    "weight": 15,
+    "color_options": "1",
+    "warranty": 2,
+    "assembly": "Not Required",
+    "customization": "Available",
+    "updated": "2026-01-24T10:02:56.714Z",
+    "created": "2026-01-24T10:02:41.265Z"
+  }
+},{
+  "model": "furni.product",
+  "pk": null,
+  "fields": {
+    "name": "HB 013",
+    "slug": "hb-013",
+    "category": 12,
+    "room_or_Product_Type": 6,
+    "Product_Type": 11,
+    "Sub_Product": 18,
+    "serial_no": "ABDCJ-548T",
+    "discounted_price": 6600,
+    "original_price": 7000,
+    "description": "A budget-friendly ergonomic office chair with quilted cushioning, adjustable height, and smooth swivel base. Designed for comfort and daily use, it provides reliable back support and a modern look for home offices or workspaces.",
+    "dimensions_height_cm": 121,
+    "dimensions_width_cm": 69,
+    "dimensions_depth_cm": 69,
+    "weight": 15,
+    "color_options": "1",
+    "warranty": 2,
+    "assembly": "Not Required",
+    "customization": "Available",
+    "updated": "2026-01-24T10:02:56.714Z",
+    "created": "2026-01-24T10:02:41.265Z"
+  }
+}
+]
