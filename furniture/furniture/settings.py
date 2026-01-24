@@ -146,9 +146,7 @@ USE_TZ = True
 
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
+STATIC_ROOT = BASE_DIR / "static"
 
 RAZOR_KEY_ID = env('RAZOR_KEY_ID')
 RAZOR_KEY_SECRET = env('RAZOR_KEY_SECRET')
