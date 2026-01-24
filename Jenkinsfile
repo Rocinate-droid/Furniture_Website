@@ -17,6 +17,9 @@ pipeline {
                --exclude='.vscode/' \
                "$WORKSPACE/furniture/" \
                /opt/Module
+               rsync -av \
+               "$WORKSPACE/furniture/media/" \
+               /opt/Module/media/
                '''
             }
         }
@@ -41,6 +44,8 @@ pipeline {
                 sh '''
                    /opt/Module/myenv/bin/python3 /opt/Module/manage.py migrate --noinput
                    /opt/Module/myenv/bin/python3 /opt/Module/manage.py collectstatic --noinput
+                   dos2unix /opt/Module/products.json
+                   /opt/Module/myenv/bin/python3 /opt/Module/manage.py loaddata /opt/Module/products.json
                    '''
             }
         }
