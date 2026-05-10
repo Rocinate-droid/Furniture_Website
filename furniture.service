@@ -1,0 +1,18 @@
+[Unit]
+Description=ASGI Server for Django Project
+After=network.target
+
+[Service]
+User=jenkins
+Group=jenkins
+WorkingDirectory=/opt/Module
+EnvironmentFile=/opt/Module/.env
+ExecStart=/opt/Module/myenv/bin/uvicorn furniture.asgi:application \
+          --host 127.0.0.1 --port 8000 --workers 1
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+~                               
